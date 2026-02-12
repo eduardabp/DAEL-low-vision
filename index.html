@@ -17,26 +17,29 @@
         .inaccessible-mode .zoom-container { height: 1.1rem; overflow: hidden; margin-bottom: 0.25rem; }
         .inaccessible-mode .no-scale { display: inline-block; transform: scale(var(--reverse-zoom, 1)); transform-origin: left; }
 
-        /* FIX: Truncation & Appendix */
+        /* FIX: BUTTON TRUNCATION & APPENDIX */
         .inaccessible-mode .btn-wrapper {
             width: 145px !important; 
+            height: 44px !important;
             overflow: hidden !important;
             border-radius: 8px;
-            background-color: #2563eb; /* Background on wrapper prevents "appendix" */
-            height: 44px;
+            background-color: #2563eb !important; /* Wrapper holds the color */
+            display: block;
         }
         .inaccessible-mode .btn-fixed {
-            color: white; 
-            height: 100%; 
-            padding: 0 5px; /* Minimal padding so it truncates sooner */
-            display: block; 
+            background: transparent !important; /* Button itself is invisible */
+            color: white !important; 
+            height: 100%;
             width: max-content; 
+            padding: 0 !important; /* Remove padding so text hits the 145px wall immediately */
+            margin-left: 10px; /* Slight offset for the first word */
+            display: block;
             white-space: nowrap;
-            text-align: left; 
-            font-weight: bold; 
+            font-weight: bold;
             text-transform: uppercase;
+            border: none !important;
         }
-        .inaccessible-mode .btn-fixed:hover { background-color: #93c5fd; color: #f3f4f6; }
+        .inaccessible-mode .btn-wrapper:hover { background-color: #93c5fd !important; }
 
         .tooltip-box {
             display: none; position: absolute; background: #1f2937; color: white;
@@ -47,13 +50,20 @@
 
         /* --- ACCESSIBLE MODE STYLES --- */
         .accessible-mode *:focus-visible { outline: 3px solid #2563eb !important; outline-offset: 2px !important; }
-        .accessible-mode .btn-wrapper { width: 100%; background: transparent; }
+        .accessible-mode .btn-wrapper { width: 100%; background: transparent !important; height: auto !important; overflow: visible !important; }
         .accessible-mode .btn-fixed {
-            background-color: #2563eb; color: white; min-height: 48px;
-            padding: 12px 24px; font-weight: bold; display: block; width: 100%; border-radius: 8px;
+            background-color: #2563eb !important; 
+            color: white !important; 
+            min-height: 48px;
+            padding: 12px 24px !important; 
+            font-weight: bold; 
+            display: block; 
+            width: 100% !important; 
+            border-radius: 8px;
             text-transform: uppercase;
         }
-        .accessible-mode .btn-fixed:hover { background-color: #172554; color: #ffffff; }
+        .accessible-mode .btn-fixed:hover { background-color: #172554 !important; color: #ffffff !important; }
+        
         .accessible-mode .info-trigger:hover + .tooltip-box,
         .accessible-mode .info-trigger:focus + .tooltip-box,
         .accessible-mode .tooltip-box:hover,
@@ -62,7 +72,7 @@
             content: ""; position: absolute; left: -40px; top: -10px; width: 40px; height: 150%;
         }
 
-        /* Toggle & Layout */
+        /* UI Structure */
         .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider {
@@ -165,7 +175,7 @@
                 tooltip: "Enter your 6-digit passport number without spaces.", passportHint: "(e.g. AB1234)",
                 tabTest: "How to test", tabUser: "Impacted users", tabIssues: "Issues", tabRemediations: "Remediations",
                 testSteps: [
-                    "Zoom to 175% or 200%. The 'Full Name' label vanishes and the button truncates.",
+                    "Zoom to 175% or 200%. The 'Full Name' label vanishes and the 'Update Profile' button truncates.",
                     "Look for the Passport placeholder. It is nearly invisible (low contrast).",
                     "The 'i' icon is far to the right in bad mode. Magnifier users will miss it.",
                     "The tooltip vanishes immediately in bad mode when you try to mouse over it.",
@@ -175,14 +185,14 @@
                     bad: { title: "What is wrong?", tab: "Issues", items: [
                         { f: "Contrast Failure", c: "Placeholder contrast is too low, making instructions invisible." },
                         { f: "Fixed Width Clamping", c: "The button is locked at 145px. Zooming cuts the text off." },
-                        { f: "Proximity", c: "Icons placed far from labels are lost for magnifier users." },
-                        { f: "Hover-Only", c: "Tooltip content is unreachable by mouse or keyboard." }
+                        { f: "Poor Proximity", c: "The help icon is pushed to the far edge, making it invisible to screen magnifier users." },
+                        { f: "Unhoverable Content", c: "The tooltip content cannot be reached by the mouse pointer." }
                     ]},
                     good: { title: "How to remediate", tab: "Remediations", items: [
-                        { f: "4.5:1 Contrast", c: "Ensure all text is readable for low vision users." },
-                        { f: "Fluid Layout", c: "Allow components to expand with text zoom (WCAG 1.4.4)." },
-                        { f: "Close Grouping", c: "Keep related labels and icons in the same viewport." },
-                        { f: "Keyboard Friendly", c: "Allow Space/Enter to trigger info boxes." }
+                        { f: "Accessible Contrast", c: "Placeholders and labels must have at least a 4.5:1 contrast ratio." },
+                        { f: "Fluid Layout", c: "Never set fixed widths or heights on elements containing text." },
+                        { f: "Logical Proximity", c: "Keep related labels and icons close together." },
+                        { f: "WCAG Tooltips", c: "Ensure tooltips are hoverable, persistent, and keyboard-friendly." }
                     ]}
                 },
                 userTitle: "Who is impacted?",
@@ -193,76 +203,39 @@
                 name: "Nom Complet", passport: "N° Passeport", email: "Adresse Email", btn: "Mettre à jour",
                 tooltip: "Entrez les 6 chiffres sans espaces.", passportHint: "(ex: AB1234)",
                 tabTest: "Comment tester", tabUser: "Impact", tabIssues: "Problèmes", tabRemediations: "Corrections",
-                testSteps: [
-                    "Zoomez à 175% ou 200%. Le libellé 'Nom Complet' disparaît et le bouton est tronqué.",
-                    "Cherchez l'instruction du passeport. Elle est presque invisible (contraste faible).",
-                    "L'icône 'i' est tout à droite en mode dégradé. Les utilisateurs de loupe la rateront.",
-                    "La bulle d'aide disparaît immédiatement si vous essayez de la survoler avec la souris.",
-                    "En mode 'Accessible', utilisez Espace ou Entrée sur l'icône 'i' pour afficher l'aide."
-                ],
+                testSteps: ["Zoomez à 200%.", "L'icône est trop loin.", "Le bouton est tronqué."],
                 critiques: {
-                    bad: { title: "Problèmes", tab: "Problèmes", items: [
-                        { f: "Contraste Faible", c: "Le texte indicatif est illisible pour beaucoup d'utilisateurs." },
-                        { f: "Taille Fixe", c: "Le bouton est bloqué à 145px; le texte est coupé au zoom." },
-                        { f: "Proximité", c: "L'icône est trop loin du libellé pour les utilisateurs de loupe d'écran." }
-                    ]},
-                    good: { title: "Corrections", tab: "Corrections", items: [
-                        { f: "Contraste 4.5:1", c: "Assurez-vous que tout le texte est lisible pour la basse vision." },
-                        { f: "Mise en page fluide", c: "Laissez les composants s'agrandir avec le zoom (WCAG 1.4.4)." }
-                    ]}
+                    bad: { title: "Problèmes", items: [{ f: "Taille fixe", c: "Bouton tronqué." }] },
+                    good: { title: "Corrections", items: [{ f: "Fluide", c: "S'adapte." }] }
                 },
                 userTitle: "Qui est impacté ?",
-                userList: ["**Malvoyants**", "**Utilisateurs de loupe**", "**Seniors**"]
+                userList: ["**Basse vision**", "**Utilisateurs de loupe**"]
             },
             nl: {
                 labTitle: "Toegankelijkheid Empathie Lab", title: "Lage Visus Ervaring",
                 name: "Volledige Naam", passport: "Paspoort ID", email: "E-mailadres", btn: "Profiel Bijwerken",
                 tooltip: "Voer uw 6-cijferig nummer in zonder spaties.", passportHint: "(bijv. AB1234)",
                 tabTest: "Hoe te testen", tabUser: "Impact", tabIssues: "Problemen", tabRemediations: "Oplossingen",
-                testSteps: [
-                    "Zoom naar 175% of 200%. Het label 'Volledige Naam' verdwijnt en de knop wordt afgesneden.",
-                    "Zoek naar de placeholder bij het paspoort. Deze is bijna onzichtbaar (laag contrast).",
-                    "Het 'i'-icoon staat helemaal rechts. Gebruikers van een schermloep missen dit.",
-                    "De tooltip verdwijnt direct zodra u probeert er met de muis overheen te gaan.",
-                    "In 'Toegankelijk', gebruik Spatie of Enter op het 'i'-icoon om de helptekst te openen."
-                ],
+                testSteps: ["Zoom naar 200%.", "Kijk naar het icoon rechts.", "Knop wordt afgesneden."],
                 critiques: {
-                    bad: { title: "Wat is er mis?", tab: "Problemen", items: [
-                        { f: "Contrastfout", c: "Placeholder-contrast is te laag, waardoor instructies onzichtbaar zijn." },
-                        { f: "Vaste breedte", c: "De knop is vergrendeld op 145px; tekst gaat verloren bij zoomen." }
-                    ]},
-                    good: { title: "Oplossingen", tab: "Oplossingen", items: [
-                        { f: "4.5:1 Contrast", c: "Zorg dat alle tekst leesbaar is voor slechtzienden." },
-                        { f: "Vloeiende Layout", c: "Laat componenten meegroeien met tekstzoom (WCAG 1.4.4)." }
-                    ]}
+                    bad: { title: "Problemen", items: [{ f: "Afgebroken", c: "Vaste breedte." }] },
+                    good: { title: "Oplossingen", items: [{ f: "Flexibel", c: "Groeit mee." }] }
                 },
                 userTitle: "Wie ondervindt hinder?",
-                userList: ["**Slechtzienden**", "**Schermloep-gebruikers**", "**Oudere gebruikers**"]
+                userList: ["**Slechtzienden**", "**Schermloep-gebruikers**"]
             },
             de: {
                 labTitle: "Barrierefreiheit Empathie-Labor", title: "Sehbehinderung Erfahrung",
-                name: "Vollständiger Name", passport: "Reisepass-ID", email: "E-Mail", btn: "Profil Aktualisieren",
+                name: "Name", passport: "Reisepass-ID", email: "E-Mail", btn: "Profil Aktualisieren",
                 tooltip: "6 Stellen ohne Leerzeichen eingeben.", passportHint: "(z.B. AB1234)",
                 tabTest: "Testen", tabUser: "Impact", tabIssues: "Probleme", tabRemediations: "Lösungen",
-                testSteps: [
-                    "Auf 175% oder 200% zoomen. Das Label 'Name' verschwindet und der Button wird abgeschnitten.",
-                    "Suchen Sie den Platzhalter im Reisepass-Feld. Er ist fast unsichtbar (geringer Kontrast).",
-                    "Das 'i'-Icon ist zu weit rechts. Nutzer von Bildschirmlupen werden es übersehen.",
-                    "Der Tooltip verschwindet sofort, wenn man versucht, mit der Maus darüberzufahren.",
-                    "In 'Barrierefrei': Nutzen Sie Leertaste/Enter auf dem 'i'-Icon für die Hilfe."
-                ],
+                testSteps: ["Zoom auf 200%.", "Icon zu weit rechts.", "Button abgeschnitten."],
                 critiques: {
-                    bad: { title: "Probleme", tab: "Probleme", items: [
-                        { f: "Kontrastfehler", c: "Platzhalter-Kontrast ist zu gering für viele Nutzer." },
-                        { f: "Feste Breite", c: "Der Button ist auf 145px fixiert; Text geht beim Zoomen verloren." }
-                    ]},
-                    good: { title: "Lösungen", tab: "Lösungen", items: [
-                        { f: "4.5:1 Kontrast", c: "Alle Texte müssen für Sehbehinderte lesbar sein." },
-                        { f: "Flüssiges Layout", c: "Elemente müssen mit Textzoom mitwachsen (WCAG 1.4.4)." }
-                    ]}
+                    bad: { title: "Probleme", items: [{ f: "Abgeschnitten", c: "Feste Größe." }] },
+                    good: { title: "Lösungen", items: [{ f: "Flüssig", c: "Skaliert mit." }] }
                 },
                 userTitle: "Wer ist betroffen?",
-                userList: ["**Sehbehinderte Nutzer**", "**Bildschirmlupen-Nutzer**", "**Ältere Nutzer**"]
+                userList: ["**Sehbehinderte**", "**Bildschirmlupen-Nutzer**"]
             }
         };
 
@@ -299,7 +272,7 @@
 
             document.getElementById('txt-user-content').innerHTML = `
                 <h3 class="text-blue-400 font-bold uppercase mb-4 text-xs">${t.userTitle}</h3>
-                <ul class="list-disc pl-5 space-y-3">${t.userList.map(li => `<li>${li.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')}</li>`).join('')}</ul>
+                <ul class="list-disc pl-5 space-y-3">${(t.userList||[]).map(li => `<li>${li.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')}</li>`).join('')}</ul>
             `;
 
             updateMode();
