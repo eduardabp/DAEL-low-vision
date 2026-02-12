@@ -9,37 +9,36 @@
         .transition-all { transition: all 0.3s ease; }
 
         /* --- INACCESSIBLE MODE STYLES --- */
-        .inaccessible-mode .low-contrast-label { color: #d1d5db !important; }
-        .inaccessible-mode .low-contrast-border { border-color: #e5e7eb !important; }
-        .inaccessible-mode input::placeholder { color: #f1f5f9 !important; }
+        .inaccessible-mode .low-contrast-label { color: #e5e7eb !important; }
+        .inaccessible-mode .low-contrast-border { border-color: #f3f4f6 !important; }
+        
+        /* Extreme low contrast placeholder (approx 1.2:1 ratio) */
+        .inaccessible-mode input::placeholder { color: #f0f0f0 !important; opacity: 1; }
 
-        /* Remove Focus Indicator */
         .inaccessible-mode *:focus { outline: none !important; box-shadow: none !important; }
 
-        /* Proximity Issue: Far right icon */
         .inaccessible-mode .proximity-box { display: flex; justify-content: space-between; width: 100%; }
 
-        /* Label Height Cutoff */
         .inaccessible-mode .zoom-container { height: 1.1rem; overflow: hidden; margin-bottom: 0.25rem; }
 
-        /* Blocked Scale (Counter-Zoom) */
         .inaccessible-mode .no-scale { display: inline-block; transform: scale(var(--reverse-zoom, 1)); transform-origin: left; }
 
-        /* Truncation: Fixed width container, text grows inside and overflows */
+        /* Truncation: 90px is enough for 100%, but kills the text at 200% */
         .inaccessible-mode .btn-wrapper {
-            width: 140px; 
+            width: 90px !important; 
             overflow: hidden !important;
             border-radius: 8px;
+            background-color: #2563eb;
         }
         .inaccessible-mode .btn-fixed {
-            background-color: #2563eb; color: white; height: 44px; padding: 0 10px;
+            color: white; height: 44px; padding: 0 10px;
             display: block; width: max-content; white-space: nowrap;
+            text-align: left;
         }
-        .inaccessible-mode .btn-fixed:hover, .inaccessible-mode .btn-fixed:focus {
+        .inaccessible-mode .btn-fixed:hover {
             background-color: #93c5fd; color: #f3f4f6;
         }
 
-        /* Tooltip Bad behavior: Not hoverable text */
         .tooltip-box {
             display: none; position: absolute; background: #1f2937; color: white;
             padding: 12px; width: 220px; z-index: 50; left: 20px; top: 10px; border-radius: 8px;
@@ -54,12 +53,8 @@
             background-color: #2563eb; color: white; min-height: 48px;
             padding: 12px 24px; font-weight: bold; display: block; width: 100%; border-radius: 8px;
         }
-        .accessible-mode .btn-fixed:hover, .accessible-mode .btn-fixed:focus {
-            background-color: #172554; 
-            color: #ffffff;
-        }
+        .accessible-mode .btn-fixed:hover { background-color: #172554; color: #ffffff; }
         
-        /* Accessible Hover Bridge & Focus */
         .accessible-mode .info-trigger:hover + .tooltip-box,
         .accessible-mode .info-trigger:focus + .tooltip-box,
         .accessible-mode .tooltip-box:hover,
@@ -85,7 +80,7 @@
         .tab-btn[aria-selected="true"] { background-color: #111827; color: #60a5fa; border-bottom: 2px solid #60a5fa; }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen p-4 md:p-8 font-sans transition-colors duration-500 inaccessible-mode" id="bodyTag">
+<body class="bg-gray-100 min-h-screen p-4 md:p-8 font-sans transition-colors duration-500" id="bodyTag">
 
     <div class="max-w-6xl mx-auto bg-white shadow-2xl rounded-3xl overflow-hidden">
         <header class="bg-white border-b border-gray-100">
@@ -107,7 +102,6 @@
                     <div class="flex gap-2 text-[10px] font-bold">
                         <button onclick="setLanguage('en')" class="lang-btn px-2 py-1 rounded bg-blue-600 text-white" id="btn-en">EN</button>
                         <button onclick="setLanguage('fr')" class="lang-btn px-2 py-1 rounded bg-gray-200 text-gray-700" id="btn-fr">FR</button>
-                        <button onclick="setLanguage('nl')" class="lang-btn px-2 py-1 rounded bg-gray-200 text-gray-700" id="btn-nl">NL</button>
                     </div>
                 </div>
                 <h1 id="txt-title" class="text-xl font-black text-gray-900 px-2 uppercase tracking-tighter">Low Vision Experience</h1>
@@ -116,12 +110,12 @@
 
         <main class="p-6 md:p-10">
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-16">
-                <div class="lg:col-span-1 space-y-6 exercise-area">
+                <div class="lg:col-span-1 space-y-6">
                     <div>
                         <div class="zoom-container">
                             <label id="txt-label-name" class="text-xs font-semibold uppercase tracking-wider low-contrast-label">Full Name</label>
                         </div>
-                        <input type="text" class="w-full border border-gray-500 p-2 rounded-lg bg-gray-50 text-sm low-contrast-border">
+                        <input type="text" class="w-full border border-gray-300 p-2 rounded-lg bg-gray-50 text-sm low-contrast-border">
                     </div>
 
                     <div class="relative">
@@ -132,14 +126,14 @@
                                 <div class="tooltip-box shadow-xl text-xs" id="txt-tooltip">Tooltip text</div>
                             </div>
                         </div>
-                        <input type="text" id="passport-input" class="w-full border border-gray-500 p-2 rounded-lg bg-gray-50 text-sm low-contrast-border">
+                        <input type="text" id="passport-input" class="w-full border border-gray-300 p-2 rounded-lg bg-gray-50 text-sm low-contrast-border">
                     </div>
 
                     <div>
                         <div class="no-scale mb-1">
                             <label id="txt-label-email" class="text-xs font-semibold uppercase tracking-wider low-contrast-label">Email Address</label>
                         </div>
-                        <input type="email" class="w-full border border-gray-500 p-2 rounded-lg bg-gray-50 text-sm low-contrast-border">
+                        <input type="email" class="w-full border border-gray-300 p-2 rounded-lg bg-gray-50 text-sm low-contrast-border">
                     </div>
 
                     <div class="btn-wrapper">
@@ -172,32 +166,26 @@
                 passportHint: "(6 digits, no spaces)",
                 tabTest: "How to test", tabUser: "Impacted users",
                 testSteps: [
-                    "Zoom the browser to 200%. Notice the 'Full Name' label disappears.",
-                    "In 'Inaccessible', the 'i' icon is far to the right. Magnifier users see only the label or the icon, rarely both.",
-                    "Try to move the mouse to read the tooltip text. In bad mode, it vanishes as soon as you leave the icon.",
-                    "In 'Accessible', focus the 'i' icon and press Space or Enter to toggle the tooltip.",
-                    "Check the button truncation at 200% zoom. The 'Inaccessible' button locks text in a small box."
+                    "Zoom to 200%. The 'Full Name' label vanishes and the blue button cuts off mid-word.",
+                    "In 'Inaccessible', try to find the Passport placeholder. It is nearly invisible (low contrast).",
+                    "Notice the 'i' icon is at the far right. Magnifier users will miss it completely.",
+                    "Try to read the tooltip. In 'Inaccessible', it disappears when you try to mouse over the text.",
+                    "In 'Accessible', use Space or Enter on the 'i' icon to toggle the help text."
                 ],
                 critiques: {
                     bad: { title: "What is wrong?", tab: "Issues", items: [
-                        { f: "Far Proximity", c: "The help icon is miles away from the label. Magnifier users will miss it completely." },
-                        { f: "Hidden Instructions", c: "Requirements are in a low-contrast placeholder that disappears when typing." },
-                        { f: "Text Truncation", c: "Fixed container sizes cause text to be cut off when zoomed." },
-                        { f: "Unreachable Tooltip", c: "Keyboard and magnifier users cannot interact with or read the tooltip content." }
+                        { f: "Contrast Failure", c: "Placeholder contrast is below 1.5:1, making it invisible to many users." },
+                        { f: "Fixed Widths", c: "The button is locked to 90px. Zooming causes the text to overflow and disappear." },
+                        { f: "Visual Proximity", c: "Related items (label and icon) are too far apart for magnification users." },
+                        { f: "Hover-only Content", c: "The tooltip is not hoverable or keyboard accessible." }
                     ]},
                     good: { title: "How to remediate", tab: "Remediations", items: [
-                        { f: "Close Proximity", c: "Keep labels and related icons close to ensure they stay in the user's viewport." },
-                        { f: "Visible Help", c: "Place instructions directly in the label for permanent visibility." },
-                        { f: "Fluid Containers", c: "Ensure buttons and labels grow to fit enlarged text." },
-                        { f: "Accessible Tooltips", c: "Make tooltips hoverable, keyboard-triggerable, and dismissible." }
+                        { f: "High Contrast", c: "Ensure all text and placeholders have a contrast ratio of at least 4.5:1." },
+                        { f: "Flexible Sizing", c: "Allow all UI components to expand horizontally and vertically with text zoom." },
+                        { f: "Grouped Elements", c: "Keep related labels and icons in close proximity." },
+                        { f: "Interoperable Tooltips", c: "Allow tooltips to be hovered and triggered via keyboard." }
                     ]}
-                },
-                userTitle: "Who is impacted?",
-                userList: [
-                    "**Low Vision users** who rely on high zoom levels to read content.",
-                    "**Screen Magnifier users** who see only a fraction of the screen at a time.",
-                    "**Aging users** whose contrast sensitivity has decreased over time."
-                ]
+                }
             }
         };
 
@@ -231,12 +219,6 @@
                 passportLabel.innerText = t.passport;
                 passportInput.placeholder = "e.g. AB1234";
             }
-
-            document.getElementById('txt-user-content').innerHTML = `
-                <h3 class="text-blue-400 font-bold uppercase mb-4">${t.userTitle}</h3>
-                <ul class="list-disc pl-5 space-y-3">${t.userList.map(li => `<li>${li.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')}</li>`).join('')}</ul>
-            `;
-
             updateMode();
         }
 
@@ -262,7 +244,6 @@
             });
         }
 
-        // Keyboard Tooltip Logic
         const infoBtn = document.getElementById('info-btn');
         const tooltip = document.getElementById('txt-tooltip');
         infoBtn.addEventListener('keydown', (e) => {
