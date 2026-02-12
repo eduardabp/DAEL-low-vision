@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta id="viewportTag" name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Low Vision Experience - Digital Accessibility Empathy Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .transition-all { transition: all 0.3s ease; }
+
+        /* --- THE BAD WAY STYLES --- */
+        .inaccessible-mode .low-contrast-label {
+            color: #e5e7eb !important; /* Very light gray - WCAG failure */
+        }
+
+        .inaccessible-mode .zoom-container {
+            height: 40px;
+            overflow: hidden; /* Cuts off text when user zooms */
+            border-bottom: 1px dashed #ddd;
+        }
+
+        .inaccessible-mode .proximity-issue {
+            display: flex;
+            justify-content: space-between; /* Pushes icon far from label */
+            width: 100%;
+        }
+
+        /* Tooltip issue: disappears when you try to hover the content itself */
+        .tooltip-trigger:hover + .bad-tooltip {
+            display: block;
+        }
+        .bad-tooltip {
+            display: none;
+            position: absolute;
+            background: #333;
+            color: white;
+            padding: 20px;
+            width: 300px;
+            left: 50px;
+            z-index: 100;
+        }
+        /* Crucial "Bad" behavior: If they move mouse to read, it vanishes */
+        .bad-tooltip:hover { display: none !important; }
+
+        /* --- UI HELPERS --- */
+        .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ef4444; transition: .4s; border-radius: 28px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px;
+            background-color: white; transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: #15803d; }
+        input:checked + .slider:before { transform: translateX(22px); }
+
+        .tab-btn[aria-selected="true"] {
+            background-color: #111827;
+            color: #60a5fa;
+            border-bottom: 2px solid #60a5fa;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-4 md:p-8 font-sans transition-colors duration-500 inaccessible-mode" id="bodyTag">
+
+    <div class="max-w-6xl mx-auto bg-white shadow-2xl rounded-3xl overflow-hidden">
+        
+        <header class="bg-white border-b border-gray-100">
+            <div class="p-6 flex flex-col md:flex-row justify-between items-center gap-6 border-b border-gray-50">
+                <div id="txt-lab-title" class="text-xl md:text-2xl font-black tracking-tight uppercase" style="color: #008B63;">Digital Accessibility Empathy Lab</div>
+                <img src="https://regine-lambrecht.github.io/color-contrast-checker-size-weight/images/banner.png" alt="Logo" class="h-12">
+            </div>
+
+            <nav class="p-4 flex flex-col gap-4">
+                <div class="flex flex-wrap items-center justify-between gap-4 bg-gray-50 p-3 rounded-2xl border border-gray-200 w-full">
+                    <div class="flex items-center gap-4">
+                        <span id="statusLabel" class="text-xs font-black uppercase tracking-widest text-red-600">Inaccessible</span>
+                        <label class="switch">
+                            <input type="checkbox" id="modeToggle" onchange="toggleMode()" role="switch">
+                            <span class="slider"></span>
+                        </label>
+                        <span id="accessibleLabel" class="text-xs font-black uppercase tracking-widest text-green-700">Accessible</span>
+                    </div>
+                </div>
+                <h1 id="txt-title" class="text-xl font-black text-gray-900 px-2">Low Vision Experience</h1>
+            </nav>
+        </header>
+
+        <main class="p-6 md:p-10">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-12">
+                
+                <div class="lg:col-span-1 space-y-8">
+                    
+                    <div class="zoom-container">
+                        <div class="proximity-issue">
+                            <label for="f1" id="label-name" class="text-xs font-bold uppercase low-contrast-label">Full Name</label>
+                            <div class="relative inline-block">
+                                <span class="tooltip-trigger cursor-help bg-blue-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-[10px]">i</span>
+                                <div class="bad-tooltip shadow-xl rounded-lg" id="tooltip-content">Important: Use name as it appears on ID.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="text" id="f1" class="w-full border border-gray-400 p-2 rounded bg-gray-50 text-sm">
+
+                    <div class="zoom-container border-t pt-4">
+                        <label id="label-email" class="text-xs font-bold uppercase low-contrast-label">Email Address</label>
+                        <p class="text-[10px] text-gray-400">We will never share your private data with third parties.</p>
+                    </div>
+                    <input type="email" class="w-full border border-gray-400 p-2 rounded bg-gray-50 text-sm">
+
+                    <button class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg text-sm">Update Profile</button>
+                </div>
+
+                <div class="lg:col-span-3">
+                    <div class="bg-gray-900 text-white rounded-2xl shadow-xl overflow-hidden h-full flex flex-col">
+                        <div class="flex bg-gray-800 border-b border-gray-700">
+                            <button id="tab-test" onclick="switchTab('test')" class="tab-btn px-6 py-4 text-xs font-black uppercase tracking-widest" aria-selected="true">How to test</button>
+                            <button id="tab-feedback" onclick="switchTab('feedback')" class="tab-btn px-6 py-4 text-xs font-black uppercase tracking-widest border-l border-gray-700" aria-selected="false">Issues</button>
+                            <button id="tab-user" onclick="switchTab('user')" class="tab-btn px-6 py-4 text-xs font-black uppercase tracking-widest border-l border-gray-700" aria-selected="false">Impacted users</button>
+                        </div>
+
+                        <div id="panel-test" class="p-8 space-y-4">
+                            <h3 class="text-blue-400 font-bold uppercase text-xs">Test Instructions</h3>
+                            <ol class="list-decimal pl-5 space-y-2 text-sm">
+                                <li>Try to <strong>zoom in</strong> (Ctrl/Cmd + Plus) to 200% or 400%. Notice how the labels disappear or get cut off.</li>
+                                <li>Try to <strong>pinch-to-zoom</strong> on a mobile device or trackpad. In the "Inaccessible" mode, it is blocked.</li>
+                                <li>Look for the <strong>blue "i" icon</strong>. If you use a Screen Magnifier (set to 400%), notice how far you have to scroll right to find it.</li>
+                                <li>Try to <strong>read the help tooltip</strong>. In the "Inaccessible" mode, it disappears if you move your mouse toward it.</li>
+                            </ol>
+                        </div>
+
+                        <div id="panel-feedback" class="p-8 hidden">
+                            <h3 id="feedback-title" class="text-blue-400 font-bold uppercase text-xs mb-6">What is wrong?</h3>
+                            <div id="critiqueContent" class="space-y-6 text-sm">
+                                </div>
+                        </div>
+
+                        <div id="panel-user" class="p-8 hidden">
+                            <h3 class="text-blue-400 font-bold uppercase text-xs mb-4">Who is impacted?</h3>
+                            <ul class="list-disc pl-5 space-y-4 text-sm">
+                                <li><strong>People with Low Vision:</strong> Many need to increase text size to 400% or more. If containers don't grow, content is lost.</li>
+                                <li><strong>Screen Magnifier Users:</strong> They see only a small portion of the screen at once. If related items (Label vs. Icon) are far apart, they miss them entirely.</li>
+                                <li><strong>Aging Users:</strong> Declining contrast sensitivity makes light gray text on white backgrounds impossible to read.</li>
+                                <li><strong>Mobile Users:</strong> Blocking "user-scalable" prevents people in bright sunlight from zooming in to see details.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const critiques = {
+            bad: [
+                { f: "Scaling Blocked", c: "The page prevents users from zooming on mobile. This is a direct violation of WCAG as it traps users in a view they may not be able to read." },
+                { f: "Fixed Container Heights", c: "The labels are inside 'overflow:hidden' boxes. When you increase text size, the text expands but the box doesn't, causing the text to vanish." },
+                { f: "Low Contrast", c: "The 'Full Name' label uses light gray on white. This fails the minimum contrast ratio of 4.5:1." },
+                { f: "Proximity (Magnification)", c: "The help icon is pushed to the far right. Users with high magnification will see the label but never know the help icon exists because it's 'off-screen'." },
+                { f: "Tooltip Hover", c: "The tooltip is triggered by hover but is not 'hoverable' itself. This prevents users from moving their mouse to it to read it properly (WCAG 1.4.13)." }
+            ],
+            good: [
+                { f: "Full Scaling", c: "Users can zoom up to 500% freely. The layout is fluid and expands to accommodate larger text." },
+                { f: "Flexible Layout", c: "Containers grow with their content. Labels remain fully visible regardless of the zoom level." },
+                { f: "High Contrast", c: "Labels use dark text on a light background, exceeding the 4.5:1 contrast requirement for readability." },
+                { f: "Visual Proximity", c: "Related items (label and help icon) are kept close together, so they remain in the same viewport for magnifier users." },
+                { f: "Persistent Tooltips", c: "Tooltips are easily dismissible and allow the mouse to move over them without disappearing." }
+            ]
+        };
+
+        function toggleMode() {
+            const isAccessible = document.getElementById('modeToggle').checked;
+            const body = document.getElementById('bodyTag');
+            const viewport = document.getElementById('viewportTag');
+            const status = document.getElementById('statusLabel');
+
+            if (isAccessible) {
+                body.classList.replace('inaccessible-mode', 'accessible-mode');
+                viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, user-scalable=yes');
+                status.innerText = "Accessible";
+                status.classList.replace('text-red-600', 'text-green-700');
+            } else {
+                body.classList.replace('accessible-mode', 'inaccessible-mode');
+                viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, user-scalable=no');
+                status.innerText = "Inaccessible";
+                status.classList.replace('text-green-700', 'text-red-600');
+            }
+            updateCritique();
+        }
+
+        function updateCritique() {
+            const isAccessible = document.getElementById('modeToggle').checked;
+            const container = document.getElementById('critiqueContent');
+            const title = document.getElementById('feedback-title');
+            const data = isAccessible ? critiques.good : critiques.bad;
+            
+            title.innerText = isAccessible ? "How it was fixed" : "What is wrong?";
+            container.innerHTML = data.map(item => `
+                <div>
+                    <span class="text-blue-400 font-bold block mb-1 uppercase text-[11px]">${item.f}</span>
+                    <p class="text-white">${item.c}</p>
+                </div>
+            `).join('');
+        }
+
+        function switchTab(tabId) {
+            ['test', 'feedback', 'user'].forEach(id => {
+                document.getElementById('panel-' + id).classList.toggle('hidden', id !== tabId);
+                document.getElementById('tab-' + id).setAttribute('aria-selected', id === tabId);
+            });
+        }
+
+        // Initialize
+        toggleMode();
+    </script>
+</body>
+</html>
