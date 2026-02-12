@@ -59,16 +59,33 @@
         .inaccessible-mode .info-trigger:hover + .tooltip-box { display: block; }
         .inaccessible-mode .tooltip-box:hover { display: none !important; }
 
-        /* 6. Button Issue: Fixed length + Truncation */
-        .inaccessible-mode .btn-bad {
-            max-width: 160px; /* Fixed length */
+        /* 6. BUTTON TRUNCATION LOGIC */
+        /* Fixed dimensions. As text (span) grows, it is cut off */
+        .inaccessible-mode .btn-container {
+            width: 150px; 
+            height: 45px;
             overflow: hidden;
-            text-overflow: ellipsis;
             white-space: nowrap;
+            text-overflow: ellipsis; 
             display: block;
+            background-color: #2563eb;
+            color: white;
+            border-radius: 8px;
+            padding: 0 15px;
+            font-weight: bold;
+            text-align: left; /* Align left to show it starting to disappear from right */
+            line-height: 45px;
         }
-        .accessible-mode .btn-bad {
-            width: 100%; /* Becomes fluid in accessible mode */
+
+        .accessible-mode .btn-container {
+            width: auto;
+            min-height: 45px;
+            display: inline-block;
+            background-color: #2563eb;
+            color: white;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: bold;
         }
 
         /* --- UI COMPONENTS --- */
