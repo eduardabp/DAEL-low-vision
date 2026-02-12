@@ -8,34 +8,29 @@
     <style>
         .transition-all { transition: all 0.3s ease; }
 
-        /* --- THE BAD WAY STYLES (Inaccessible Mode) --- */
+        /* --- THE BAD WAY STYLES --- */
         
-        /* 1. Contrast Issues */
         .inaccessible-mode .low-contrast-label { color: #d1d5db !important; }
-        .inaccessible-mode .low-contrast-border { border-color: #f3f4f6 !important; } /* Very faint border */
-        .inaccessible-mode input::placeholder { color: #f9fafb !important; } /* Nearly invisible placeholder */
 
-        /* 2. Remove Focus Indicator */
-        .inaccessible-mode *:focus {
-            outline: none !important;
-            box-shadow: none !important;
-        }
-
-        /* 3. Label Height Cutoff */
         .inaccessible-mode .zoom-container {
-            height: 1.1rem; 
+            height: 1.2rem; 
             overflow: hidden;
             margin-bottom: 0.25rem;
         }
 
-        /* 4. Blocked Scale */
         .inaccessible-mode .no-scale {
             display: inline-block;
             transform: scale(var(--reverse-zoom, 1));
             transform-origin: left;
         }
 
-        /* 5. Tooltip logic */
+        .inaccessible-mode .proximity-box {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        /* Tooltip Logic */
         .tooltip-box {
             display: none;
             position: absolute;
@@ -48,63 +43,53 @@
             top: 10px;
             border-radius: 8px;
         }
+
+        /* Bridge for Accessible Mode */
+        .accessible-mode .info-trigger:hover + .tooltip-box,
+        .accessible-mode .tooltip-box:hover { display: block; }
+        .accessible-mode .tooltip-box::before {
+            content: "";
+            position: absolute;
+            left: -40px; top: -10px; width: 40px; height: 150%;
+        }
+        
         .inaccessible-mode .info-trigger:hover + .tooltip-box { display: block; }
         .inaccessible-mode .tooltip-box:hover { display: none !important; }
 
-        /* 6. Button Truncation & Poor Contrast Hover */
+        /* --- BUTTON TRUNCATION (FIXED) --- */
+        /* We use a wrapper with a hard width and hidden overflow */
         .inaccessible-mode .btn-wrapper {
-            width: 80px !important; /* Extremely truncated */
+            width: 100px !important; 
             overflow: hidden !important;
             border-radius: 8px;
         }
+        
         .inaccessible-mode .btn-fixed {
             background-color: #2563eb;
             color: white;
             height: 44px;
-            padding: 0 8px;
+            padding: 0 12px;
             font-weight: bold;
             display: block;
-            width: max-content;
+            width: max-content; /* This ensures the inner text stays on one line and keeps growing */
+            text-align: left;
             white-space: nowrap;
         }
-        .inaccessible-mode .btn-fixed:hover, 
-        .inaccessible-mode .btn-fixed:focus {
-            background-color: #60a5fa; /* Light blue on white/light text = poor contrast */
-            color: #d1d5db; 
-        }
 
-        /* --- THE GOOD WAY STYLES (Accessible Mode) --- */
-        
-        .accessible-mode *:focus-visible {
-            outline: 3px solid #2563eb !important;
-            outline-offset: 2px !important;
-        }
-        .accessible-mode input::placeholder { color: #6b7280; }
+        /* Accessible version: Fluid and wrapping */
         .accessible-mode .btn-wrapper { width: 100%; }
         .accessible-mode .btn-fixed {
-            background-color: #1e40af;
+            background-color: #2563eb;
             color: white;
-            min-height: 48px;
-            padding: 12px 24px;
+            min-height: 44px;
+            padding: 10px 20px;
             font-weight: bold;
             display: block;
             width: 100%;
             border-radius: 8px;
-            transition: background 0.2s;
-        }
-        .accessible-mode .btn-fixed:hover,
-        .accessible-mode .btn-fixed:focus {
-            background-color: #1e3a8a;
-            color: #ffffff;
-        }
-        /* Bridge for tooltip hover */
-        .accessible-mode .info-trigger:hover + .tooltip-box,
-        .accessible-mode .tooltip-box:hover { display: block; }
-        .accessible-mode .tooltip-box::before {
-            content: ""; position: absolute; left: -40px; top: -10px; width: 40px; height: 150%;
         }
 
-        /* UI Helpers */
+        /* --- UI HELPERS --- */
         .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider {
@@ -117,7 +102,12 @@
         }
         input:checked + .slider { background-color: #15803d; }
         input:checked + .slider:before { transform: translateX(22px); }
-        .tab-btn[aria-selected="true"] { background-color: #111827; color: #60a5fa; border-bottom: 2px solid #60a5fa; }
+
+        .tab-btn[aria-selected="true"] {
+            background-color: #111827;
+            color: #60a5fa;
+            border-bottom: 2px solid #60a5fa;
+        }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen p-4 md:p-8 font-sans transition-colors duration-500 inaccessible-mode" id="bodyTag">
@@ -148,7 +138,7 @@
                         <button onclick="setLanguage('de')" class="lang-btn px-2 py-1 rounded bg-gray-200 text-gray-700" id="btn-de">DE</button>
                     </div>
                 </div>
-                <h1 id="txt-title" class="text-xl font-black text-gray-900 px-2 uppercase tracking-tighter">Low Vision Experience</h1>
+                <h1 id="txt-title" class="text-xl font-black text-gray-900 px-2">Low Vision Experience</h1>
             </nav>
         </header>
 
@@ -160,7 +150,7 @@
                         <div class="zoom-container">
                             <label id="txt-label-name" class="text-xs font-semibold uppercase tracking-wider low-contrast-label">Full Name</label>
                         </div>
-                        <input type="text" class="w-full border border-gray-500 p-2 rounded-lg bg-gray-50 text-sm low-contrast-border">
+                        <input type="text" class="w-full border border-gray-500 p-2 rounded-lg bg-gray-50 text-sm">
                     </div>
 
                     <div class="relative">
@@ -171,14 +161,14 @@
                                 <div class="tooltip-box shadow-xl text-xs" id="txt-tooltip">Enter your 6-digit passport number without spaces.</div>
                             </div>
                         </div>
-                        <input type="text" placeholder="e.g. AB1234" class="w-full border border-gray-500 p-2 rounded-lg bg-gray-50 text-sm low-contrast-border">
+                        <input type="text" class="w-full border border-gray-500 p-2 rounded-lg bg-gray-50 text-sm">
                     </div>
 
                     <div>
                         <div class="no-scale mb-1">
                             <label id="txt-label-email" class="text-xs font-semibold uppercase tracking-wider low-contrast-label">Email Address</label>
                         </div>
-                        <input type="email" class="w-full border border-gray-500 p-2 rounded-lg bg-gray-50 text-sm low-contrast-border">
+                        <input type="email" class="w-full border border-gray-500 p-2 rounded-lg bg-gray-50 text-sm">
                     </div>
 
                     <div class="btn-wrapper">
@@ -221,26 +211,39 @@
                 name: "Full Name", passport: "Passport ID", email: "Email Address", btn: "Update Profile",
                 tooltip: "Enter your 6-digit passport number without spaces.",
                 tabTest: "How to test", tabUser: "Impacted users",
+                testTitle: "Step-by-step guide",
                 testSteps: [
-                    "Zoom to 200%. Labels vanish and the button text is heavily truncated.",
-                    "Look for field borders. In bad mode, they are nearly invisible.",
-                    "Try to read the Passport placeholder (e.g. AB1234). It fails contrast tests.",
-                    "Navigate with Tab key. In bad mode, you can't see where your focus is.",
-                    "Hover the Update button. The colors blend together, making text hard to read."
+                    "Zoom to 200%. The 'Full Name' label vanishes.",
+                    "In Inaccessible mode, the help icon is far to the right. Magnifier users can't see it.",
+                    "Try to move your mouse to the tooltip text. In bad mode, it vanishes.",
+                    "The Email label refuses to grow during zoom.",
+                    "Observe the button. At 200% zoom, the button container stays at 100px and the text truncates abruptly."
                 ],
+                userTitle: "Who is impacted?",
+                userList: ["**Low Vision users** who zoom.", "**Magnifier users**.", "**Aging users**."],
                 critiques: {
                     bad: { title: "What is wrong?", tab: "Issues", items: [
-                        { f: "Low Contrast Borders", c: "Borders are too faint to define the input area." },
-                        { f: "No Focus Indicator", c: "Keyboard users have no visual cue of their location." },
-                        { f: "Extreme Truncation", c: "Button is locked to 80px width, hiding most of the label." },
-                        { f: "Contrast Failure (Hover)", c: "Hover/Focus state uses colors with poor contrast ratios." }
+                        { f: "Fixed Height", c: "Container cuts off labels when zooming." },
+                        { f: "Scale Counteracting", c: "The Email label explicitly blocks zoom via transform." },
+                        { f: "Fixed Width Button", c: "The button is locked to 100px. As text grows, it overflows the container and is hidden." },
+                        { f: "Hoverable Content", c: "Tooltip vanishes when you try to mouse over the actual text." }
                     ]},
                     good: { title: "How to remediate", tab: "Remediations", items: [
-                        { f: "Defined Borders", c: "Use high contrast borders (3:1 minimum) for UI components." },
-                        { f: "Visible Focus", c: "Implement a clear, high-contrast focus ring (WCAG 2.1 - 2.4.7)." },
-                        { f: "Flexible Buttons", c: "Allow buttons to grow horizontally with their text." },
-                        { f: "Safe Contrast", c: "Ensure all states (hover/focus) maintain a 4.5:1 ratio." }
+                        { f: "Fluid Containers", c: "Allow elements to grow vertically (WCAG 1.4.4)." },
+                        { f: "Natural Scale", c: "Let the browser handle zoom naturally." },
+                        { f: "Responsive Widths", c: "Allow buttons to grow or wrap text." },
+                        { f: "Persistent Tooltips", c: "Ensure users can hover the tooltip content (WCAG 1.4.13)." }
                     ]}
+                }
+            },
+            fr: {
+                labTitle: "Labo d'Empathie Accessibilité", title: "Expérience Basse Vision",
+                name: "Nom Complet", passport: "N° Passeport", email: "Adresse Email", btn: "Mettre à jour",
+                tooltip: "Entrez les 6 chiffres.", tabTest: "Comment tester", tabUser: "Impact",
+                testSteps: ["Zoomez à 200%.", "Le bouton est tronqué au zoom."],
+                critiques: {
+                    bad: { title: "Le problème ?", tab: "Problèmes", items: [{ f: "Tronqué", c: "Bouton à taille fixe." }] },
+                    good: { title: "Correction", tab: "Corrections", items: [{ f: "Fluide", c: "S'adapte." }] }
                 }
             }
         };
@@ -263,8 +266,15 @@
             document.getElementById('txt-label-email').innerText = t.email;
             document.getElementById('txt-btn').innerText = t.btn;
             document.getElementById('txt-tooltip').innerText = t.tooltip;
+            document.getElementById('tab-test').innerText = t.tabTest;
+            document.getElementById('tab-user').innerText = t.tabUser;
+            document.getElementById('txt-test-title').innerText = t.testTitle;
             document.getElementById('txt-test-steps').innerHTML = t.testSteps.map(s => `<li>${s}</li>`).join('');
+            document.getElementById('txt-user-title').innerText = t.userTitle;
+            document.getElementById('txt-user-content').innerHTML = `<ul class="list-disc pl-5 space-y-3">${(t.userList||[]).map(li => `<li>${li.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')}</li>`).join('')}</ul>`;
             updateMode();
+            document.querySelectorAll('.lang-btn').forEach(b => b.className = "lang-btn px-2 py-1 rounded bg-gray-200 text-gray-700");
+            document.getElementById('btn-' + lang).className = "lang-btn px-2 py-1 rounded bg-blue-600 text-white";
         }
 
         function toggleMode() {
@@ -288,6 +298,14 @@
                 document.getElementById('tab-' + id).setAttribute('aria-selected', id === tabId);
             });
         }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const tt = document.getElementById('txt-tooltip');
+                tt.style.display = 'none';
+                setTimeout(() => tt.style.display = '', 500);
+            }
+        });
 
         window.addEventListener('resize', updateZoomVariable);
         setLanguage('en');
