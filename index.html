@@ -11,33 +11,25 @@
         /* --- INACCESSIBLE MODE STYLES --- */
         .inaccessible-mode .low-contrast-label { color: #e5e7eb !important; }
         .inaccessible-mode .low-contrast-border { border-color: #f3f4f6 !important; }
-        
-        /* Extreme low contrast placeholder (approx 1.2:1 ratio) */
-        .inaccessible-mode input::placeholder { color: #f0f0f0 !important; opacity: 1; }
-
+        .inaccessible-mode input::placeholder { color: #eeeeee !important; opacity: 1; }
         .inaccessible-mode *:focus { outline: none !important; box-shadow: none !important; }
-
         .inaccessible-mode .proximity-box { display: flex; justify-content: space-between; width: 100%; }
-
         .inaccessible-mode .zoom-container { height: 1.1rem; overflow: hidden; margin-bottom: 0.25rem; }
-
         .inaccessible-mode .no-scale { display: inline-block; transform: scale(var(--reverse-zoom, 1)); transform-origin: left; }
 
-        /* Truncation: 90px is enough for 100%, but kills the text at 200% */
+        /* Truncation logic: Locked at 145px */
         .inaccessible-mode .btn-wrapper {
-            width: 90px !important; 
+            width: 145px !important; 
             overflow: hidden !important;
             border-radius: 8px;
             background-color: #2563eb;
         }
         .inaccessible-mode .btn-fixed {
-            color: white; height: 44px; padding: 0 10px;
+            color: white; height: 44px; padding: 0 12px;
             display: block; width: max-content; white-space: nowrap;
-            text-align: left;
+            text-align: left; font-weight: bold; text-transform: uppercase;
         }
-        .inaccessible-mode .btn-fixed:hover {
-            background-color: #93c5fd; color: #f3f4f6;
-        }
+        .inaccessible-mode .btn-fixed:hover { background-color: #93c5fd; color: #f3f4f6; }
 
         .tooltip-box {
             display: none; position: absolute; background: #1f2937; color: white;
@@ -52,19 +44,18 @@
         .accessible-mode .btn-fixed {
             background-color: #2563eb; color: white; min-height: 48px;
             padding: 12px 24px; font-weight: bold; display: block; width: 100%; border-radius: 8px;
+            text-transform: uppercase;
         }
         .accessible-mode .btn-fixed:hover { background-color: #172554; color: #ffffff; }
-        
         .accessible-mode .info-trigger:hover + .tooltip-box,
         .accessible-mode .info-trigger:focus + .tooltip-box,
         .accessible-mode .tooltip-box:hover,
         .accessible-mode .tooltip-box.kb-visible { display: block; }
-        
         .accessible-mode .tooltip-box::before {
             content: ""; position: absolute; left: -40px; top: -10px; width: 40px; height: 150%;
         }
 
-        /* UI Structure */
+        /* Toggle & Layout */
         .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider {
@@ -102,6 +93,8 @@
                     <div class="flex gap-2 text-[10px] font-bold">
                         <button onclick="setLanguage('en')" class="lang-btn px-2 py-1 rounded bg-blue-600 text-white" id="btn-en">EN</button>
                         <button onclick="setLanguage('fr')" class="lang-btn px-2 py-1 rounded bg-gray-200 text-gray-700" id="btn-fr">FR</button>
+                        <button onclick="setLanguage('nl')" class="lang-btn px-2 py-1 rounded bg-gray-200 text-gray-700" id="btn-nl">NL</button>
+                        <button onclick="setLanguage('de')" class="lang-btn px-2 py-1 rounded bg-gray-200 text-gray-700" id="btn-de">DE</button>
                     </div>
                 </div>
                 <h1 id="txt-title" class="text-xl font-black text-gray-900 px-2 uppercase tracking-tighter">Low Vision Experience</h1>
@@ -137,7 +130,7 @@
                     </div>
 
                     <div class="btn-wrapper">
-                        <button id="txt-btn" class="btn-fixed text-sm font-bold uppercase tracking-widest">Update Profile</button>
+                        <button id="txt-btn" class="btn-fixed text-[11px]">Update Profile</button>
                     </div>
                 </div>
 
@@ -162,29 +155,61 @@
             en: {
                 labTitle: "Digital Accessibility Empathy Lab", title: "Low Vision Experience",
                 name: "Full Name", passport: "Passport ID", email: "Email Address", btn: "Update Profile",
-                tooltip: "Enter your 6-digit passport number without spaces.",
-                passportHint: "(6 digits, no spaces)",
+                tooltip: "Enter your 6-digit passport number without spaces.", passportHint: "(6 digits, no spaces)",
                 tabTest: "How to test", tabUser: "Impacted users",
                 testSteps: [
-                    "Zoom to 200%. The 'Full Name' label vanishes and the blue button cuts off mid-word.",
-                    "In 'Inaccessible', try to find the Passport placeholder. It is nearly invisible (low contrast).",
-                    "Notice the 'i' icon is at the far right. Magnifier users will miss it completely.",
-                    "Try to read the tooltip. In 'Inaccessible', it disappears when you try to mouse over the text.",
+                    "Zoom to 175% or 200%. The 'Full Name' label vanishes and the button truncates.",
+                    "Look for the Passport placeholder. It is nearly invisible (low contrast).",
+                    "The 'i' icon is far to the right. Magnifier users will miss it.",
+                    "The tooltip vanishes immediately in bad mode when you try to mouse over it.",
                     "In 'Accessible', use Space or Enter on the 'i' icon to toggle the help text."
                 ],
                 critiques: {
                     bad: { title: "What is wrong?", tab: "Issues", items: [
-                        { f: "Contrast Failure", c: "Placeholder contrast is below 1.5:1, making it invisible to many users." },
-                        { f: "Fixed Widths", c: "The button is locked to 90px. Zooming causes the text to overflow and disappear." },
-                        { f: "Visual Proximity", c: "Related items (label and icon) are too far apart for magnification users." },
-                        { f: "Hover-only Content", c: "The tooltip is not hoverable or keyboard accessible." }
+                        { f: "Contrast Failure", c: "Placeholder contrast is too low, making instructions invisible." },
+                        { f: "Fixed Width Clamping", c: "The button is locked at 145px. Zooming cuts the text off." },
+                        { f: "Proximity", c: "Icons placed far from labels are lost for magnifier users." },
+                        { f: "Hover-Only", c: "Tooltip content is unreachable by mouse or keyboard." }
                     ]},
                     good: { title: "How to remediate", tab: "Remediations", items: [
-                        { f: "High Contrast", c: "Ensure all text and placeholders have a contrast ratio of at least 4.5:1." },
-                        { f: "Flexible Sizing", c: "Allow all UI components to expand horizontally and vertically with text zoom." },
-                        { f: "Grouped Elements", c: "Keep related labels and icons in close proximity." },
-                        { f: "Interoperable Tooltips", c: "Allow tooltips to be hovered and triggered via keyboard." }
+                        { f: "4.5:1 Contrast", c: "Ensure all text is readable for low vision users." },
+                        { f: "Fluid Layout", c: "Allow components to expand with text zoom (WCAG 1.4.4)." },
+                        { f: "Close Grouping", c: "Keep related labels and icons in the same viewport." },
+                        { f: "Keyboard Friendly", c: "Allow Space/Enter to trigger info boxes." }
                     ]}
+                }
+            },
+            fr: {
+                labTitle: "Labo d'Empathie Accessibilité", title: "Expérience Basse Vision",
+                name: "Nom Complet", passport: "N° Passeport", email: "Adresse Email", btn: "Mettre à jour",
+                tooltip: "Entrez les 6 chiffres sans espaces.", passportHint: "(6 chiffres, sans espaces)",
+                tabTest: "Comment tester", tabUser: "Impact",
+                testSteps: ["Zoomez à 200%.", "Cherchez l'icône à droite.", "Testez le bouton tronqué."],
+                critiques: {
+                    bad: { title: "Problèmes", tab: "Problèmes", items: [{ f: "Tronqué", c: "Bouton à taille fixe." }] },
+                    good: { title: "Corrections", tab: "Corrections", items: [{ f: "Fluide", c: "S'adapte au zoom." }] }
+                }
+            },
+            nl: {
+                labTitle: "Toegankelijkheid Empathie Lab", title: "Lage Visus Ervaring",
+                name: "Volledige Naam", passport: "Paspoort ID", email: "E-mailadres", btn: "Profiel Bijwerken",
+                tooltip: "Voer uw 6-cijferig nummer in zonder spaties.", passportHint: "(6 cijfers, geen spaties)",
+                tabTest: "Hoe te testen", tabUser: "Impact",
+                testSteps: ["Zoom naar 200%.", "Kijk naar het icoon rechts.", "De tooltip verdwijnt direct."],
+                critiques: {
+                    bad: { title: "Wat is er mis?", tab: "Problemen", items: [{ f: "Tekst afgebroken", c: "Vaste breedte op knoppen." }] },
+                    good: { title: "Oplossingen", tab: "Oplossingen", items: [{ f: "Flexibel", c: "Laat elementen meegroeien." }] }
+                }
+            },
+            de: {
+                labTitle: "Barrierefreiheit Empathie-Labor", title: "Sehbehinderung Erfahrung",
+                name: "Vollständiger Name", passport: "Reisepass-ID", email: "E-Mail-Adresse", btn: "Profil Aktualisieren",
+                tooltip: "6-stellige Nummer ohne Leerzeichen eingeben.", passportHint: "(6 Stellen, ohne Leerzeichen)",
+                tabTest: "Wie man testet", tabUser: "Impact",
+                testSteps: ["Auf 200% zoomen.", "Das 'i'-Icon ist zu weit rechts.", "Button wird abgeschnitten."],
+                critiques: {
+                    bad: { title: "Probleme", tab: "Probleme", items: [{ f: "Abgeschnitten", c: "Feste Containergrößen." }] },
+                    good: { title: "Lösungen", tab: "Lösungen", items: [{ f: "Flüssig", c: "Elemente skalieren mit." }] }
                 }
             }
         };
@@ -210,16 +235,18 @@
             document.getElementById('txt-tooltip').innerText = t.tooltip;
             document.getElementById('txt-test-steps').innerHTML = t.testSteps.map(s => `<li>${s}</li>`).join('');
             
-            const passportInput = document.getElementById('passport-input');
-            const passportLabel = document.getElementById('txt-label-passport');
+            const pInput = document.getElementById('passport-input');
+            const pLabel = document.getElementById('txt-label-passport');
             if (isAcc) {
-                passportLabel.innerText = `${t.passport} ${t.passportHint}`;
-                passportInput.placeholder = "";
+                pLabel.innerText = `${t.passport} ${t.passportHint}`;
+                pInput.placeholder = "";
             } else {
-                passportLabel.innerText = t.passport;
-                passportInput.placeholder = "e.g. AB1234";
+                pLabel.innerText = t.passport;
+                pInput.placeholder = "e.g. AB1234";
             }
             updateMode();
+            document.querySelectorAll('.lang-btn').forEach(b => b.className = "lang-btn px-2 py-1 rounded bg-gray-200 text-gray-700");
+            document.getElementById('btn-' + lang).className = "lang-btn px-2 py-1 rounded bg-blue-600 text-white";
         }
 
         function toggleMode() {
@@ -252,18 +279,3 @@
                 tooltip.classList.toggle('kb-visible');
             }
         });
-
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                tooltip.classList.remove('kb-visible');
-                tooltip.style.display = 'none';
-                setTimeout(() => tooltip.style.display = '', 500);
-            }
-        });
-
-        window.addEventListener('resize', updateZoomVariable);
-        setLanguage('en');
-        switchTab('test');
-    </script>
-</body>
-</html>
