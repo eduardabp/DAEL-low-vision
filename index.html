@@ -10,31 +10,27 @@
 
         /* --- THE BAD WAY STYLES --- */
         
-        /* 1. Low Contrast Labels */
         .inaccessible-mode .low-contrast-label { color: #d1d5db !important; }
 
-        /* 2. Fixed height cutoff - label vanishes on zoom */
         .inaccessible-mode .zoom-container {
             height: 1.2rem; 
             overflow: hidden;
             margin-bottom: 0.25rem;
         }
 
-        /* 3. Blocked Scale (Email label) using counter-transform */
         .inaccessible-mode .no-scale {
             display: inline-block;
             transform: scale(var(--reverse-zoom, 1));
             transform-origin: left;
         }
 
-        /* 4. Proximity Issue */
         .inaccessible-mode .proximity-box {
             display: flex;
             justify-content: space-between;
             width: 100%;
         }
 
-        /* 5. Tooltip Issues */
+        /* Tooltip Logic */
         .tooltip-box {
             display: none;
             position: absolute;
@@ -48,48 +44,52 @@
             border-radius: 8px;
         }
 
-        /* Accessible Bridge: allows moving mouse to the tooltip */
+        /* Bridge for Accessible Mode */
         .accessible-mode .info-trigger:hover + .tooltip-box,
         .accessible-mode .tooltip-box:hover { display: block; }
         .accessible-mode .tooltip-box::before {
             content: "";
             position: absolute;
-            left: -30px; top: -10px; width: 30px; height: 150%;
+            left: -40px; top: -10px; width: 40px; height: 150%;
         }
         
         .inaccessible-mode .info-trigger:hover + .tooltip-box { display: block; }
         .inaccessible-mode .tooltip-box:hover { display: none !important; }
 
-        /* 6. BUTTON TRUNCATION LOGIC */
-        /* Fixed dimensions. As text (span) grows, it is cut off */
-        .inaccessible-mode .btn-container {
-            width: 150px; 
-            height: 45px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis; 
-            display: block;
+        /* --- BUTTON TRUNCATION (FIXED) --- */
+        /* We use a wrapper with a hard width and hidden overflow */
+        .inaccessible-mode .btn-wrapper {
+            width: 100px !important; 
+            overflow: hidden !important;
+            border-radius: 8px;
+        }
+        
+        .inaccessible-mode .btn-fixed {
             background-color: #2563eb;
             color: white;
-            border-radius: 8px;
-            padding: 0 15px;
+            height: 44px;
+            padding: 0 12px;
             font-weight: bold;
-            text-align: left; /* Align left to show it starting to disappear from right */
-            line-height: 45px;
+            display: block;
+            width: max-content; /* This ensures the inner text stays on one line and keeps growing */
+            text-align: left;
+            white-space: nowrap;
         }
 
-        .accessible-mode .btn-container {
-            width: auto;
-            min-height: 45px;
-            display: inline-block;
+        /* Accessible version: Fluid and wrapping */
+        .accessible-mode .btn-wrapper { width: 100%; }
+        .accessible-mode .btn-fixed {
             background-color: #2563eb;
             color: white;
-            border-radius: 8px;
+            min-height: 44px;
             padding: 10px 20px;
             font-weight: bold;
+            display: block;
+            width: 100%;
+            border-radius: 8px;
         }
 
-        /* --- UI COMPONENTS (STATIC) --- */
+        /* --- UI HELPERS --- */
         .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider {
@@ -158,7 +158,7 @@
                             <label id="txt-label-passport" class="text-xs font-semibold uppercase tracking-wider low-contrast-label">Passport ID</label>
                             <div class="relative inline-block">
                                 <button type="button" class="info-trigger cursor-help bg-blue-700 text-white rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-bold">i</button>
-                                <div class="tooltip-box shadow-xl text-xs" id="txt-tooltip">Tooltip text</div>
+                                <div class="tooltip-box shadow-xl text-xs" id="txt-tooltip">Enter your 6-digit passport number without spaces.</div>
                             </div>
                         </div>
                         <input type="text" class="w-full border border-gray-500 p-2 rounded-lg bg-gray-50 text-sm">
@@ -171,9 +171,9 @@
                         <input type="email" class="w-full border border-gray-500 p-2 rounded-lg bg-gray-50 text-sm">
                     </div>
 
-                    <button id="txt-btn-trigger" class="btn-container text-sm">
-                        <span id="txt-btn-text">Update Profile</span>
-                    </button>
+                    <div class="btn-wrapper">
+                        <button id="txt-btn" class="btn-fixed text-sm">Update Profile</button>
+                    </div>
                 </div>
 
                 <div class="lg:col-span-3">
@@ -209,41 +209,41 @@
             en: {
                 labTitle: "Digital Accessibility Empathy Lab", title: "Low Vision Experience",
                 name: "Full Name", passport: "Passport ID", email: "Email Address", btn: "Update Profile",
-                tooltip: "Enter your 9-digit passport number without spaces.",
+                tooltip: "Enter your 6-digit passport number without spaces.",
                 tabTest: "How to test", tabUser: "Impacted users",
                 testTitle: "Step-by-step guide",
                 testSteps: [
                     "Zoom to 200%. The 'Full Name' label vanishes.",
-                    "The help icon is pushed to the far right. Magnifier users have to search for it.",
-                    "Try to move your mouse from the icon to the tooltip. In 'Inaccessible' mode, it disappears.",
-                    "The Email label stays small while everything else zooms.",
-                    "Check the 'Update Profile' button. At 200% zoom, the button stays 150px wide and the text truncates (...)."
+                    "In Inaccessible mode, the help icon is far to the right. Magnifier users can't see it.",
+                    "Try to move your mouse to the tooltip text. In bad mode, it vanishes.",
+                    "The Email label refuses to grow during zoom.",
+                    "Observe the button. At 200% zoom, the button container stays at 100px and the text truncates abruptly."
                 ],
                 userTitle: "Who is impacted?",
-                userList: ["**Low Vision users** who zoom to read.", "**Magnifier users** who need items close together.", "**Aging users** sensitive to contrast."],
+                userList: ["**Low Vision users** who zoom.", "**Magnifier users**.", "**Aging users**."],
                 critiques: {
                     bad: { title: "What is wrong?", tab: "Issues", items: [
-                        { f: "Fixed Height", c: "Container cuts off labels when text size increases." },
-                        { f: "Scale Blocking", c: "The Email label uses transforms to counteract browser zoom." },
-                        { f: "Truncated Action", c: "The button has a fixed width. When text zooms, it overflows and is hidden." },
-                        { f: "Unreachable Tooltip", c: "Tooltips that vanish when hovered are impossible to read for many." }
+                        { f: "Fixed Height", c: "Container cuts off labels when zooming." },
+                        { f: "Scale Counteracting", c: "The Email label explicitly blocks zoom via transform." },
+                        { f: "Fixed Width Button", c: "The button is locked to 100px. As text grows, it overflows the container and is hidden." },
+                        { f: "Hoverable Content", c: "Tooltip vanishes when you try to mouse over the actual text." }
                     ]},
                     good: { title: "How to remediate", tab: "Remediations", items: [
-                        { f: "Flexible Containers", c: "Allow elements to grow vertically to fit enlarged text." },
-                        { f: "Allow Scaling", c: "Let the browser scale all elements naturally." },
-                        { f: "Responsive Buttons", c: "Buttons should expand or wrap text as it grows." },
-                        { f: "Persistent Hover", c: "Ensure users can hover and interact with the content of a tooltip." }
+                        { f: "Fluid Containers", c: "Allow elements to grow vertically (WCAG 1.4.4)." },
+                        { f: "Natural Scale", c: "Let the browser handle zoom naturally." },
+                        { f: "Responsive Widths", c: "Allow buttons to grow or wrap text." },
+                        { f: "Persistent Tooltips", c: "Ensure users can hover the tooltip content (WCAG 1.4.13)." }
                     ]}
                 }
             },
             fr: {
                 labTitle: "Labo d'Empathie Accessibilité", title: "Expérience Basse Vision",
                 name: "Nom Complet", passport: "N° Passeport", email: "Adresse Email", btn: "Mettre à jour",
-                tooltip: "Entrez les 9 chiffres.", tabTest: "Comment tester", tabUser: "Impact",
+                tooltip: "Entrez les 6 chiffres.", tabTest: "Comment tester", tabUser: "Impact",
                 testSteps: ["Zoomez à 200%.", "Le bouton est tronqué au zoom."],
                 critiques: {
-                    bad: { title: "Le problème ?", tab: "Problèmes", items: [{ f: "Taille fixe", c: "Bouton tronqué au zoom." }] },
-                    good: { title: "Correction", tab: "Corrections", items: [{ f: "Fluide", c: "S'adapte au texte." }] }
+                    bad: { title: "Le problème ?", tab: "Problèmes", items: [{ f: "Tronqué", c: "Bouton à taille fixe." }] },
+                    good: { title: "Correction", tab: "Corrections", items: [{ f: "Fluide", c: "S'adapte." }] }
                 }
             }
         };
@@ -253,11 +253,7 @@
         function updateZoomVariable() {
             const isAcc = document.getElementById('modeToggle').checked;
             const zoom = window.devicePixelRatio || 1;
-            if (!isAcc) {
-                document.documentElement.style.setProperty('--reverse-zoom', 1 / zoom);
-            } else {
-                document.documentElement.style.setProperty('--reverse-zoom', 1);
-            }
+            document.documentElement.style.setProperty('--reverse-zoom', isAcc ? 1 : 1 / zoom);
         }
 
         function setLanguage(lang) {
@@ -268,7 +264,7 @@
             document.getElementById('txt-label-name').innerText = t.name;
             document.getElementById('txt-label-passport').innerText = t.passport;
             document.getElementById('txt-label-email').innerText = t.email;
-            document.getElementById('txt-btn-text').innerText = t.btn;
+            document.getElementById('txt-btn').innerText = t.btn;
             document.getElementById('txt-tooltip').innerText = t.tooltip;
             document.getElementById('tab-test').innerText = t.tabTest;
             document.getElementById('tab-user').innerText = t.tabUser;
