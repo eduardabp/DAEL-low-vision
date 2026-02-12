@@ -17,17 +17,24 @@
         .inaccessible-mode .zoom-container { height: 1.1rem; overflow: hidden; margin-bottom: 0.25rem; }
         .inaccessible-mode .no-scale { display: inline-block; transform: scale(var(--reverse-zoom, 1)); transform-origin: left; }
 
-        /* Truncation logic: Locked to exact width of text at 100% */
+        /* FIX: Truncation & Appendix */
         .inaccessible-mode .btn-wrapper {
             width: 145px !important; 
             overflow: hidden !important;
             border-radius: 8px;
-            background-color: #2563eb;
+            background-color: #2563eb; /* Background on wrapper prevents "appendix" */
+            height: 44px;
         }
         .inaccessible-mode .btn-fixed {
-            color: white; height: 44px; padding: 0 12px;
-            display: block; width: max-content; white-space: nowrap;
-            text-align: left; font-weight: bold; text-transform: uppercase;
+            color: white; 
+            height: 100%; 
+            padding: 0 5px; /* Minimal padding so it truncates sooner */
+            display: block; 
+            width: max-content; 
+            white-space: nowrap;
+            text-align: left; 
+            font-weight: bold; 
+            text-transform: uppercase;
         }
         .inaccessible-mode .btn-fixed:hover { background-color: #93c5fd; color: #f3f4f6; }
 
@@ -40,7 +47,7 @@
 
         /* --- ACCESSIBLE MODE STYLES --- */
         .accessible-mode *:focus-visible { outline: 3px solid #2563eb !important; outline-offset: 2px !important; }
-        .accessible-mode .btn-wrapper { width: 100%; }
+        .accessible-mode .btn-wrapper { width: 100%; background: transparent; }
         .accessible-mode .btn-fixed {
             background-color: #2563eb; color: white; min-height: 48px;
             padding: 12px 24px; font-weight: bold; display: block; width: 100%; border-radius: 8px;
@@ -197,14 +204,11 @@
                     bad: { title: "Problèmes", tab: "Problèmes", items: [
                         { f: "Contraste Faible", c: "Le texte indicatif est illisible pour beaucoup d'utilisateurs." },
                         { f: "Taille Fixe", c: "Le bouton est bloqué à 145px; le texte est coupé au zoom." },
-                        { f: "Proximité", c: "L'icône est trop loin du libellé pour les utilisateurs de loupe d'écran." },
-                        { f: "Survol Uniquement", c: "Le contenu de l'aide est inaccessible au clavier ou à la souris." }
+                        { f: "Proximité", c: "L'icône est trop loin du libellé pour les utilisateurs de loupe d'écran." }
                     ]},
                     good: { title: "Corrections", tab: "Corrections", items: [
                         { f: "Contraste 4.5:1", c: "Assurez-vous que tout le texte est lisible pour la basse vision." },
-                        { f: "Mise en page fluide", c: "Laissez les composants s'agrandir avec le zoom (WCAG 1.4.4)." },
-                        { f: "Regroupement logique", c: "Gardez les icônes proches des libellés correspondants." },
-                        { f: "Compatible Clavier", c: "Permettez à Espace/Entrée de déclencher les bulles d'aide." }
+                        { f: "Mise en page fluide", c: "Laissez les composants s'agrandir avec le zoom (WCAG 1.4.4)." }
                     ]}
                 },
                 userTitle: "Qui est impacté ?",
@@ -225,15 +229,11 @@
                 critiques: {
                     bad: { title: "Wat is er mis?", tab: "Problemen", items: [
                         { f: "Contrastfout", c: "Placeholder-contrast is te laag, waardoor instructies onzichtbaar zijn." },
-                        { f: "Vaste breedte", c: "De knop is vergrendeld op 145px; tekst gaat verloren bij zoomen." },
-                        { f: "Nabijheid", c: "Icoontjes ver van labels gaan verloren voor loep-gebruikers." },
-                        { f: "Alleen Hover", c: "Tooltip-inhoud is onbereikbaar voor muis of toetsenbord." }
+                        { f: "Vaste breedte", c: "De knop is vergrendeld op 145px; tekst gaat verloren bij zoomen." }
                     ]},
                     good: { title: "Oplossingen", tab: "Oplossingen", items: [
                         { f: "4.5:1 Contrast", c: "Zorg dat alle tekst leesbaar is voor slechtzienden." },
-                        { f: "Vloeiende Layout", c: "Laat componenten meegroeien met tekstzoom (WCAG 1.4.4)." },
-                        { f: "Logische Groepering", c: "Houd labels en icoontjes dicht bij elkaar." },
-                        { f: "Toetsenbordvriendelijk", c: "Laat Spatie/Enter de info-vensters activeren." }
+                        { f: "Vloeiende Layout", c: "Laat componenten meegroeien met tekstzoom (WCAG 1.4.4)." }
                     ]}
                 },
                 userTitle: "Wie ondervindt hinder?",
@@ -254,15 +254,11 @@
                 critiques: {
                     bad: { title: "Probleme", tab: "Probleme", items: [
                         { f: "Kontrastfehler", c: "Platzhalter-Kontrast ist zu gering für viele Nutzer." },
-                        { f: "Feste Breite", c: "Der Button ist auf 145px fixiert; Text geht beim Zoomen verloren." },
-                        { f: "Nähe", c: "Icons weit weg von Labels gehen für Bildschirmlupen-Nutzer verloren." },
-                        { f: "Nur Hover", c: "Tooltip-Inhalt ist für Maus oder Tastatur unerreichbar." }
+                        { f: "Feste Breite", c: "Der Button ist auf 145px fixiert; Text geht beim Zoomen verloren." }
                     ]},
                     good: { title: "Lösungen", tab: "Lösungen", items: [
                         { f: "4.5:1 Kontrast", c: "Alle Texte müssen für Sehbehinderte lesbar sein." },
-                        { f: "Flüssiges Layout", c: "Elemente müssen mit Textzoom mitwachsen (WCAG 1.4.4)." },
-                        { f: "Logische Nähe", c: "Labels und Icons müssen nah beieinander bleiben." },
-                        { f: "Tastaturbedienbar", c: "Leertaste/Enter müssen Infoboxen triggern können." }
+                        { f: "Flüssiges Layout", c: "Elemente müssen mit Textzoom mitwachsen (WCAG 1.4.4)." }
                     ]}
                 },
                 userTitle: "Wer ist betroffen?",
