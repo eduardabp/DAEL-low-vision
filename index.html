@@ -16,7 +16,7 @@
         .inaccessible-mode .proximity-box { display: flex; justify-content: space-between; width: 100%; align-items: center; }
         .inaccessible-mode .no-scale { display: inline-block; transform: scale(var(--reverse-zoom, 1)); transform-origin: left; }
 
-        /* IMAGE FEEDBACK BUTTON - 1:1 Scale at 100% */
+        /* IMAGE FEEDBACK BUTTON */
         .inaccessible-mode #bad-feedback-img { 
             display: block !important; 
             width: 120px !important; 
@@ -31,30 +31,25 @@
             padding: 12px; width: 220px; z-index: 50; left: 20px; top: 10px; border-radius: 8px;
         }
         .inaccessible-mode .info-trigger:hover + .tooltip-box { display: block; }
-        .inaccessible-mode .tooltip-box:hover { display: none !important; }
 
         /* --- ACCESSIBLE MODE STYLES --- */
         .accessible-mode *:focus-visible { outline: 3px solid #2563eb !important; outline-offset: 2px !important; }
         .accessible-mode .proximity-box { display: flex; gap: 8px; align-items: center; width: 100%; }
 
-        /* CSS FEEDBACK BUTTON - Weight synced to image generator */
+        /* CSS FEEDBACK BUTTON - Max weight + Shadow to match Image rendering */
         .accessible-mode #bad-feedback-img { display: none !important; }
         .accessible-mode #good-feedback-btn { 
             display: flex !important; 
             align-items: center; justify-content: center;
             background-color: #dc2626; color: white; 
-            font-weight: 800; width: 120px; height: 38px;
+            font-weight: 900; width: 120px; height: 38px;
             border-radius: 4px; font-size: 14px;
-            text-transform: uppercase; font-family: sans-serif;
+            text-transform: uppercase; font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
             letter-spacing: 0.025em;
+            /* Shadow adds visual thickness to match image pixels */
+            text-shadow: 0.5px 0 0 white, -0.5px 0 0 white;
         }
         .accessible-mode #good-feedback-btn:hover { background-color: #991b1b; }
-
-        .accessible-mode .info-trigger:hover + .tooltip-box,
-        .accessible-mode .info-trigger:focus + .tooltip-box,
-        .accessible-mode .tooltip-box:hover,
-        .accessible-mode .tooltip-box.kb-visible { display: block; }
-        .accessible-mode .tooltip-box::before { content: ""; position: absolute; left: -40px; top: -10px; width: 40px; height: 150%; }
 
         /* --- LAYOUT SYNC --- */
         .label-row { height: 1.5rem !important; display: flex; align-items: center; margin-bottom: 0.25rem; }
@@ -165,9 +160,9 @@
                 tabTest: "How to test", tabUser: "Impacted users", tabIssues: "Issues", tabRemediations: "Remediations",
                 testSteps: [
                     "Zoom to 200%. The red 'Feedback' image blurs, while the CSS version remains sharp.",
-                    "Look for the Passport placeholder. It is nearly invisible in 'Inaccessible' mode.",
+                    "Look for the Passport placeholder. It is nearly invisible due to low contrast in 'Inaccessible'.",
                     "The 'i' icon is far right in 'Inaccessible' mode.",
-                    "The tooltip vanishes when you move the mouse in bad mode.",
+                    "The tooltip vanishes when you move the mouse to read it in bad mode.",
                     "In 'Accessible', use Space/Enter on the 'i' to toggle help."
                 ],
                 critiques: {
@@ -176,8 +171,7 @@
                         { f: "Contrast Failure", c: "Placeholder contrast is too low." }
                     ]},
                     good: { title: "Remediations", items: [
-                        { f: "Live Text", c: "CSS buttons stay crisp at any scale." },
-                        { f: "Contrast Compliance", c: "Maintain at least 4.5:1 contrast." }
+                        { f: "Live Text", c: "CSS buttons with real text stay sharp at any scale." }
                     ]}
                 },
                 userTitle: "Who is impacted?", userList: ["**Low Vision users** who zoom.", "**Magnifier users**."]
@@ -187,11 +181,11 @@
                 name: "Nom Complet", passport: "Passeport", email: "Email", btn: "Mettre à jour",
                 feedbackLabel: "Aidez-nous", feedbackBtnText: "Commentaires",
                 tooltip: "6 chiffres.", passportHint: "(ex: AB1234)",
-                tabTest: "Comment tester", tabUser: "Impact", tabIssues: "Problèmes", tabRemediations: "Corrections",
+                tabTest: "Test", tabUser: "Impact", tabIssues: "Problèmes", tabRemediations: "Corrections",
                 testSteps: ["Zoomez à 200%. Le bouton Feedback devient flou.", "Placeholder invisible.", "Icône trop loin."],
                 critiques: {
-                    bad: { title: "Problèmes", items: [{ f: "Image de texte", c: "Le texte devient flou au zoom." }] },
-                    good: { title: "Corrections", items: [{ f: "Texte réel", c: "Utilisez du CSS." }] }
+                    bad: { title: "Problèmes", items: [{ f: "Image de texte", c: "Flou au zoom." }] },
+                    good: { title: "Corrections", items: [{ f: "Texte réel", c: "CSS net." }] }
                 },
                 userTitle: "Impact ?", userList: ["**Malvoyants**"]
             },
@@ -201,10 +195,10 @@
                 feedbackLabel: "Help ons", feedbackBtnText: "Feedback",
                 tooltip: "6 cijfers.", passportHint: "(bijv. AB1234)",
                 tabTest: "Testen", tabUser: "Impact", tabIssues: "Problemen", tabRemediations: "Oplossingen",
-                testSteps: ["Zoom naar 200%. Knop wordt wazig.", "Slecht contrast.", "Icoon te ver."],
+                testSteps: ["Zoom naar 200%. Feedback wordt wazig.", "Slecht contrast.", "Icoon te ver."],
                 critiques: {
                     bad: { title: "Wat is er mis?", items: [{ f: "Tekst in afbeelding", c: "Wazig bij zoomen." }] },
-                    good: { title: "Oplossingen", items: [{ f: "Live tekst", c: "CSS voor scherpte." }] }
+                    good: { title: "Oplossingen", items: [{ f: "Live tekst", c: "Scherp via CSS." }] }
                 },
                 userTitle: "Wie?", userList: ["**Slechtzienden**"]
             },
@@ -213,11 +207,11 @@
                 name: "Name", passport: "Pass ID", email: "Email", btn: "Aktualisieren",
                 feedbackLabel: "Helfen Sie uns", feedbackBtnText: "Feedback",
                 tooltip: "6 Stellen.", passportHint: "(z.B. AB1234)",
-                tabTest: "Testen", tabUser: "Impact", tabIssues: "Probleme", tabRemediations: "Lösungen",
+                tabTest: "Testen", tabIssues: "Probleme", tabRemediations: "Lösungen",
                 testSteps: ["Zoom 200%. Button wird unscharf.", "Wenig Kontrast.", "Icon zu weit weg."],
                 critiques: {
                     bad: { title: "Probleme", items: [{ f: "Text als Bild", c: "Unscharf beim Zoomen." }] },
-                    good: { title: "Lösungen", items: [{ f: "Echter Text", c: "CSS nutzen." }] }
+                    good: { title: "Lösungen", items: [{ f: "Echter Text", c: "CSS scharf." }] }
                 },
                 userTitle: "Wer?", userList: ["**Sehbehinderte**"]
             }
