@@ -37,13 +37,13 @@
         .accessible-mode *:focus-visible { outline: 3px solid #2563eb !important; outline-offset: 2px !important; }
         .accessible-mode .proximity-box { display: flex; gap: 8px; align-items: center; width: 100%; }
 
-        /* CSS FEEDBACK BUTTON */
+        /* CSS FEEDBACK BUTTON - Weight synced to image generator */
         .accessible-mode #bad-feedback-img { display: none !important; }
         .accessible-mode #good-feedback-btn { 
             display: flex !important; 
             align-items: center; justify-content: center;
             background-color: #dc2626; color: white; 
-            font-weight: 700; width: 120px; height: 38px;
+            font-weight: 800; width: 120px; height: 38px;
             border-radius: 4px; font-size: 14px;
             text-transform: uppercase; font-family: sans-serif;
             letter-spacing: 0.025em;
@@ -164,24 +164,23 @@
                 tooltip: "Enter your 6-digit passport number without spaces.", passportHint: "(e.g. AB1234)",
                 tabTest: "How to test", tabUser: "Impacted users", tabIssues: "Issues", tabRemediations: "Remediations",
                 testSteps: [
-                    "Zoom to 200%. The red 'Feedback' image blurs, while the 'Accessible' version stays sharp.",
+                    "Zoom to 200%. The red 'Feedback' image blurs, while the CSS version remains sharp.",
                     "Look for the Passport placeholder. It is nearly invisible in 'Inaccessible' mode.",
-                    "The 'i' icon is at the far right in 'Inaccessible' mode.",
+                    "The 'i' icon is far right in 'Inaccessible' mode.",
                     "The tooltip vanishes when you move the mouse in bad mode.",
                     "In 'Accessible', use Space/Enter on the 'i' to toggle help."
                 ],
                 critiques: {
                     bad: { title: "What is wrong?", items: [
                         { f: "Images of Text", c: "The 'Feedback' button is an image. It blurs when zoomed." },
-                        { f: "Contrast Failure", c: "Placeholder contrast is too low (approx 1.2:1)." },
-                        { f: "Proximity Gap", c: "Icons placed far from labels are lost for magnifier users." }
+                        { f: "Contrast Failure", c: "Placeholder contrast is too low." }
                     ]},
                     good: { title: "Remediations", items: [
                         { f: "Live Text", c: "CSS buttons stay crisp at any scale." },
                         { f: "Contrast Compliance", c: "Maintain at least 4.5:1 contrast." }
                     ]}
                 },
-                userTitle: "Who is impacted?", userList: ["**Low Vision users**", "**Magnifier users**"]
+                userTitle: "Who is impacted?", userList: ["**Low Vision users** who zoom.", "**Magnifier users**."]
             },
             fr: {
                 labTitle: "Labo Accessibilité", title: "Expérience Basse Vision",
@@ -289,13 +288,16 @@
 
         function switchTab(tabId) {
             ['test', 'feedback', 'user'].forEach(id => {
-                document.getElementById('panel-' + id).classList.toggle('hidden', id !== tabId);
-                document.getElementById('tab-' + id).setAttribute('aria-selected', id === tabId);
+                const panel = document.getElementById('panel-' + id);
+                const tab = document.getElementById('tab-' + id);
+                if (panel) panel.classList.toggle('hidden', id !== tabId);
+                if (tab) tab.setAttribute('aria-selected', id === tabId);
             });
         }
 
         window.addEventListener('resize', updateZoomVariable);
         setLanguage('en');
+        switchTab('test');
     </script>
 </body>
 </html>
