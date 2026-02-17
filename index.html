@@ -17,41 +17,6 @@
         .inaccessible-mode .zoom-container { height: 1.1rem; overflow: hidden; margin-bottom: 0.25rem; }
         .inaccessible-mode .no-scale { display: inline-block; transform: scale(var(--reverse-zoom, 1)); transform-origin: left; }
 
-        /* THE "IMMOBILE" BUTTON WRAPPER */
-        .inaccessible-mode .btn-wrapper {
-            position: relative !important;
-            width: 156px !important; 
-            height: 44px !important;
-            min-width: 156px !important;
-            max-width: 156px !important;
-            overflow: hidden !important;
-            background-color: #2563eb !important;
-            border-radius: 8px !important;
-            display: block !important;
-            border: none !important;
-        }
-        
-        .inaccessible-mode .btn-fixed {
-            position: absolute !important;
-            top: 0 !important;
-            left: 0 !important;
-            color: white !important;
-            height: 44px !important;
-            width: max-content !important; 
-            padding: 0 12px !important;
-            display: flex !important;
-            align-items: center !important;
-            white-space: nowrap !important;
-            font-weight: 700 !important;
-            text-transform: uppercase !important;
-            /* CHANGED PARAMETER ONLY */
-            font-size: 0.875em !important;
-            background: transparent !important;
-            border: none !important;
-        }
-
-        .inaccessible-mode .btn-wrapper:hover { background-color: #93c5fd !important; }
-
         /* Tooltip behavior */
         .tooltip-box {
             display: none; position: absolute; background: #1f2937; color: white;
@@ -63,29 +28,6 @@
         /* --- ACCESSIBLE MODE STYLES --- */
         .accessible-mode *:focus-visible { outline: 3px solid #2563eb !important; outline-offset: 2px !important; }
         
-        .accessible-mode .btn-wrapper { 
-            width: 100% !important; 
-            max-width: none !important;
-            height: auto !important;
-        }
-        
-        .accessible-mode .btn-fixed {
-            position: relative !important;
-            background-color: #2563eb !important;
-            color: white !important;
-            min-height: 44px !important;
-            padding: 12px 24px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            width: 100% !important;
-            border-radius: 8px !important;
-            font-weight: 700 !important;
-            text-transform: uppercase !important;
-            font-size: 0.875rem !important;
-        }
-        
-        .accessible-mode .btn-fixed:hover { background-color: #172554 !important; color: #ffffff !important; }
         .accessible-mode .info-trigger:hover + .tooltip-box,
         .accessible-mode .info-trigger:focus + .tooltip-box,
         .accessible-mode .tooltip-box:hover,
@@ -102,7 +44,7 @@
         .tab-btn[aria-selected="true"] { background-color: #111827; color: #60a5fa; border-bottom: 2px solid #60a5fa; }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen p-4 md:p-8 font-sans transition-colors duration-500 inaccessible-mode" id="bodyTag">
+<body class="bg-gray-100 min-h-screen p-4 md:p-8 font-sans transition-colors duration-500" id="bodyTag">
 
     <div class="max-w-6xl mx-auto bg-white shadow-2xl rounded-3xl overflow-hidden">
         <header class="bg-white border-b border-gray-100">
@@ -160,9 +102,9 @@
                         <input type="email" class="w-full border border-gray-300 p-2 rounded-lg bg-gray-50 text-sm low-contrast-border">
                     </div>
 
-                    <div class="btn-wrapper">
-                        <button id="txt-btn" class="btn-fixed">Update Profile</button>
-                    </div>
+                    <button id="txt-btn" class="w-full bg-blue-600 hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-lg uppercase text-sm tracking-wide transition-colors">
+                        Update Profile
+                    </button>
                 </div>
 
                 <div class="lg:col-span-3">
@@ -189,7 +131,7 @@
                 tooltip: "Enter your 6-digit passport number without spaces.", passportHint: "(e.g. AB1234)",
                 tabTest: "How to test", tabUser: "Impacted users", tabIssues: "Issues", tabRemediations: "Remediations",
                 testSteps: [
-                    "Zoom to 175% or 200%. The 'Full Name' label vanishes and the 'Update Profile' button truncates.",
+                    "Zoom to 200%. The 'Full Name' label vanishes because of fixed height constraints.",
                     "Look for the Passport placeholder. It is nearly invisible due to low contrast.",
                     "In bad mode, the 'i' icon is far right. Magnifier users will miss it.",
                     "Try to read the tooltip in bad mode; it disappears when you leave the icon.",
@@ -197,14 +139,14 @@
                 ],
                 critiques: {
                     bad: { title: "What is wrong?", items: [
-                        { f: "Fixed Box Clamping", c: "The button is physically locked to 156px. Zoomed text overflows and is hidden." },
                         { f: "Contrast Failure", c: "Placeholders have ~1.2:1 contrast, failing visibility requirements." },
-                        { f: "Proximity Gap", c: "Magnifier users see the label but never see the help icon at the screen edge." }
+                        { f: "Proximity Gap", c: "Magnifier users see the label but never see the help icon at the screen edge." },
+                        { f: "Unreachable Content", c: "The tooltip disappears on hover, making it impossible to read for many." }
                     ]},
                     good: { title: "How to remediate", items: [
-                        { f: "Fluid Containers", c: "Allow elements to grow naturally with enlarged text." },
                         { f: "Contrast Compliance", c: "Maintain at least 4.5:1 ratio for all text elements." },
-                        { f: "Logical Proximity", c: "Group related labels and icons closely together." }
+                        { f: "Logical Proximity", c: "Group related labels and icons closely together." },
+                        { f: "Interactive Tooltips", c: "Ensure tooltips stay open on hover and support keyboard access." }
                     ]}
                 },
                 userTitle: "Who is impacted?",
@@ -215,10 +157,10 @@
                 name: "Nom Complet", passport: "N° Passeport", email: "Adresse Email", btn: "Mettre à jour",
                 tooltip: "Entrez les 6 chiffres sans espaces.", passportHint: "(ex: AB1234)",
                 tabTest: "Comment tester", tabUser: "Impact", tabIssues: "Problèmes", tabRemediations: "Corrections",
-                testSteps: ["Zoomez à 200%. Le bouton est tronqué.", "Le texte indicatif est presque invisible.", "L'icône est trop loin."],
+                testSteps: ["Zoomez à 200%.", "Le texte indicatif est presque invisible.", "L'icône est trop loin."],
                 critiques: {
-                    bad: { title: "Problèmes", items: [{ f: "Taille Fixe", c: "Le bouton ne s'agrandit pas au zoom." }] },
-                    good: { title: "Corrections", items: [{ f: "Fluide", c: "Le bouton s'adapte au texte." }] }
+                    bad: { title: "Problèmes", items: [{ f: "Contraste", c: "Texte trop clair." }] },
+                    good: { title: "Corrections", items: [{ f: "Lisibilité", c: "Contraste élevé." }] }
                 },
                 userTitle: "Qui est impacté ?", userList: ["**Malvoyants**", "**Utilisateurs de loupe**"]
             },
@@ -227,24 +169,24 @@
                 name: "Volledige Naam", passport: "Paspoort ID", email: "E-mailadres", btn: "Bijwerken",
                 tooltip: "6 cijfers zonder spaties.", passportHint: "(bijv. AB1234)",
                 tabTest: "Testen", tabUser: "Impact", tabIssues: "Problemen", tabRemediations: "Oplossingen",
-                testSteps: ["Zoom naar 200%. De knop wordt afgesneden.", "Groot contrastverschil.", "Icoon staat te ver."],
+                testSteps: ["Zoom naar 200%.", "Placeholder onzichtbaar.", "Icoon te ver."],
                 critiques: {
-                    bad: { title: "Problemen", items: [{ f: "Vaste breedte", c: "Knop groeit niet mee." }] },
-                    good: { title: "Oplossingen", items: [{ f: "Flexibel", c: "Groeit mee met zoom." }] }
+                    bad: { title: "Problemen", items: [{ f: "Contrast", c: "Tekst te licht." }] },
+                    good: { title: "Oplossingen", items: [{ f: "Duidelijkheid", c: "Voldoende contrast." }] }
                 },
-                userTitle: "Wie ondervindt hinder?", userList: ["**Slechtzienden**", "**Schermloep-gebruikers**"]
+                userTitle: "Wie?", userList: ["**Slechtzienden**", "**Schermloep**"]
             },
             de: {
                 labTitle: "Barrierefreiheit Empathie-Labor", title: "Sehbehinderung Erfahrung",
                 name: "Name", passport: "Reisepass-ID", email: "E-Mail", btn: "Aktualisieren",
-                tooltip: "6 Stellen ohne Leerzeichen.", passportHint: "(z.B. AB1234)",
+                tooltip: "6 Stellen.", passportHint: "(z.B. AB1234)",
                 tabTest: "Testen", tabIssues: "Probleme", tabRemediations: "Lösungen",
-                testSteps: ["Auf 200% zoomen. Button wird abgeschnitten.", "Schlechter Kontrast.", "Icon zu weit rechts."],
+                testSteps: ["Auf 200% zoomen.", "Schlechter Kontrast.", "Icon zu weit rechts."],
                 critiques: {
-                    bad: { title: "Probleme", items: [{ f: "Feste Größe", c: "Button skaliert nicht." }] },
-                    good: { title: "Lösungen", items: [{ f: "Flüssig", c: "Skaliert mit." }] }
+                    bad: { title: "Probleme", items: [{ f: "Kontrast", c: "Zu gering." }] },
+                    good: { title: "Lösungen", items: [{ f: "Kontrast", c: "4.5:1 Minimum." }] }
                 },
-                userTitle: "Wer ist betroffen?", userList: ["**Sehbehinderte**", "**Bildschirmlupen-Nutzer**"]
+                userTitle: "Wer?", userList: ["**Sehbehinderte**", "**Bildschirmlupe**"]
             }
         };
 
