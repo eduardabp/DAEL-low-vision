@@ -14,8 +14,9 @@
         .inaccessible-mode input::placeholder { color: #eeeeee !important; opacity: 1; }
         .inaccessible-mode *:focus { outline: none !important; box-shadow: none !important; }
         .inaccessible-mode .proximity-box { display: flex; justify-content: space-between; width: 100%; align-items: center; }
-        
-        /* IMAGE FEEDBACK BUTTON - Matches CSS dimensions */
+        .inaccessible-mode .no-scale { display: inline-block; transform: scale(var(--reverse-zoom, 1)); transform-origin: left; }
+
+        /* PIXELATING IMAGE BUTTON */
         .inaccessible-mode #bad-feedback-img { 
             display: block !important; 
             width: 120px !important; 
@@ -24,30 +25,38 @@
         }
         .inaccessible-mode #good-feedback-btn { display: none !important; }
 
+        /* Tooltip behavior */
+        .tooltip-box {
+            display: none; position: absolute; background: #1f2937; color: white;
+            padding: 12px; width: 220px; z-index: 50; left: 20px; top: 10px; border-radius: 8px;
+        }
+        .inaccessible-mode .info-trigger:hover + .tooltip-box { display: block; }
+        .inaccessible-mode .tooltip-box:hover { display: none !important; }
+
         /* --- ACCESSIBLE MODE STYLES --- */
         .accessible-mode *:focus-visible { outline: 3px solid #2563eb !important; outline-offset: 2px !important; }
         .accessible-mode .proximity-box { display: flex; gap: 8px; align-items: center; width: 100%; }
 
-        /* CSS FEEDBACK BUTTON - Synced with Image style */
+        /* CSS FEEDBACK BUTTON */
         .accessible-mode #bad-feedback-img { display: none !important; }
         .accessible-mode #good-feedback-btn { 
             display: flex !important; 
-            align-items: center;
-            justify-content: center;
-            background-color: #dc2626; 
-            color: white; 
-            font-weight: 700; 
-            width: 120px;
-            height: 38px;
-            border-radius: 4px; 
-            font-size: 14px;
-            text-transform: uppercase;
-            font-family: sans-serif;
+            align-items: center; justify-content: center;
+            background-color: #dc2626; color: white; 
+            font-weight: 700; width: 120px; height: 38px;
+            border-radius: 4px; font-size: 14px;
+            text-transform: uppercase; font-family: sans-serif;
             letter-spacing: 0.025em;
         }
         .accessible-mode #good-feedback-btn:hover { background-color: #991b1b; }
 
-        /* Layout Sync */
+        .accessible-mode .info-trigger:hover + .tooltip-box,
+        .accessible-mode .info-trigger:focus + .tooltip-box,
+        .accessible-mode .tooltip-box:hover,
+        .accessible-mode .tooltip-box.kb-visible { display: block; }
+        .accessible-mode .tooltip-box::before { content: ""; position: absolute; left: -40px; top: -10px; width: 40px; height: 150%; }
+
+        /* --- LAYOUT SYNC --- */
         .label-row { height: 1.5rem !important; display: flex; align-items: center; margin-bottom: 0.25rem; }
         .info-panel-container { min-height: 350px !important; display: flex; flex-direction: column; }
         .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
@@ -64,7 +73,7 @@
     <div class="max-w-6xl mx-auto bg-white shadow-2xl rounded-3xl overflow-hidden">
         <header class="bg-white border-b border-gray-100">
             <div class="p-6 flex flex-col md:flex-row justify-between items-center gap-6 border-b border-gray-50">
-                <div class="text-xl md:text-2xl font-black tracking-tight uppercase" style="color: #008B63;">Digital Accessibility Empathy Lab</div>
+                <div id="txt-lab-title" class="text-xl md:text-2xl font-black tracking-tight uppercase" style="color: #008B63;">Digital Accessibility Empathy Lab</div>
                 <img src="https://regine-lambrecht.github.io/color-contrast-checker-size-weight/images/banner.png" alt="Logo" class="h-12">
             </div>
 
@@ -78,8 +87,14 @@
                         </label>
                         <span class="text-xs font-black uppercase tracking-widest text-green-700">Accessible</span>
                     </div>
+                    <div class="flex gap-2 text-[10px] font-bold">
+                        <button onclick="setLanguage('en')" class="lang-btn px-2 py-1 rounded" id="btn-en">EN</button>
+                        <button onclick="setLanguage('fr')" class="lang-btn px-2 py-1 rounded" id="btn-fr">FR</button>
+                        <button onclick="setLanguage('nl')" class="lang-btn px-2 py-1 rounded" id="btn-nl">NL</button>
+                        <button onclick="setLanguage('de')" class="lang-btn px-2 py-1 rounded" id="btn-de">DE</button>
+                    </div>
                 </div>
-                <h1 class="text-xl font-black text-gray-900 px-2 uppercase tracking-tighter">Low Vision Experience</h1>
+                <h1 id="txt-title" class="text-xl font-black text-gray-900 px-2 uppercase tracking-tighter">Low Vision Experience</h1>
             </nav>
         </header>
 
@@ -88,25 +103,37 @@
                 <div class="lg:col-span-1 space-y-6">
                     <div>
                         <div class="label-row">
-                            <label class="text-xs font-semibold uppercase tracking-wider low-contrast-label">Full Name</label>
+                            <label id="txt-label-name" class="text-xs font-semibold uppercase tracking-wider low-contrast-label">Full Name</label>
                         </div>
                         <input type="text" class="w-full border border-gray-300 p-2 rounded-lg bg-gray-50 text-sm low-contrast-border">
                     </div>
 
                     <div class="relative">
                         <div class="label-row proximity-box">
-                            <label class="text-xs font-semibold uppercase tracking-wider low-contrast-label">Passport ID</label>
-                            <button type="button" class="info-trigger bg-blue-700 text-white rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-bold">i</button>
+                            <label id="txt-label-passport" class="text-xs font-semibold uppercase tracking-wider low-contrast-label">Passport ID</label>
+                            <div class="relative inline-block">
+                                <button type="button" id="info-btn" class="info-trigger cursor-help bg-blue-700 text-white rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-bold">i</button>
+                                <div class="tooltip-box shadow-xl text-xs" id="txt-tooltip">Tooltip text</div>
+                            </div>
                         </div>
-                        <input type="text" class="w-full border border-gray-300 p-2 rounded-lg bg-gray-50 text-sm low-contrast-border">
+                        <input type="text" id="passport-input" class="w-full border border-gray-300 p-2 rounded-lg bg-gray-50 text-sm low-contrast-border">
                     </div>
 
-                    <button class="w-full bg-blue-600 hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-lg uppercase text-sm tracking-wide transition-colors">
+                    <div>
+                        <div class="label-row">
+                            <div class="no-scale">
+                                <label id="txt-label-email" class="text-xs font-semibold uppercase tracking-wider low-contrast-label">Email Address</label>
+                            </div>
+                        </div>
+                        <input type="email" class="w-full border border-gray-300 p-2 rounded-lg bg-gray-50 text-sm low-contrast-border">
+                    </div>
+
+                    <button id="txt-btn" class="w-full bg-blue-600 hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-lg uppercase text-sm tracking-wide transition-colors">
                         Update Profile
                     </button>
 
                     <div class="pt-6 border-t border-gray-200 flex flex-col items-start gap-3">
-                        <h2 class="text-xs font-bold uppercase text-gray-800">Help us improve</h2>
+                        <h2 id="txt-feedback-label" class="text-xs font-bold uppercase text-gray-800">Help us improve</h2>
                         <img id="bad-feedback-img" src="https://placehold.co/60x19/dc2626/ffffff/png?text=FEEDBACK" alt="Feedback Button">
                         <button id="good-feedback-btn">Feedback</button>
                     </div>
@@ -117,23 +144,11 @@
                         <div class="flex bg-gray-800 border-b border-gray-700">
                             <button id="tab-test" onclick="switchTab('test')" class="tab-btn px-6 py-4 text-xs font-black uppercase tracking-widest" aria-selected="true">How to test</button>
                             <button id="tab-feedback" onclick="switchTab('feedback')" class="tab-btn px-6 py-4 text-xs font-black uppercase tracking-widest border-l border-gray-700" aria-selected="false">Issues</button>
+                            <button id="tab-user" onclick="switchTab('user')" class="tab-btn px-6 py-4 text-xs font-black uppercase tracking-widest border-l border-gray-700" aria-selected="false">Impacted users</button>
                         </div>
-                        <div id="panel-test" class="p-8 space-y-6 text-sm flex-grow">
-                            <ol class="list-decimal pl-5 space-y-4 opacity-95">
-                                <li>Zoom into the page (200%+).</li>
-                                <li>Compare the "Feedback" buttons.</li>
-                                <li>The image-based button in 'Inaccessible' mode pixelates and becomes fuzzy.</li>
-                                <li>The CSS-based button in 'Accessible' mode remains crisp and high-quality.</li>
-                            </ol>
-                        </div>
-                        <div id="panel-feedback" class="p-8 hidden text-sm flex-grow">
-                            <div class="space-y-6">
-                                <div>
-                                    <span class="text-blue-400 font-bold block mb-1 uppercase text-[11px]">Images of Text</span>
-                                    <p class="text-white opacity-90">When text is part of an image, it cannot scale smoothly. Low-vision users who rely on zooming will see a pixelated, illegible version of your content.</p>
-                                </div>
-                            </div>
-                        </div>
+                        <div id="panel-test" class="p-8 space-y-6 text-sm flex-grow"><ol id="txt-test-steps" class="list-decimal pl-5 space-y-4 opacity-95"></ol></div>
+                        <div id="panel-feedback" class="p-8 hidden text-sm flex-grow"><h3 id="txt-feedback-title" class="text-blue-400 font-bold uppercase mb-6"></h3><div id="critiqueContent" class="space-y-6"></div></div>
+                        <div id="panel-user" class="p-8 hidden text-sm flex-grow"><div id="txt-user-content" class="opacity-95 leading-relaxed text-xs"></div></div>
                     </div>
                 </div>
             </div>
@@ -141,17 +156,148 @@
     </div>
 
     <script>
-        function toggleMode() {
+        const translations = {
+            en: {
+                labTitle: "Digital Accessibility Empathy Lab", title: "Low Vision Experience",
+                name: "Full Name", passport: "Passport ID", email: "Email Address", btn: "Update Profile",
+                feedbackLabel: "Help us improve", feedbackBtn: "Feedback",
+                tooltip: "Enter your 6-digit passport number without spaces.", passportHint: "(e.g. AB1234)",
+                tabTest: "How to test", tabUser: "Impacted users", tabIssues: "Issues", tabRemediations: "Remediations",
+                testSteps: [
+                    "Zoom to 200%. The red 'Feedback' image becomes blurry, while the CSS version remains sharp.",
+                    "Look for the Passport placeholder. It is nearly invisible due to low contrast in 'Inaccessible'.",
+                    "The 'i' icon is far right in 'Inaccessible' mode.",
+                    "The tooltip vanishes when you move the mouse to read it in bad mode.",
+                    "In 'Accessible', use Space/Enter on the 'i' to toggle help."
+                ],
+                critiques: {
+                    bad: { title: "What is wrong?", items: [
+                        { f: "Images of Text", c: "The 'Feedback' button is a low-res image. It pixelates and loses clarity when zoomed." },
+                        { f: "Contrast Failure", c: "Placeholder contrast is too low (approx 1.2:1)." },
+                        { f: "Proximity Gap", c: "Related icons placed far from labels are lost for magnifier users." }
+                    ]},
+                    good: { title: "Remediations", items: [
+                        { f: "Live Text", c: "CSS buttons with real text stay crisp and legible at any scale." },
+                        { f: "Contrast Compliance", c: "Maintain at least 4.5:1 contrast for all text elements." }
+                    ]}
+                },
+                userTitle: "Who is impacted?",
+                userList: ["**Low Vision users** who zoom.", "**Magnifier users**.", "**Aging users**."]
+            },
+            fr: {
+                labTitle: "Labo d'Empathie Accessibilité", title: "Basse Vision",
+                name: "Nom Complet", passport: "Passeport", email: "Email", btn: "Mettre à jour",
+                feedbackLabel: "Aidez-nous", feedbackBtn: "Commentaires",
+                tooltip: "6 chiffres sans espaces.", passportHint: "(ex: AB1234)",
+                tabTest: "Test", tabUser: "Impact", tabIssues: "Problèmes", tabRemediations: "Corrections",
+                testSteps: ["Zoomez à 200%. Le bouton Feedback devient flou.", "Placeholder invisible.", "Icône trop loin."],
+                critiques: {
+                    bad: { title: "Problèmes", items: [{ f: "Image de texte", c: "Le bouton Feedback devient illisible au zoom." }] },
+                    good: { title: "Corrections", items: [{ f: "Texte réel", c: "Utilisez du CSS pour garder le texte net." }] }
+                },
+                userTitle: "Impacté ?", userList: ["**Malvoyants**", "**Loupe d'écran**"]
+            },
+            nl: {
+                labTitle: "Toegankelijkheid Lab", title: "Lage Visus",
+                name: "Naam", passport: "Paspoort", email: "Email", btn: "Bijwerken",
+                feedbackLabel: "Help ons", feedbackBtn: "Feedback",
+                tooltip: "6 cijfers.", passportHint: "(bijv. AB1234)",
+                tabTest: "Testen", tabUser: "Impact", tabIssues: "Problemen", tabRemediations: "Oplossingen",
+                testSteps: ["Zoom naar 200%. Feedback knop wordt wazig.", "Slecht contrast.", "Icoon te ver."],
+                critiques: {
+                    bad: { title: "Problemen", items: [{ f: "Tekst in afbeelding", c: "De feedback knop wordt onleesbaar bij zoomen." }] },
+                    good: { title: "Oplossingen", items: [{ f: "Live tekst", c: "Gebruik CSS voor scherpe tekst." }] }
+                },
+                userTitle: "Wie?", userList: ["**Slechtzienden**", "**Schermloep**"]
+            },
+            de: {
+                labTitle: "Barrierefreiheit Lab", title: "Sehbehinderung",
+                name: "Name", passport: "Pass ID", email: "Email", btn: "Aktualisieren",
+                feedbackLabel: "Helfen Sie uns", feedbackBtn: "Feedback",
+                tooltip: "6 Stellen.", passportHint: "(z.B. AB1234)",
+                tabTest: "Testen", tabIssues: "Probleme", tabRemediations: "Lösungen",
+                testSteps: ["Zoom 200%. Feedback-Button wird unscharf.", "Wenig Kontrast.", "Icon zu weit weg."],
+                critiques: {
+                    bad: { title: "Probleme", items: [{ f: "Text als Bild", c: "Der Feedback-Button wird beim Zoomen unscharf." }] },
+                    good: { title: "Lösungen", items: [{ f: "Echter Text", c: "CSS nutzen für scharfe Darstellung." }] }
+                },
+                userTitle: "Wer?", userList: ["**Sehbehinderte**", "**Bildschirmlupe**"]
+            }
+        };
+
+        let currentLang = 'en';
+
+        function updateZoomVariable() {
             const isAcc = document.getElementById('modeToggle').checked;
+            const zoom = window.devicePixelRatio || 1;
+            document.documentElement.style.setProperty('--reverse-zoom', isAcc ? 1 : 1 / zoom);
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            const t = translations[lang] || translations['en'];
+            const isAcc = document.getElementById('modeToggle').checked;
+            
+            document.getElementById('txt-lab-title').innerText = t.labTitle;
+            document.getElementById('txt-title').innerText = t.title;
+            document.getElementById('txt-label-name').innerText = t.name;
+            document.getElementById('txt-label-email').innerText = t.email;
+            document.getElementById('txt-btn').innerText = t.btn;
+            document.getElementById('txt-feedback-label').innerText = t.feedbackLabel;
+            document.getElementById('good-feedback-btn').innerText = t.feedbackBtn;
+            document.getElementById('txt-tooltip').innerText = t.tooltip;
+            document.getElementById('txt-test-steps').innerHTML = (t.testSteps || []).map(s => `<li>${s}</li>`).join('');
+            
+            const pInput = document.getElementById('passport-input');
+            const pLabel = document.getElementById('txt-label-passport');
+            if (isAcc) {
+                pLabel.innerText = `${t.passport} ${t.passportHint}`;
+                pInput.placeholder = "";
+            } else {
+                pLabel.innerText = t.passport;
+                pInput.placeholder = "e.g. AB1234";
+            }
+
+            document.getElementById('txt-user-content').innerHTML = `
+                <h3 class="text-blue-400 font-bold uppercase mb-4 text-xs">${t.userTitle}</h3>
+                <ul class="list-disc pl-5 space-y-3">${(t.userList||[]).map(li => `<li>${li.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')}</li>`).join('')}</ul>
+            `;
+
+            updateMode();
+            document.querySelectorAll('.lang-btn').forEach(b => {
+                b.classList.remove('bg-blue-600', 'text-white', 'bg-gray-200', 'text-gray-700');
+                if (b.id === 'btn-' + lang) b.classList.add('bg-blue-600', 'text-white');
+                else b.classList.add('bg-gray-200', 'text-gray-700');
+            });
+        }
+
+        function toggleMode() {
+            updateZoomVariable();
+            setLanguage(currentLang);
+        }
+
+        function updateMode() {
+            const isAcc = document.getElementById('modeToggle').checked;
+            const t = translations[currentLang] || translations['en'];
+            const crit = isAcc ? t.critiques.good : t.critiques.bad;
             document.getElementById('bodyTag').className = isAcc ? "bg-gray-100 min-h-screen p-4 md:p-8 font-sans accessible-mode" : "bg-gray-100 min-h-screen p-4 md:p-8 font-sans inaccessible-mode";
+            document.getElementById('tab-feedback').innerText = isAcc ? t.tabRemediations : t.tabIssues;
+            document.getElementById('txt-feedback-title').innerText = crit.title;
+            document.getElementById('critiqueContent').innerHTML = (crit.items || []).map(i => `<div><span class="text-blue-400 font-bold block mb-1 uppercase text-[11px]">${i.f}</span><p class="text-white opacity-90">${i.c}</p></div>`).join('');
         }
 
         function switchTab(tabId) {
-            ['test', 'feedback'].forEach(id => {
-                document.getElementById('panel-' + id).classList.toggle('hidden', id !== tabId);
-                document.getElementById('tab-' + id).setAttribute('aria-selected', id === tabId);
+            ['test', 'feedback', 'user'].forEach(id => {
+                const panel = document.getElementById('panel-' + id);
+                const tab = document.getElementById('tab-' + id);
+                if (panel) panel.classList.toggle('hidden', id !== tabId);
+                if (tab) tab.setAttribute('aria-selected', id === tabId);
             });
         }
+
+        window.addEventListener('resize', updateZoomVariable);
+        setLanguage('en');
+        switchTab('test');
     </script>
 </body>
 </html>
