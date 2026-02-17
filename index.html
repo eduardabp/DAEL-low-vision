@@ -13,19 +13,12 @@
         .inaccessible-mode .low-contrast-border { border-color: #f3f4f6 !important; }
         .inaccessible-mode input::placeholder { color: #eeeeee !important; opacity: 1; }
         .inaccessible-mode *:focus { outline: none !important; box-shadow: none !important; }
-        
         .inaccessible-mode .proximity-box { display: flex; justify-content: space-between; width: 100%; align-items: center; }
         .inaccessible-mode .no-scale { display: inline-block; transform: scale(var(--reverse-zoom, 1)); transform-origin: left; }
 
-        /* IMAGE BUTTON WRAPPER (Fixed) */
-        .inaccessible-mode .feedback-btn-container {
-            width: 160px !important;
-            height: 48px !important;
-            overflow: hidden !important;
-            cursor: pointer;
-        }
+        /* IMAGE FEEDBACK BUTTON (Low Res) */
+        .inaccessible-mode #bad-feedback-img { display: block !important; width: 100px; height: auto; cursor: pointer; image-rendering: pixelated; }
         .inaccessible-mode #good-feedback-btn { display: none !important; }
-        .inaccessible-mode #bad-feedback-img { display: block !important; width: 160px; height: 48px; }
 
         /* Tooltip behavior */
         .tooltip-box {
@@ -39,21 +32,20 @@
         .accessible-mode *:focus-visible { outline: 3px solid #2563eb !important; outline-offset: 2px !important; }
         .accessible-mode .proximity-box { display: flex; gap: 8px; align-items: center; width: 100%; }
 
-        /* ACCESSIBLE BUTTON (Fluid) */
+        /* CSS FEEDBACK BUTTON */
         .accessible-mode #bad-feedback-img { display: none !important; }
         .accessible-mode #good-feedback-btn { 
-            display: flex !important; 
-            width: 100%; 
-            background-color: #2563eb; 
-            color: white; 
-            font-weight: 700; 
-            padding: 12px; 
-            border-radius: 8px; 
-            justify-content: center; 
+            display: inline-block !important; 
+            background-color: #f3f4f6; 
+            color: #1f2937; 
+            font-weight: 600; 
+            padding: 6px 12px; 
+            border: 1px solid #d1d5db;
+            border-radius: 4px; 
+            font-size: 0.75rem;
             text-transform: uppercase;
-            font-size: 0.875rem;
         }
-        .accessible-mode #good-feedback-btn:hover { background-color: #172554; }
+        .accessible-mode #good-feedback-btn:hover { background-color: #e5e7eb; }
 
         .accessible-mode .info-trigger:hover + .tooltip-box,
         .accessible-mode .info-trigger:focus + .tooltip-box,
@@ -134,10 +126,14 @@
                         <input type="email" class="w-full border border-gray-300 p-2 rounded-lg bg-gray-50 text-sm low-contrast-border">
                     </div>
 
-                    <div class="feedback-btn-container">
-                        <img id="bad-feedback-img" src="https://placehold.co/160x48/2563eb/white?text=UPDATE+PROFILE" alt="Update Profile Button">
-                        
-                        <button id="good-feedback-btn">Update Profile</button>
+                    <button id="txt-btn" class="w-full bg-blue-600 hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-lg uppercase text-sm tracking-wide transition-colors">
+                        Update Profile
+                    </button>
+
+                    <div class="pt-4 border-t border-gray-100 flex flex-col items-start gap-2">
+                        <span id="txt-feedback-label" class="text-[10px] font-bold uppercase text-gray-400">Help us improve</span>
+                        <img id="bad-feedback-img" src="https://placehold.co/100x30/f3f4f6/1f2937/png?text=FEEDBACK&font=playfair-display" alt="Feedback">
+                        <button id="good-feedback-btn">Feedback</button>
                     </div>
                 </div>
 
@@ -162,33 +158,71 @@
             en: {
                 labTitle: "Digital Accessibility Empathy Lab", title: "Low Vision Experience",
                 name: "Full Name", passport: "Passport ID", email: "Email Address", btn: "Update Profile",
+                feedbackLabel: "Help us improve", feedbackBtn: "Feedback",
                 tooltip: "Enter your 6-digit passport number without spaces.", passportHint: "(e.g. AB1234)",
                 tabTest: "How to test", tabUser: "Impacted users", tabIssues: "Issues", tabRemediations: "Remediations",
                 testSteps: [
-                    "Zoom to 200%. Notice the 'Inaccessible' button uses an image that pixelates and does not grow with your text size.",
-                    "The Passport placeholder is nearly invisible in 'Inaccessible' mode.",
-                    "The 'i' icon is at the far right in 'Inaccessible' mode.",
+                    "Zoom to 200%. Notice the 'Feedback' button image becomes blurry and hard to read.",
+                    "Look for the Passport placeholder. It is nearly invisible due to low contrast in 'Inaccessible'.",
+                    "The 'i' icon is at the far right in 'Inaccessible' mode, making it hard for magnifier users.",
                     "In 'Inaccessible', the tooltip vanishes immediately when you move the mouse.",
-                    "In 'Accessible', use Space or Enter on the 'i' to toggle help."
+                    "In 'Accessible', use Space or Enter on the 'i' icon to toggle help."
                 ],
                 critiques: {
                     bad: { title: "What is wrong?", items: [
-                        { f: "Images as Text", c: "Using images for buttons prevents text from scaling with user settings." },
-                        { f: "Contrast Failure", c: "Placeholder text fails contrast requirements." },
-                        { f: "Proximity Gap", c: "Icons placed at screen edges are lost for magnifier users." }
+                        { f: "Images of Text", c: "The 'Feedback' button is an image. It doesn't scale well and becomes blurry/unreadable when zoomed." },
+                        { f: "Contrast Failure", c: "Placeholder contrast is too low (approx 1.2:1)." },
+                        { f: "Proximity Gap", c: "Related icons placed far from labels are lost for magnifier users." }
                     ]},
                     good: { title: "Remediations", items: [
-                        { f: "Live Text", c: "Always use real text for buttons so they can grow and remain sharp at all zoom levels." },
-                        { f: "Contrast Compliance", c: "Maintain at least 4.5:1 contrast." }
+                        { f: "Live Text", c: "Using CSS and real text for the 'Feedback' button ensures it stays crisp and readable at any zoom level." },
+                        { f: "Contrast Compliance", c: "Maintain at least 4.5:1 contrast for all text elements." }
                     ]}
                 },
                 userTitle: "Who is impacted?",
                 userList: ["**Low Vision users**", "**Magnifier users**", "**Aging users**"]
             },
-            // [Other languages would follow the same pattern...]
+            fr: {
+                labTitle: "Labo Accessibilité", title: "Basse Vision",
+                name: "Nom", passport: "Passeport", email: "Email", btn: "Mettre à jour",
+                feedbackLabel: "Aidez-nous", feedbackBtn: "Commentaires",
+                tooltip: "6 chiffres.", passportHint: "(ex: AB1234)",
+                tabTest: "Test", tabUser: "Impact", tabIssues: "Problèmes", tabRemediations: "Corrections",
+                testSteps: ["Zoomez à 200%. Le bouton Feedback devient flou.", "Placeholder invisible.", "Icône trop loin."],
+                critiques: {
+                    bad: { title: "Problèmes", items: [{ f: "Image de texte", c: "Le bouton Feedback devient illisible au zoom." }] },
+                    good: { title: "Corrections", items: [{ f: "Texte réel", c: "Utilisez du CSS pour garder le texte net." }] }
+                },
+                userTitle: "Impacté ?", userList: ["Malvoyants"]
+            },
+            nl: {
+                labTitle: "Toegankelijkheid Lab", title: "Lage Visus",
+                name: "Naam", passport: "Paspoort", email: "Email", btn: "Bijwerken",
+                feedbackLabel: "Help ons", feedbackBtn: "Feedback",
+                tooltip: "6 cijfers.", passportHint: "(bijv. AB1234)",
+                tabTest: "Testen", tabUser: "Impact", tabIssues: "Problemen", tabRemediations: "Oplossingen",
+                testSteps: ["Zoom naar 200%. Feedback knop wordt wazig.", "Slecht contrast.", "Icoon te ver."],
+                critiques: {
+                    bad: { title: "Problemen", items: [{ f: "Tekst in afbeelding", c: "De feedback knop wordt onleesbaar bij zoomen." }] },
+                    good: { title: "Oplossingen", items: [{ f: "Live tekst", c: "Gebruik CSS voor scherpe tekst." }] }
+                },
+                userTitle: "Wie?", userList: ["Slechtzienden"]
+            },
+            de: {
+                labTitle: "Barrierefreiheit Lab", title: "Sehbehinderung",
+                name: "Name", passport: "Pass ID", email: "Email", btn: "Aktualisieren",
+                feedbackLabel: "Helfen Sie uns", feedbackBtn: "Feedback",
+                tooltip: "6 Stellen.", passportHint: "(z.B. AB1234)",
+                tabTest: "Testen", tabIssues: "Probleme", tabRemediations: "Lösungen",
+                testSteps: ["Zoom 200%. Feedback-Button wird unscharf.", "Wenig Kontrast.", "Icon zu weit weg."],
+                critiques: {
+                    bad: { title: "Probleme", items: [{ f: "Text als Bild", c: "Der Feedback-Button wird beim Zoomen unscharf." }] },
+                    good: { title: "Lösungen", items: [{ f: "Echter Text", c: "CSS nutzen für scharfe Darstellung." }] }
+                },
+                userTitle: "Wer?", userList: ["Sehbehinderte"]
+            }
         };
 
-        // Standard logic for language and mode switching...
         let currentLang = 'en';
 
         function updateZoomVariable() {
@@ -206,7 +240,9 @@
             document.getElementById('txt-title').innerText = t.title;
             document.getElementById('txt-label-name').innerText = t.name;
             document.getElementById('txt-label-email').innerText = t.email;
-            document.getElementById('good-feedback-btn').innerText = t.btn;
+            document.getElementById('txt-btn').innerText = t.btn;
+            document.getElementById('txt-feedback-label').innerText = t.feedbackLabel;
+            document.getElementById('good-feedback-btn').innerText = t.feedbackBtn;
             document.getElementById('txt-tooltip').innerText = t.tooltip;
             document.getElementById('txt-test-steps').innerHTML = t.testSteps.map(s => `<li>${s}</li>`).join('');
             
@@ -219,7 +255,18 @@
                 pLabel.innerText = t.passport;
                 pInput.placeholder = "e.g. AB1234";
             }
+
+            document.getElementById('txt-user-content').innerHTML = `
+                <h3 class="text-blue-400 font-bold uppercase mb-4 text-xs">${t.userTitle}</h3>
+                <ul class="list-disc pl-5 space-y-3">${(t.userList||[]).map(li => `<li>${li.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')}</li>`).join('')}</ul>
+            `;
+
             updateMode();
+            document.querySelectorAll('.lang-btn').forEach(b => {
+                b.classList.remove('bg-blue-600', 'text-white', 'bg-gray-200', 'text-gray-700');
+                if (b.id === 'btn-' + lang) b.classList.add('bg-blue-600', 'text-white');
+                else b.classList.add('bg-gray-200', 'text-gray-700');
+            });
         }
 
         function toggleMode() {
@@ -246,6 +293,24 @@
             });
         }
 
+        const infoBtn = document.getElementById('info-btn');
+        const tooltip = document.getElementById('txt-tooltip');
+        infoBtn.addEventListener('keydown', (e) => {
+            if (document.getElementById('modeToggle').checked && (e.key === ' ' || e.key === 'Enter')) {
+                e.preventDefault();
+                tooltip.classList.toggle('kb-visible');
+            }
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                tooltip.classList.remove('kb-visible');
+                tooltip.style.display = 'none';
+                setTimeout(() => tooltip.style.display = '', 500);
+            }
+        });
+
+        window.addEventListener('resize', updateZoomVariable);
         setLanguage('en');
         switchTab('test');
     </script>
