@@ -17,33 +17,45 @@
         .inaccessible-mode .zoom-container { height: 1.1rem; overflow: hidden; margin-bottom: 0.25rem; }
         .inaccessible-mode .no-scale { display: inline-block; transform: scale(var(--reverse-zoom, 1)); transform-origin: left; }
 
-        /* RAW CSS FOR THE TRUNCATED BUTTON */
-        .inaccessible-mode .custom-btn-wrapper {
-            width: 156px !important;
-            height: 44px !important;
-            overflow: hidden !important;
-            background-color: #2563eb !important;
-            border-radius: 8px !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            display: block !important;
-            border: none !important;
-        }
-        
-        .inaccessible-mode .custom-btn-inner {
-            color: white !important;
-            font-family: sans-serif !important;
-            font-weight: 700 !important;
-            font-size: 14px !important;
-            text-transform: uppercase !important;
-            white-space: nowrap !important;
-            display: inline-block !important;
-            line-height: 44px !important;
-            padding-left: 12px !important;
-            width: auto !important;
+        /* THE SHARED BUTTON BASE */
+        .btn-base-wrapper {
+            background-color: #2563eb;
+            border-radius: 8px;
+            height: 44px;
+            cursor: pointer;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
         }
 
-        .inaccessible-mode .custom-btn-wrapper:hover { background-color: #93c5fd !important; }
+        /* INACCESSIBLE: Fixed width in PX, text in EM */
+        .inaccessible-mode .btn-base-wrapper {
+            width: 156px !important; 
+        }
+        
+        .btn-text-content {
+            color: white;
+            font-family: sans-serif;
+            font-weight: 700;
+            font-size: 0.875em; /* Responsive em units */
+            text-transform: uppercase;
+            white-space: nowrap;
+            padding: 0 12px;
+            width: max-content;
+        }
+
+        .inaccessible-mode .btn-base-wrapper:hover { background-color: #93c5fd; }
+
+        /* --- ACCESSIBLE MODE STYLES --- */
+        .accessible-mode *:focus-visible { outline: 3px solid #2563eb !important; outline-offset: 2px !important; }
+        
+        /* ACCESSIBLE: Fluid width */
+        .accessible-mode .btn-base-wrapper {
+            width: 100% !important;
+            justify-content: center;
+        }
+        
+        .accessible-mode .btn-base-wrapper:hover { background-color: #172554; }
 
         /* Tooltip behavior */
         .tooltip-box {
@@ -52,32 +64,6 @@
         }
         .inaccessible-mode .info-trigger:hover + .tooltip-box { display: block; }
         .inaccessible-mode .tooltip-box:hover { display: none !important; }
-
-        /* --- ACCESSIBLE MODE STYLES --- */
-        .accessible-mode *:focus-visible { outline: 3px solid #2563eb !important; outline-offset: 2px !important; }
-        
-        .accessible-mode .custom-btn-wrapper { 
-            width: 100% !important; 
-            display: block !important;
-            background-color: #2563eb !important;
-            border-radius: 8px !important;
-            cursor: pointer;
-        }
-        
-        .accessible-mode .custom-btn-inner {
-            color: white !important;
-            min-height: 44px !important;
-            padding: 12px 24px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            width: 100% !important;
-            font-weight: 700 !important;
-            text-transform: uppercase !important;
-            font-size: 0.875rem !important;
-        }
-        
-        .accessible-mode .custom-btn-wrapper:hover { background-color: #172554 !important; }
         
         .accessible-mode .info-trigger:hover + .tooltip-box,
         .accessible-mode .info-trigger:focus + .tooltip-box,
@@ -85,6 +71,7 @@
         .accessible-mode .tooltip-box.kb-visible { display: block; }
         .accessible-mode .tooltip-box::before { content: ""; position: absolute; left: -40px; top: -10px; width: 40px; height: 150%; }
 
+        /* UI Structure */
         .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ef4444; transition: .4s; border-radius: 28px; }
@@ -94,7 +81,7 @@
         .tab-btn[aria-selected="true"] { background-color: #111827; color: #60a5fa; border-bottom: 2px solid #60a5fa; }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen p-4 md:p-8 font-sans transition-colors duration-500" id="bodyTag">
+<body class="bg-gray-100 min-h-screen p-4 md:p-8 font-sans transition-colors duration-500 inaccessible-mode" id="bodyTag">
 
     <div class="max-w-6xl mx-auto bg-white shadow-2xl rounded-3xl overflow-hidden">
         <header class="bg-white border-b border-gray-100">
@@ -152,8 +139,8 @@
                         <input type="email" class="w-full border border-gray-300 p-2 rounded-lg bg-gray-50 text-sm low-contrast-border">
                     </div>
 
-                    <div class="custom-btn-wrapper">
-                        <div class="custom-btn-inner" id="txt-btn">Update Profile</div>
+                    <div class="btn-base-wrapper" id="main-btn">
+                        <div class="btn-text-content" id="txt-btn-label">Update Profile</div>
                     </div>
                 </div>
 
@@ -181,61 +168,56 @@
                 tooltip: "Enter your 6-digit passport number without spaces.", passportHint: "(e.g. AB1234)",
                 tabTest: "How to test", tabUser: "Impacted users", tabIssues: "Issues", tabRemediations: "Remediations",
                 testSteps: [
-                    "Zoom to 175% or 200%. The 'Full Name' label vanishes and the 'Update Profile' button truncates.",
+                    "Zoom to 200%. The 'Full Name' label vanishes and the 'Update Profile' button truncates.",
                     "Look for the Passport placeholder. It is nearly invisible.",
                     "The 'i' icon is far to the right in bad mode. Magnifier users will miss it.",
-                    "The tooltip vanishes immediately in bad mode when you try to mouse over it.",
+                    "The tooltip vanishes in bad mode when you try to mouse over it.",
                     "In 'Accessible', use Space/Enter on the 'i' icon to toggle help."
                 ],
                 critiques: {
                     bad: { title: "What is wrong?", items: [
-                        { f: "Fixed Box Clamping", c: "The button is physically locked to 156px. Zoomed text overflows and is hidden." },
-                        { f: "Contrast Failure", c: "Placeholders have ~1.2:1 contrast, failing visibility requirements." },
-                        { f: "Proximity Gap", c: "Magnifier users see the label but never see the help icon at the screen edge." }
+                        { f: "Fixed Width Clamping", c: "The button container is locked in pixels. As text grows via zoom, it overflows and is hidden." },
+                        { f: "Contrast Failure", c: "Placeholder contrast is too low for low-vision users." },
+                        { f: "Proximity Gap", c: "Icons placed far from labels are lost for magnifier users." }
                     ]},
                     good: { title: "How to remediate", items: [
-                        { f: "Fluid Containers", c: "Allow elements to grow naturally with enlarged text." },
-                        { f: "Logical Proximity", c: "Keep related labels and icons closely together." }
+                        { f: "Fluid Containers", c: "Allow elements to grow naturally with enlarged text using relative units." },
+                        { f: "Logical Proximity", c: "Group related labels and icons closely together." }
                     ]}
-                },
-                userTitle: "Who is impacted?",
-                userList: ["**Low Vision users** who zoom.", "**Magnifier users**.", "**Aging users**."]
+                }
             },
             fr: {
                 labTitle: "Labo d'Empathie Accessibilité", title: "Expérience Basse Vision",
                 name: "Nom Complet", passport: "N° Passeport", email: "Adresse Email", btn: "Mettre à jour",
                 tooltip: "Entrez les 6 chiffres sans espaces.", passportHint: "(ex: AB1234)",
-                tabTest: "Test", tabIssues: "Problèmes", tabRemediations: "Corrections",
-                testSteps: ["Zoomez à 200%. Le bouton est tronqué.", "Le texte indicatif est presque invisible.", "L'icône est trop loin.", "La bulle disparaît.", "Testez le mode Accessible."],
+                tabTest: "Comment tester", tabUser: "Impact", tabIssues: "Problèmes", tabRemediations: "Corrections",
+                testSteps: ["Zoomez à 200%. Le bouton est tronqué.", "L'icône est trop loin.", "Le bouton est tronqué."],
                 critiques: {
-                    bad: { title: "Problèmes", items: [{ f: "Taille Fixe", c: "Le bouton ne s'agrandit pas." }] },
-                    good: { title: "Corrections", items: [{ f: "Fluide", c: "Le bouton s'adapte." }] }
-                },
-                userTitle: "Impacté ?", userList: ["**Malvoyants**", "**Utilisateurs de loupe**"]
+                    bad: { title: "Problèmes", items: [{ f: "Taille Fixe", c: "Le bouton ne s'agrandit pas au zoom." }] },
+                    good: { title: "Corrections", items: [{ f: "Fluide", c: "Le bouton s'adapte au texte." }] }
+                }
             },
             nl: {
                 labTitle: "Toegankelijkheid Empathie Lab", title: "Lage Visus Ervaring",
-                name: "Volledige Naam", passport: "Paspoort ID", email: "E-mailadres", btn: "Bijwerken",
-                tooltip: "6 cijfers zonder spaties.", passportHint: "(bijv. AB1234)",
-                tabTest: "Testen", tabIssues: "Problemen", tabRemediations: "Oplossingen",
-                testSteps: ["Zoom naar 200%.", "Placeholder is onzichtbaar.", "Icoon staat te ver.", "Tooltip verdwijnt.", "Probeer Toegankelijk."],
+                name: "Volledige Naam", passport: "Paspoort ID", email: "E-mailadres", btn: "Profiel Bijwerken",
+                tooltip: "Voer uw 6-cijferig nummer in zonder spaties.", passportHint: "(bijv. AB1234)",
+                tabTest: "Hoe te testen", tabUser: "Impact", tabIssues: "Problemen", tabRemediations: "Oplossingen",
+                testSteps: ["Zoom naar 200%. De knop wordt afgesneden.", "Groot contrastverschil.", "Icoon staat te ver."],
                 critiques: {
-                    bad: { title: "Problemen", items: [{ f: "Vaste breedte", c: "Knop groeit niet mee." }] },
+                    bad: { title: "Wat is er mis?", items: [{ f: "Vaste breedte", c: "Knop groeit niet mee." }] },
                     good: { title: "Oplossingen", items: [{ f: "Flexibel", c: "Groeit mee met zoom." }] }
-                },
-                userTitle: "Wie?", userList: ["**Slechtzienden**", "**Schermloep**"]
+                }
             },
             de: {
                 labTitle: "Barrierefreiheit Empathie-Labor", title: "Sehbehinderung Erfahrung",
-                name: "Name", passport: "Reisepass-ID", email: "E-Mail", btn: "Aktualisieren",
-                tooltip: "6 Stellen ohne Leerzeichen.", passportHint: "(z.B. AB1234)",
+                name: "Name", passport: "Reisepass-ID", email: "E-Mail", btn: "Profil Aktualisieren",
+                tooltip: "6 Stellen ohne Leerzeichen eingeben.", passportHint: "(z.B. AB1234)",
                 tabTest: "Testen", tabIssues: "Probleme", tabRemediations: "Lösungen",
-                testSteps: ["Zoom auf 200%.", "Schlechter Kontrast.", "Icon zu weit rechts.", "Tooltip verschwindet.", "Barrierefrei testen."],
+                testSteps: ["Auf 200% zoomen. Button wird abgeschnitten.", "Schlechter Kontrast.", "Icon zu weit rechts."],
                 critiques: {
                     bad: { title: "Probleme", items: [{ f: "Feste Größe", c: "Button skaliert nicht." }] },
                     good: { title: "Lösungen", items: [{ f: "Flüssig", c: "Skaliert mit." }] }
-                },
-                userTitle: "Wer?", userList: ["**Sehbehinderte**", "**Bildschirmlupe**"]
+                }
             }
         };
 
@@ -256,7 +238,7 @@
             document.getElementById('txt-title').innerText = t.title;
             document.getElementById('txt-label-name').innerText = t.name;
             document.getElementById('txt-label-email').innerText = t.email;
-            document.getElementById('txt-btn').innerText = t.btn;
+            document.getElementById('txt-btn-label').innerText = t.btn;
             document.getElementById('txt-tooltip').innerText = t.tooltip;
             document.getElementById('txt-test-steps').innerHTML = t.testSteps.map(s => `<li>${s}</li>`).join('');
             
@@ -269,18 +251,7 @@
                 pLabel.innerText = t.passport;
                 pInput.placeholder = "e.g. AB1234";
             }
-
-            document.getElementById('txt-user-content').innerHTML = `
-                <h3 class="text-blue-400 font-bold uppercase mb-4 text-xs">${t.userTitle}</h3>
-                <ul class="list-disc pl-5 space-y-3">${(t.userList||[]).map(li => `<li>${li.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')}</li>`).join('')}</ul>
-            `;
-
             updateMode();
-            document.querySelectorAll('.lang-btn').forEach(b => {
-                b.classList.remove('bg-blue-600', 'text-white', 'bg-gray-200', 'text-gray-700');
-                if (b.id === 'btn-' + lang) b.classList.add('bg-blue-600', 'text-white');
-                else b.classList.add('bg-gray-200', 'text-gray-700');
-            });
         }
 
         function toggleMode() {
