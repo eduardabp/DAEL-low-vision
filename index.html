@@ -16,7 +16,7 @@
         .inaccessible-mode .proximity-box { display: flex; justify-content: space-between; width: 100%; align-items: center; }
         .inaccessible-mode .no-scale { display: inline-block; transform: scale(var(--reverse-zoom, 1)); transform-origin: left; }
 
-        /* PIXELATING IMAGE BUTTON */
+        /* IMAGE FEEDBACK BUTTON - 1:1 Scale at 100% */
         .inaccessible-mode #bad-feedback-img { 
             display: block !important; 
             width: 120px !important; 
@@ -78,7 +78,7 @@
             </div>
 
             <nav class="p-4 flex flex-col gap-4">
-                <div class="flex items-center justify-between gap-4 bg-gray-50 p-3 rounded-2xl border border-gray-200">
+                <div class="flex items-center justify-between gap-4 bg-gray-50 p-3 rounded-2xl border border-gray-200 w-full">
                     <div class="flex items-center gap-4">
                         <span class="text-xs font-black uppercase tracking-widest text-red-600">Inaccessible</span>
                         <label class="switch">
@@ -134,7 +134,7 @@
 
                     <div class="pt-6 border-t border-gray-200 flex flex-col items-start gap-3">
                         <h2 id="txt-feedback-label" class="text-xs font-bold uppercase text-gray-800">Help us improve</h2>
-                        <img id="bad-feedback-img" src="https://placehold.co/60x19/dc2626/ffffff/png?text=FEEDBACK" alt="Feedback Button">
+                        <img id="bad-feedback-img" src="https://placehold.co/120x38/dc2626/ffffff/png?text=FEEDBACK" alt="Feedback">
                         <button id="good-feedback-btn">Feedback</button>
                     </div>
                 </div>
@@ -160,68 +160,67 @@
             en: {
                 labTitle: "Digital Accessibility Empathy Lab", title: "Low Vision Experience",
                 name: "Full Name", passport: "Passport ID", email: "Email Address", btn: "Update Profile",
-                feedbackLabel: "Help us improve", feedbackBtn: "Feedback",
+                feedbackLabel: "Help us improve", feedbackBtnText: "Feedback",
                 tooltip: "Enter your 6-digit passport number without spaces.", passportHint: "(e.g. AB1234)",
                 tabTest: "How to test", tabUser: "Impacted users", tabIssues: "Issues", tabRemediations: "Remediations",
                 testSteps: [
-                    "Zoom to 200%. The red 'Feedback' image becomes blurry, while the CSS version remains sharp.",
-                    "Look for the Passport placeholder. It is nearly invisible due to low contrast in 'Inaccessible'.",
-                    "The 'i' icon is far right in 'Inaccessible' mode.",
-                    "The tooltip vanishes when you move the mouse to read it in bad mode.",
+                    "Zoom to 200%. The red 'Feedback' image blurs, while the 'Accessible' version stays sharp.",
+                    "Look for the Passport placeholder. It is nearly invisible in 'Inaccessible' mode.",
+                    "The 'i' icon is at the far right in 'Inaccessible' mode.",
+                    "The tooltip vanishes when you move the mouse in bad mode.",
                     "In 'Accessible', use Space/Enter on the 'i' to toggle help."
                 ],
                 critiques: {
                     bad: { title: "What is wrong?", items: [
-                        { f: "Images of Text", c: "The 'Feedback' button is a low-res image. It pixelates and loses clarity when zoomed." },
+                        { f: "Images of Text", c: "The 'Feedback' button is an image. It blurs when zoomed." },
                         { f: "Contrast Failure", c: "Placeholder contrast is too low (approx 1.2:1)." },
-                        { f: "Proximity Gap", c: "Related icons placed far from labels are lost for magnifier users." }
+                        { f: "Proximity Gap", c: "Icons placed far from labels are lost for magnifier users." }
                     ]},
                     good: { title: "Remediations", items: [
-                        { f: "Live Text", c: "CSS buttons with real text stay crisp and legible at any scale." },
-                        { f: "Contrast Compliance", c: "Maintain at least 4.5:1 contrast for all text elements." }
+                        { f: "Live Text", c: "CSS buttons stay crisp at any scale." },
+                        { f: "Contrast Compliance", c: "Maintain at least 4.5:1 contrast." }
                     ]}
                 },
-                userTitle: "Who is impacted?",
-                userList: ["**Low Vision users** who zoom.", "**Magnifier users**.", "**Aging users**."]
+                userTitle: "Who is impacted?", userList: ["**Low Vision users**", "**Magnifier users**"]
             },
             fr: {
-                labTitle: "Labo d'Empathie Accessibilité", title: "Basse Vision",
+                labTitle: "Labo Accessibilité", title: "Expérience Basse Vision",
                 name: "Nom Complet", passport: "Passeport", email: "Email", btn: "Mettre à jour",
-                feedbackLabel: "Aidez-nous", feedbackBtn: "Commentaires",
-                tooltip: "6 chiffres sans espaces.", passportHint: "(ex: AB1234)",
-                tabTest: "Test", tabUser: "Impact", tabIssues: "Problèmes", tabRemediations: "Corrections",
+                feedbackLabel: "Aidez-nous", feedbackBtnText: "Commentaires",
+                tooltip: "6 chiffres.", passportHint: "(ex: AB1234)",
+                tabTest: "Comment tester", tabUser: "Impact", tabIssues: "Problèmes", tabRemediations: "Corrections",
                 testSteps: ["Zoomez à 200%. Le bouton Feedback devient flou.", "Placeholder invisible.", "Icône trop loin."],
                 critiques: {
-                    bad: { title: "Problèmes", items: [{ f: "Image de texte", c: "Le bouton Feedback devient illisible au zoom." }] },
-                    good: { title: "Corrections", items: [{ f: "Texte réel", c: "Utilisez du CSS pour garder le texte net." }] }
+                    bad: { title: "Problèmes", items: [{ f: "Image de texte", c: "Le texte devient flou au zoom." }] },
+                    good: { title: "Corrections", items: [{ f: "Texte réel", c: "Utilisez du CSS." }] }
                 },
-                userTitle: "Impacté ?", userList: ["**Malvoyants**", "**Loupe d'écran**"]
+                userTitle: "Impact ?", userList: ["**Malvoyants**"]
             },
             nl: {
                 labTitle: "Toegankelijkheid Lab", title: "Lage Visus",
                 name: "Naam", passport: "Paspoort", email: "Email", btn: "Bijwerken",
-                feedbackLabel: "Help ons", feedbackBtn: "Feedback",
+                feedbackLabel: "Help ons", feedbackBtnText: "Feedback",
                 tooltip: "6 cijfers.", passportHint: "(bijv. AB1234)",
                 tabTest: "Testen", tabUser: "Impact", tabIssues: "Problemen", tabRemediations: "Oplossingen",
-                testSteps: ["Zoom naar 200%. Feedback knop wordt wazig.", "Slecht contrast.", "Icoon te ver."],
+                testSteps: ["Zoom naar 200%. Knop wordt wazig.", "Slecht contrast.", "Icoon te ver."],
                 critiques: {
-                    bad: { title: "Problemen", items: [{ f: "Tekst in afbeelding", c: "De feedback knop wordt onleesbaar bij zoomen." }] },
-                    good: { title: "Oplossingen", items: [{ f: "Live tekst", c: "Gebruik CSS voor scherpe tekst." }] }
+                    bad: { title: "Wat is er mis?", items: [{ f: "Tekst in afbeelding", c: "Wazig bij zoomen." }] },
+                    good: { title: "Oplossingen", items: [{ f: "Live tekst", c: "CSS voor scherpte." }] }
                 },
-                userTitle: "Wie?", userList: ["**Slechtzienden**", "**Schermloep**"]
+                userTitle: "Wie?", userList: ["**Slechtzienden**"]
             },
             de: {
                 labTitle: "Barrierefreiheit Lab", title: "Sehbehinderung",
                 name: "Name", passport: "Pass ID", email: "Email", btn: "Aktualisieren",
-                feedbackLabel: "Helfen Sie uns", feedbackBtn: "Feedback",
+                feedbackLabel: "Helfen Sie uns", feedbackBtnText: "Feedback",
                 tooltip: "6 Stellen.", passportHint: "(z.B. AB1234)",
-                tabTest: "Testen", tabIssues: "Probleme", tabRemediations: "Lösungen",
-                testSteps: ["Zoom 200%. Feedback-Button wird unscharf.", "Wenig Kontrast.", "Icon zu weit weg."],
+                tabTest: "Testen", tabUser: "Impact", tabIssues: "Probleme", tabRemediations: "Lösungen",
+                testSteps: ["Zoom 200%. Button wird unscharf.", "Wenig Kontrast.", "Icon zu weit weg."],
                 critiques: {
-                    bad: { title: "Probleme", items: [{ f: "Text als Bild", c: "Der Feedback-Button wird beim Zoomen unscharf." }] },
-                    good: { title: "Lösungen", items: [{ f: "Echter Text", c: "CSS nutzen für scharfe Darstellung." }] }
+                    bad: { title: "Probleme", items: [{ f: "Text als Bild", c: "Unscharf beim Zoomen." }] },
+                    good: { title: "Lösungen", items: [{ f: "Echter Text", c: "CSS nutzen." }] }
                 },
-                userTitle: "Wer?", userList: ["**Sehbehinderte**", "**Bildschirmlupe**"]
+                userTitle: "Wer?", userList: ["**Sehbehinderte**"]
             }
         };
 
@@ -244,9 +243,9 @@
             document.getElementById('txt-label-email').innerText = t.email;
             document.getElementById('txt-btn').innerText = t.btn;
             document.getElementById('txt-feedback-label').innerText = t.feedbackLabel;
-            document.getElementById('good-feedback-btn').innerText = t.feedbackBtn;
+            document.getElementById('good-feedback-btn').innerText = t.feedbackBtnText;
             document.getElementById('txt-tooltip').innerText = t.tooltip;
-            document.getElementById('txt-test-steps').innerHTML = (t.testSteps || []).map(s => `<li>${s}</li>`).join('');
+            document.getElementById('txt-test-steps').innerHTML = t.testSteps.map(s => `<li>${s}</li>`).join('');
             
             const pInput = document.getElementById('passport-input');
             const pLabel = document.getElementById('txt-label-passport');
@@ -280,7 +279,9 @@
             const isAcc = document.getElementById('modeToggle').checked;
             const t = translations[currentLang] || translations['en'];
             const crit = isAcc ? t.critiques.good : t.critiques.bad;
+            
             document.getElementById('bodyTag').className = isAcc ? "bg-gray-100 min-h-screen p-4 md:p-8 font-sans accessible-mode" : "bg-gray-100 min-h-screen p-4 md:p-8 font-sans inaccessible-mode";
+            
             document.getElementById('tab-feedback').innerText = isAcc ? t.tabRemediations : t.tabIssues;
             document.getElementById('txt-feedback-title').innerText = crit.title;
             document.getElementById('critiqueContent').innerHTML = (crit.items || []).map(i => `<div><span class="text-blue-400 font-bold block mb-1 uppercase text-[11px]">${i.f}</span><p class="text-white opacity-90">${i.c}</p></div>`).join('');
@@ -288,16 +289,13 @@
 
         function switchTab(tabId) {
             ['test', 'feedback', 'user'].forEach(id => {
-                const panel = document.getElementById('panel-' + id);
-                const tab = document.getElementById('tab-' + id);
-                if (panel) panel.classList.toggle('hidden', id !== tabId);
-                if (tab) tab.setAttribute('aria-selected', id === tabId);
+                document.getElementById('panel-' + id).classList.toggle('hidden', id !== tabId);
+                document.getElementById('tab-' + id).setAttribute('aria-selected', id === tabId);
             });
         }
 
         window.addEventListener('resize', updateZoomVariable);
         setLanguage('en');
-        switchTab('test');
     </script>
 </body>
 </html>
