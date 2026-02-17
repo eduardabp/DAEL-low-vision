@@ -13,7 +13,10 @@
         .inaccessible-mode .low-contrast-border { border-color: #f3f4f6 !important; }
         .inaccessible-mode input::placeholder { color: #eeeeee !important; opacity: 1; }
         .inaccessible-mode *:focus { outline: none !important; box-shadow: none !important; }
-        .inaccessible-mode .proximity-box { display: flex; justify-content: space-between; width: 100%; }
+        
+        /* Fixed Proximity Issue */
+        .inaccessible-mode .proximity-box { display: flex; justify-content: space-between; width: 100%; align-items: center; }
+        
         .inaccessible-mode .zoom-container { height: 1.1rem; overflow: hidden; margin-bottom: 0.25rem; }
         .inaccessible-mode .no-scale { display: inline-block; transform: scale(var(--reverse-zoom, 1)); transform-origin: left; }
 
@@ -28,6 +31,9 @@
         /* --- ACCESSIBLE MODE STYLES --- */
         .accessible-mode *:focus-visible { outline: 3px solid #2563eb !important; outline-offset: 2px !important; }
         
+        /* Standardized Flex for Alignment */
+        .accessible-mode .proximity-box { display: flex; gap: 8px; align-items: center; width: 100%; }
+
         .accessible-mode .info-trigger:hover + .tooltip-box,
         .accessible-mode .info-trigger:focus + .tooltip-box,
         .accessible-mode .tooltip-box:hover,
@@ -35,9 +41,8 @@
         .accessible-mode .tooltip-box::before { content: ""; position: absolute; left: -40px; top: -10px; width: 40px; height: 150%; }
 
         /* --- LAYOUT SYNC --- */
-        /* Ensuring the right panel has a consistent minimum height to prevent shifting */
         .info-panel-container {
-            min-height: 500px !important; /* Forces same size in both versions */
+            min-height: 350px !important; 
             display: flex;
             flex-direction: column;
         }
@@ -93,7 +98,7 @@
                     </div>
 
                     <div class="relative">
-                        <div class="proximity-box mb-1">
+                        <div class="proximity-box mb-1" style="min-height: 1.5rem;">
                             <label id="txt-label-passport" class="text-xs font-semibold uppercase tracking-wider low-contrast-label">Passport ID</label>
                             <div class="relative inline-block">
                                 <button type="button" id="info-btn" class="info-trigger cursor-help bg-blue-700 text-white rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-bold">i</button>
@@ -139,62 +144,61 @@
                 tooltip: "Enter your 6-digit passport number without spaces.", passportHint: "(e.g. AB1234)",
                 tabTest: "How to test", tabUser: "Impacted users", tabIssues: "Issues", tabRemediations: "Remediations",
                 testSteps: [
-                    "Zoom to 200%. The 'Full Name' label vanishes because of fixed height constraints.",
-                    "Look for the Passport placeholder. It is nearly invisible due to low contrast.",
-                    "In bad mode, the 'i' icon is far right. Magnifier users will miss it.",
-                    "Try to read the tooltip in bad mode; it disappears when you leave the icon.",
-                    "In 'Accessible', focus the 'i' and press Space/Enter to toggle help."
+                    "Zoom to 200%. The 'Full Name' label vanishes due to height constraints.",
+                    "The Passport placeholder is nearly invisible (low contrast).",
+                    "The 'i' icon is at the far right in 'Inaccessible' mode.",
+                    "In 'Inaccessible', the tooltip vanishes when you move to read it.",
+                    "In 'Accessible', use Space/Enter on the 'i' to toggle help."
                 ],
                 critiques: {
                     bad: { title: "What is wrong?", items: [
-                        { f: "Contrast Failure", c: "Placeholders have ~1.2:1 contrast, failing visibility requirements." },
-                        { f: "Proximity Gap", c: "Magnifier users see the label but never see the help icon at the screen edge." },
-                        { f: "Unreachable Content", c: "The tooltip disappears on hover, making it impossible to read for many." }
+                        { f: "Contrast Failure", c: "Placeholders fail 4.5:1 ratio." },
+                        { f: "Proximity Gap", c: "Icons placed at screen edges are lost for magnifier users." },
+                        { f: "Unreachable Tooltip", c: "Cannot hover or focus the tooltip content." }
                     ]},
-                    good: { title: "How to remediate", items: [
-                        { f: "Contrast Compliance", c: "Maintain at least 4.5:1 ratio for all text elements." },
-                        { f: "Logical Proximity", c: "Group related labels and icons closely together." },
-                        { f: "Interactive Tooltips", c: "Ensure tooltips stay open on hover and support keyboard access." }
+                    good: { title: "Remediations", items: [
+                        { f: "Contrast Compliance", c: "Maintain at least 4.5:1 contrast." },
+                        { f: "Logical Proximity", c: "Group icons with labels." }
                     ]}
                 },
                 userTitle: "Who is impacted?",
-                userList: ["**Low Vision users** who zoom.", "**Magnifier users**.", "**Aging users**."]
+                userList: ["**Low Vision users**", "**Magnifier users**", "**Aging users**"]
             },
             fr: {
-                labTitle: "Labo d'Empathie Accessibilité", title: "Expérience Basse Vision",
-                name: "Nom Complet", passport: "N° Passeport", email: "Adresse Email", btn: "Mettre à jour",
-                tooltip: "Entrez les 6 chiffres sans espaces.", passportHint: "(ex: AB1234)",
-                tabTest: "Comment tester", tabUser: "Impact", tabIssues: "Problèmes", tabRemediations: "Corrections",
-                testSteps: ["Zoomez à 200%.", "Le texte indicatif est presque invisible.", "L'icône est trop loin."],
+                labTitle: "Labo d'Empathie Accessibilité", title: "Basse Vision",
+                name: "Nom Complet", passport: "Passeport", email: "Email", btn: "Mettre à jour",
+                tooltip: "6 chiffres sans espaces.", passportHint: "(ex: AB1234)",
+                tabTest: "Test", tabUser: "Impact", tabIssues: "Problèmes", tabRemediations: "Corrections",
+                testSteps: ["Zoomez à 200%.", "Contraste trop faible.", "Icône trop loin."],
                 critiques: {
                     bad: { title: "Problèmes", items: [{ f: "Contraste", c: "Texte trop clair." }] },
-                    good: { title: "Corrections", items: [{ f: "Lisibilité", c: "Contraste élevé." }] }
+                    good: { title: "Corrections", items: [{ f: "Accessibilité", c: "Contraste 4.5:1." }] }
                 },
-                userTitle: "Qui est impacté ?", userList: ["**Malvoyants**", "**Utilisateurs de loupe**"]
+                userTitle: "Impacté ?", userList: ["**Malvoyants**"]
             },
             nl: {
-                labTitle: "Toegankelijkheid Empathie Lab", title: "Lage Visus Ervaring",
-                name: "Volledige Naam", passport: "Paspoort ID", email: "E-mailadres", btn: "Bijwerken",
-                tooltip: "6 cijfers zonder spaties.", passportHint: "(bijv. AB1234)",
+                labTitle: "Toegankelijkheid Lab", title: "Lage Visus",
+                name: "Naam", passport: "Paspoort ID", email: "Email", btn: "Bijwerken",
+                tooltip: "6 cijfers.", passportHint: "(bijv. AB1234)",
                 tabTest: "Testen", tabUser: "Impact", tabIssues: "Problemen", tabRemediations: "Oplossingen",
-                testSteps: ["Zoom naar 200%.", "Placeholder onzichtbaar.", "Icoon te ver."],
+                testSteps: ["Zoom naar 200%.", "Slecht contrast.", "Icoon te ver."],
                 critiques: {
-                    bad: { title: "Problemen", items: [{ f: "Contrast", c: "Tekst te licht." }] },
-                    good: { title: "Oplossingen", items: [{ f: "Duidelijkheid", c: "Voldoende contrast." }] }
+                    bad: { title: "Problemen", items: [{ f: "Contrast", c: "Te licht." }] },
+                    good: { title: "Oplossingen", items: [{ f: "Voldoende contrast", c: "4.5:1 ratio." }] }
                 },
-                userTitle: "Wie?", userList: ["**Slechtzienden**", "**Schermloep**"]
+                userTitle: "Wie?", userList: ["**Slechtzienden**"]
             },
             de: {
-                labTitle: "Barrierefreiheit Empathie-Labor", title: "Sehbehinderung Erfahrung",
+                labTitle: "Barrierefreiheit-Labor", title: "Sehbehinderung",
                 name: "Name", passport: "Reisepass-ID", email: "E-Mail", btn: "Aktualisieren",
                 tooltip: "6 Stellen.", passportHint: "(z.B. AB1234)",
                 tabTest: "Testen", tabIssues: "Probleme", tabRemediations: "Lösungen",
-                testSteps: ["Auf 200% zoomen.", "Schlechter Kontrast.", "Icon zu weit rechts."],
+                testSteps: ["Zoom 200%.", "Wenig Kontrast.", "Icon weit weg."],
                 critiques: {
                     bad: { title: "Probleme", items: [{ f: "Kontrast", c: "Zu gering." }] },
-                    good: { title: "Lösungen", items: [{ f: "Kontrast", c: "4.5:1 Minimum." }] }
+                    good: { title: "Lösungen", items: [{ f: "Kontrast", c: "Min. 4.5:1." }] }
                 },
-                userTitle: "Wer?", userList: ["**Sehbehinderte**", "**Bildschirmlupe**"]
+                userTitle: "Wer?", userList: ["**Sehbehinderte**"]
             }
         };
 
@@ -252,42 +256,4 @@
             const t = translations[currentLang] || translations['en'];
             const crit = isAcc ? t.critiques.good : t.critiques.bad;
             
-            document.getElementById('bodyTag').className = isAcc ? "bg-gray-100 min-h-screen p-4 md:p-8 font-sans accessible-mode" : "bg-gray-100 min-h-screen p-4 md:p-8 font-sans inaccessible-mode";
-            
-            document.getElementById('tab-feedback').innerText = isAcc ? t.tabRemediations : t.tabIssues;
-            document.getElementById('txt-feedback-title').innerText = crit.title;
-            document.getElementById('critiqueContent').innerHTML = (crit.items || []).map(i => `<div><span class="text-blue-400 font-bold block mb-1 uppercase text-[11px]">${i.f}</span><p class="text-white opacity-90">${i.c}</p></div>`).join('');
-        }
-
-        function switchTab(tabId) {
-            ['test', 'feedback', 'user'].forEach(id => {
-                const panel = document.getElementById('panel-' + id);
-                const tab = document.getElementById('tab-' + id);
-                if (panel) panel.classList.toggle('hidden', id !== tabId);
-                if (tab) tab.setAttribute('aria-selected', id === tabId);
-            });
-        }
-
-        const infoBtn = document.getElementById('info-btn');
-        const tooltip = document.getElementById('txt-tooltip');
-        infoBtn.addEventListener('keydown', (e) => {
-            if (document.getElementById('modeToggle').checked && (e.key === ' ' || e.key === 'Enter')) {
-                e.preventDefault();
-                tooltip.classList.toggle('kb-visible');
-            }
-        });
-
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                tooltip.classList.remove('kb-visible');
-                tooltip.style.display = 'none';
-                setTimeout(() => tooltip.style.display = '', 500);
-            }
-        });
-
-        window.addEventListener('resize', updateZoomVariable);
-        setLanguage('en');
-        switchTab('test');
-    </script>
-</body>
-</html>
+            document.getElementById('bodyTag').className = isAcc
