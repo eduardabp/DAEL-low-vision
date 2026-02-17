@@ -256,4 +256,42 @@
             const t = translations[currentLang] || translations['en'];
             const crit = isAcc ? t.critiques.good : t.critiques.bad;
             
-            document.getElementById('bodyTag').className = isAcc
+            document.getElementById('bodyTag').className = isAcc ? "bg-gray-100 min-h-screen p-4 md:p-8 font-sans accessible-mode" : "bg-gray-100 min-h-screen p-4 md:p-8 font-sans inaccessible-mode";
+            
+            document.getElementById('tab-feedback').innerText = isAcc ? t.tabRemediations : t.tabIssues;
+            document.getElementById('txt-feedback-title').innerText = crit.title;
+            document.getElementById('critiqueContent').innerHTML = (crit.items || []).map(i => `<div><span class="text-blue-400 font-bold block mb-1 uppercase text-[11px]">${i.f}</span><p class="text-white opacity-90">${i.c}</p></div>`).join('');
+        }
+
+        function switchTab(tabId) {
+            ['test', 'feedback', 'user'].forEach(id => {
+                const panel = document.getElementById('panel-' + id);
+                const tab = document.getElementById('tab-' + id);
+                if (panel) panel.classList.toggle('hidden', id !== tabId);
+                if (tab) tab.setAttribute('aria-selected', id === tabId);
+            });
+        }
+
+        const infoBtn = document.getElementById('info-btn');
+        const tooltip = document.getElementById('txt-tooltip');
+        infoBtn.addEventListener('keydown', (e) => {
+            if (document.getElementById('modeToggle').checked && (e.key === ' ' || e.key === 'Enter')) {
+                e.preventDefault();
+                tooltip.classList.toggle('kb-visible');
+            }
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                tooltip.classList.remove('kb-visible');
+                tooltip.style.display = 'none';
+                setTimeout(() => tooltip.style.display = '', 500);
+            }
+        });
+
+        window.addEventListener('resize', updateZoomVariable);
+        setLanguage('en');
+        switchTab('test');
+    </script>
+</body>
+</html>
