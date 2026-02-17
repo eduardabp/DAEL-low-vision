@@ -36,18 +36,17 @@
         .accessible-mode *:focus-visible { outline: 3px solid #2563eb !important; outline-offset: 2px !important; }
         .accessible-mode .proximity-box { display: flex; gap: 8px; align-items: center; width: 100%; }
 
-        /* CSS FEEDBACK BUTTON - Max weight + Shadow to match Image rendering */
+        /* CSS FEEDBACK BUTTON - Adjusted to match the image's lighter rendering */
         .accessible-mode #bad-feedback-img { display: none !important; }
         .accessible-mode #good-feedback-btn { 
             display: flex !important; 
             align-items: center; justify-content: center;
             background-color: #dc2626; color: white; 
-            font-weight: 900; width: 120px; height: 38px;
-            border-radius: 4px; font-size: 14px;
-            text-transform: uppercase; font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
-            letter-spacing: 0.025em;
-            /* Shadow adds visual thickness to match image pixels */
-            text-shadow: 0.5px 0 0 white, -0.5px 0 0 white;
+            font-weight: 500; /* Reduced from 900 to match image text */
+            width: 120px; height: 38px;
+            border-radius: 4px; font-size: 13px; /* Slightly smaller to match placeholder scale */
+            text-transform: uppercase; font-family: sans-serif;
+            letter-spacing: 0.05em; /* Matching placeholder's character spacing */
         }
         .accessible-mode #good-feedback-btn:hover { background-color: #991b1b; }
 
@@ -135,7 +134,7 @@
                 </div>
 
                 <div class="lg:col-span-3">
-                    <div class="info-panel-container bg-gray-900 text-white rounded-2xl shadow-xl overflow-hidden">
+                    <div class="info-panel-container bg-gray-900 text-white rounded-2xl shadow-xl overflow-hidden h-full flex flex-col">
                         <div class="flex bg-gray-800 border-b border-gray-700">
                             <button id="tab-test" onclick="switchTab('test')" class="tab-btn px-6 py-4 text-xs font-black uppercase tracking-widest" aria-selected="true">How to test</button>
                             <button id="tab-feedback" onclick="switchTab('feedback')" class="tab-btn px-6 py-4 text-xs font-black uppercase tracking-widest border-l border-gray-700" aria-selected="false">Issues</button>
@@ -168,10 +167,12 @@
                 critiques: {
                     bad: { title: "What is wrong?", items: [
                         { f: "Images of Text", c: "The 'Feedback' button is an image. It blurs when zoomed." },
-                        { f: "Contrast Failure", c: "Placeholder contrast is too low." }
+                        { f: "Contrast Failure", c: "Placeholder contrast is too low." },
+                        { f: "Proximity Gap", c: "Icons placed far from labels are lost for magnifier users." }
                     ]},
                     good: { title: "Remediations", items: [
-                        { f: "Live Text", c: "CSS buttons with real text stay sharp at any scale." }
+                        { f: "Live Text", c: "CSS buttons with real text stay sharp at any scale." },
+                        { f: "Contrast Compliance", c: "Maintain at least 4.5:1 contrast." }
                     ]}
                 },
                 userTitle: "Who is impacted?", userList: ["**Low Vision users** who zoom.", "**Magnifier users**."]
@@ -185,7 +186,7 @@
                 testSteps: ["Zoomez à 200%. Le bouton Feedback devient flou.", "Placeholder invisible.", "Icône trop loin."],
                 critiques: {
                     bad: { title: "Problèmes", items: [{ f: "Image de texte", c: "Flou au zoom." }] },
-                    good: { title: "Corrections", items: [{ f: "Texte réel", c: "CSS net." }] }
+                    good: { title: "Corrections", items: [{ f: "Texte réel", c: "Utilisez du CSS." }] }
                 },
                 userTitle: "Impact ?", userList: ["**Malvoyants**"]
             },
