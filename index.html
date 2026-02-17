@@ -10,14 +10,12 @@
         .transition-all { transition: all 0.3s ease; }
 
         /* --- INACCESSIBLE MODE STYLES --- */
-        /* Updated to ~2.5:1 contrast ratio (#94a3b8) */
         .inaccessible-mode .low-contrast-label { color: #94a3b8 !important; }
         .inaccessible-mode .low-contrast-border { border-color: #f1f5f9 !important; }
         .inaccessible-mode input::placeholder { color: #cbd5e1 !important; opacity: 1; }
         .inaccessible-mode *:focus { outline: none !important; box-shadow: none !important; }
         .inaccessible-mode .proximity-box { display: flex; justify-content: space-between; width: 100%; align-items: center; }
         
-        /* Scaling lock for Email label */
         .inaccessible-mode .no-scale { 
             display: inline-block; 
             transform: scale(var(--reverse-zoom, 1)); 
@@ -44,7 +42,7 @@
         .accessible-mode *:focus-visible { outline: 3px solid #2563eb !important; outline-offset: 2px !important; }
         .accessible-mode .proximity-box { display: flex; gap: 8px; align-items: center; width: 100%; }
 
-        /* CSS FEEDBACK BUTTON */
+        /* CSS FEEDBACK BUTTON - Synced size and tracking to match image precisely */
         .accessible-mode #bad-feedback-img { display: none !important; }
         .accessible-mode #good-feedback-btn { 
             display: flex !important; 
@@ -52,9 +50,10 @@
             background-color: #dc2626; color: white; 
             font-weight: 500; 
             width: 120px; height: 38px;
-            border-radius: 4px; font-size: 13.5px;
+            border-radius: 4px; 
+            font-size: 13px; /* Reduced from 13.5px for exact match */
             text-transform: uppercase; font-family: sans-serif;
-            letter-spacing: 0.06em;
+            letter-spacing: 0.045em; /* Adjusted tracking */
         }
         .accessible-mode #good-feedback-btn:hover { background-color: #991b1b; }
 
@@ -176,7 +175,7 @@
                     bad: { title: "What is wrong?", items: [
                         { f: "Images of Text", c: "The 'Feedback' button is an image. It blurs when zoomed." },
                         { f: "Scaling Prevention", c: "The Email label is locked, preventing it from growing with the browser zoom." },
-                        { f: "Contrast Failure", c: "Labels and placeholders fail the 4.5:1 ratio requirement." }
+                        { f: "Contrast Failure", c: "Labels and placeholders fail contrast requirements." }
                     ]},
                     good: { title: "Remediations", items: [
                         { f: "Live Text", c: "CSS buttons with real text stay sharp at any scale." },
