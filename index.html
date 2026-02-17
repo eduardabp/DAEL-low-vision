@@ -6,15 +6,23 @@
     <title>Low Vision Experience - Digital Accessibility Empathy Lab</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        :root { --reverse-zoom: 1; }
         .transition-all { transition: all 0.3s ease; }
 
         /* --- INACCESSIBLE MODE STYLES --- */
-        .inaccessible-mode .low-contrast-label { color: #e5e7eb !important; }
-        .inaccessible-mode .low-contrast-border { border-color: #f3f4f6 !important; }
-        .inaccessible-mode input::placeholder { color: #eeeeee !important; opacity: 1; }
+        /* Updated to ~2.5:1 contrast ratio (#94a3b8) */
+        .inaccessible-mode .low-contrast-label { color: #94a3b8 !important; }
+        .inaccessible-mode .low-contrast-border { border-color: #f1f5f9 !important; }
+        .inaccessible-mode input::placeholder { color: #cbd5e1 !important; opacity: 1; }
         .inaccessible-mode *:focus { outline: none !important; box-shadow: none !important; }
         .inaccessible-mode .proximity-box { display: flex; justify-content: space-between; width: 100%; align-items: center; }
-        .inaccessible-mode .no-scale { display: inline-block; transform: scale(var(--reverse-zoom, 1)); transform-origin: left; }
+        
+        /* Scaling lock for Email label */
+        .inaccessible-mode .no-scale { 
+            display: inline-block; 
+            transform: scale(var(--reverse-zoom, 1)); 
+            transform-origin: left; 
+        }
 
         /* IMAGE FEEDBACK BUTTON */
         .inaccessible-mode #bad-feedback-img { 
@@ -26,7 +34,6 @@
         }
         .inaccessible-mode #good-feedback-btn { display: none !important; }
 
-        /* Tooltip behavior */
         .tooltip-box {
             display: none; position: absolute; background: #1f2937; color: white;
             padding: 12px; width: 220px; z-index: 50; left: 20px; top: 10px; border-radius: 8px;
@@ -37,17 +44,17 @@
         .accessible-mode *:focus-visible { outline: 3px solid #2563eb !important; outline-offset: 2px !important; }
         .accessible-mode .proximity-box { display: flex; gap: 8px; align-items: center; width: 100%; }
 
-        /* CSS FEEDBACK BUTTON - Weight set to 500 to match Image rendering */
+        /* CSS FEEDBACK BUTTON */
         .accessible-mode #bad-feedback-img { display: none !important; }
         .accessible-mode #good-feedback-btn { 
             display: flex !important; 
             align-items: center; justify-content: center;
             background-color: #dc2626; color: white; 
-            font-weight: 500; /* Medium weight matches image bold best */
+            font-weight: 500; 
             width: 120px; height: 38px;
             border-radius: 4px; font-size: 13.5px;
             text-transform: uppercase; font-family: sans-serif;
-            letter-spacing: 0.06em; /* Matches image generator gap */
+            letter-spacing: 0.06em;
         }
         .accessible-mode #good-feedback-btn:hover { background-color: #991b1b; }
 
@@ -160,33 +167,34 @@
                 tabTest: "How to test", tabUser: "Impacted users", tabIssues: "Issues", tabRemediations: "Remediations",
                 testSteps: [
                     "Zoom to 200%. The red 'Feedback' image blurs while the CSS version remains sharp.",
-                    "Look for the Passport placeholder. It is nearly invisible due to low contrast in 'Inaccessible'.",
-                    "The 'i' icon is far right in 'Inaccessible' mode.",
+                    "Look for the Passport placeholder. It is hard to read due to low contrast in 'Inaccessible'.",
+                    "Try to read the Email Address label as you zoom. It stays small in 'Inaccessible' mode.",
                     "The tooltip vanishes when you move the mouse to read it in bad mode.",
                     "In 'Accessible', use Space/Enter on the 'i' to toggle help."
                 ],
                 critiques: {
                     bad: { title: "What is wrong?", items: [
                         { f: "Images of Text", c: "The 'Feedback' button is an image. It blurs when zoomed." },
-                        { f: "Contrast Failure", c: "Placeholder contrast is too low (approx 1.2:1)." },
-                        { f: "Proximity Gap", c: "Icons placed far from labels are lost for magnifier users." }
+                        { f: "Scaling Prevention", c: "The Email label is locked, preventing it from growing with the browser zoom." },
+                        { f: "Contrast Failure", c: "Labels and placeholders fail the 4.5:1 ratio requirement." }
                     ]},
                     good: { title: "Remediations", items: [
                         { f: "Live Text", c: "CSS buttons with real text stay sharp at any scale." },
-                        { f: "Contrast Compliance", c: "Maintain at least 4.5:1 contrast." }
+                        { f: "Responsive Design", c: "Allow all text to scale naturally for reading comfort." },
+                        { f: "Contrast Compliance", c: "Ensure at least 4.5:1 contrast for all text elements." }
                     ]}
                 },
                 userTitle: "Who is impacted?", userList: ["**Low Vision users** who zoom.", "**Magnifier users**."]
             },
             fr: {
-                labTitle: "Labo Accessibilité", title: "Basse Vision",
+                labTitle: "Labo Accessibilité", title: "Expérience Basse Vision",
                 name: "Nom Complet", passport: "Passeport", email: "Email", btn: "Mettre à jour",
                 feedbackLabel: "Aidez-nous", feedbackBtnText: "Commentaires",
                 tooltip: "6 chiffres.", passportHint: "(ex: AB1234)",
                 tabTest: "Test", tabUser: "Impact", tabIssues: "Problèmes", tabRemediations: "Corrections",
-                testSteps: ["Zoomez à 200%. Le bouton Feedback devient flou.", "Placeholder invisible.", "Icône trop loin."],
+                testSteps: ["Zoomez à 200%. Le bouton Feedback devient flou.", "Le label Email ne s'agrandit pas.", "Icône trop loin."],
                 critiques: {
-                    bad: { title: "Problèmes", items: [{ f: "Image de texte", c: "Flou au zoom." }] },
+                    bad: { title: "Problèmes", items: [{ f: "Image de texte", c: "Flou au zoom." }, { f: "Blocage Zoom", c: "Le texte ne s'agrandit pas." }] },
                     good: { title: "Corrections", items: [{ f: "Texte réel", c: "Utilisez du CSS." }] }
                 },
                 userTitle: "Impact ?", userList: ["**Malvoyants**"]
@@ -197,7 +205,7 @@
                 feedbackLabel: "Help ons", feedbackBtnText: "Feedback",
                 tooltip: "6 cijfers.", passportHint: "(bijv. AB1234)",
                 tabTest: "Testen", tabUser: "Impact", tabIssues: "Problemen", tabRemediations: "Oplossingen",
-                testSteps: ["Zoom naar 200%. Feedback wordt wazig.", "Slecht contrast.", "Icoon te ver."],
+                testSteps: ["Zoom naar 200%. Feedback wordt wazig.", "Email label schaalt niet mee.", "Icoon te ver."],
                 critiques: {
                     bad: { title: "Wat is er mis?", items: [{ f: "Tekst in afbeelding", c: "Wazig bij zoomen." }] },
                     good: { title: "Oplossingen", items: [{ f: "Live tekst", c: "Scherpte via CSS." }] }
@@ -210,7 +218,7 @@
                 feedbackLabel: "Helfen Sie uns", feedbackBtnText: "Feedback",
                 tooltip: "6 Stellen.", passportHint: "(z.B. AB1234)",
                 tabTest: "Testen", tabIssues: "Probleme", tabRemediations: "Lösungen",
-                testSteps: ["Zoom 200%. Button wird unscharf.", "Wenig Kontrast.", "Icon zu weit weg."],
+                testSteps: ["Zoom 200%. Button wird unscharf.", "Email label skaliert nicht.", "Icon zu weit weg."],
                 critiques: {
                     bad: { title: "Probleme", items: [{ f: "Text als Bild", c: "Unscharf beim Zoomen." }] },
                     good: { title: "Lösungen", items: [{ f: "Echter Text", c: "CSS scharf." }] }
