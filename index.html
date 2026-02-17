@@ -14,10 +14,9 @@
         .inaccessible-mode input::placeholder { color: #eeeeee !important; opacity: 1; }
         .inaccessible-mode *:focus { outline: none !important; box-shadow: none !important; }
         
-        /* Fixed Proximity Issue */
+        /* Proximity Issue: Large gap between label and icon */
         .inaccessible-mode .proximity-box { display: flex; justify-content: space-between; width: 100%; align-items: center; }
         
-        .inaccessible-mode .zoom-container { height: 1.1rem; overflow: hidden; margin-bottom: 0.25rem; }
         .inaccessible-mode .no-scale { display: inline-block; transform: scale(var(--reverse-zoom, 1)); transform-origin: left; }
 
         /* Tooltip behavior */
@@ -31,7 +30,7 @@
         /* --- ACCESSIBLE MODE STYLES --- */
         .accessible-mode *:focus-visible { outline: 3px solid #2563eb !important; outline-offset: 2px !important; }
         
-        /* Standardized Flex for Alignment */
+        /* Close Proximity for Magnifiers */
         .accessible-mode .proximity-box { display: flex; gap: 8px; align-items: center; width: 100%; }
 
         .accessible-mode .info-trigger:hover + .tooltip-box,
@@ -41,6 +40,13 @@
         .accessible-mode .tooltip-box::before { content: ""; position: absolute; left: -40px; top: -10px; width: 40px; height: 150%; }
 
         /* --- LAYOUT SYNC --- */
+        .label-row {
+            height: 1.5rem !important;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.25rem;
+        }
+
         .info-panel-container {
             min-height: 350px !important; 
             display: flex;
@@ -91,14 +97,14 @@
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-16">
                 <div class="lg:col-span-1 space-y-6">
                     <div>
-                        <div class="zoom-container">
+                        <div class="label-row">
                             <label id="txt-label-name" class="text-xs font-semibold uppercase tracking-wider low-contrast-label">Full Name</label>
                         </div>
                         <input type="text" class="w-full border border-gray-300 p-2 rounded-lg bg-gray-50 text-sm low-contrast-border">
                     </div>
 
                     <div class="relative">
-                        <div class="proximity-box mb-1" style="min-height: 1.5rem;">
+                        <div class="label-row proximity-box">
                             <label id="txt-label-passport" class="text-xs font-semibold uppercase tracking-wider low-contrast-label">Passport ID</label>
                             <div class="relative inline-block">
                                 <button type="button" id="info-btn" class="info-trigger cursor-help bg-blue-700 text-white rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-bold">i</button>
@@ -109,8 +115,10 @@
                     </div>
 
                     <div>
-                        <div class="no-scale mb-1">
-                            <label id="txt-label-email" class="text-xs font-semibold uppercase tracking-wider low-contrast-label">Email Address</label>
+                        <div class="label-row">
+                            <div class="no-scale">
+                                <label id="txt-label-email" class="text-xs font-semibold uppercase tracking-wider low-contrast-label">Email Address</label>
+                            </div>
                         </div>
                         <input type="email" class="w-full border border-gray-300 p-2 rounded-lg bg-gray-50 text-sm low-contrast-border">
                     </div>
@@ -144,35 +152,36 @@
                 tooltip: "Enter your 6-digit passport number without spaces.", passportHint: "(e.g. AB1234)",
                 tabTest: "How to test", tabUser: "Impacted users", tabIssues: "Issues", tabRemediations: "Remediations",
                 testSteps: [
-                    "Zoom to 200%. The 'Full Name' label vanishes due to height constraints.",
-                    "The Passport placeholder is nearly invisible (low contrast).",
-                    "The 'i' icon is at the far right in 'Inaccessible' mode.",
-                    "In 'Inaccessible', the tooltip vanishes when you move to read it.",
-                    "In 'Accessible', use Space/Enter on the 'i' to toggle help."
+                    "Zoom to 200%. Compare how labels grow in both versions.",
+                    "Look for the Passport placeholder. It is nearly invisible due to low contrast in 'Inaccessible'.",
+                    "The 'i' icon is at the far right in 'Inaccessible' mode, causing issues for magnifier users.",
+                    "In 'Inaccessible', the tooltip vanishes immediately when you move the mouse to read it.",
+                    "In 'Accessible', focus the 'i' and press Space or Enter to toggle the help text."
                 ],
                 critiques: {
                     bad: { title: "What is wrong?", items: [
-                        { f: "Contrast Failure", c: "Placeholders fail 4.5:1 ratio." },
-                        { f: "Proximity Gap", c: "Icons placed at screen edges are lost for magnifier users." },
-                        { f: "Unreachable Tooltip", c: "Cannot hover or focus the tooltip content." }
+                        { f: "Contrast Failure", c: "Placeholder text contrast is too low (approx 1.2:1)." },
+                        { f: "Proximity Gap", c: "Related icons placed far from labels are easily missed by magnifier users." },
+                        { f: "Unreachable Tooltip", c: "Tooltip content is not persistent on hover and lacks keyboard focus support." }
                     ]},
                     good: { title: "Remediations", items: [
-                        { f: "Contrast Compliance", c: "Maintain at least 4.5:1 contrast." },
-                        { f: "Logical Proximity", c: "Group icons with labels." }
+                        { f: "Contrast Compliance", c: "Maintain at least 4.5:1 contrast for all meaningful text and hints." },
+                        { f: "Logical Proximity", c: "Group icons and labels closely to keep them in the same viewport." },
+                        { f: "Accessible Tooltips", c: "Ensure tooltips stay open when hovered and are operable via keyboard." }
                     ]}
                 },
                 userTitle: "Who is impacted?",
-                userList: ["**Low Vision users**", "**Magnifier users**", "**Aging users**"]
+                userList: ["**Low Vision users** who zoom.", "**Magnifier users**.", "**Aging users**."]
             },
             fr: {
                 labTitle: "Labo d'Empathie Accessibilité", title: "Basse Vision",
                 name: "Nom Complet", passport: "Passeport", email: "Email", btn: "Mettre à jour",
                 tooltip: "6 chiffres sans espaces.", passportHint: "(ex: AB1234)",
                 tabTest: "Test", tabUser: "Impact", tabIssues: "Problèmes", tabRemediations: "Corrections",
-                testSteps: ["Zoomez à 200%.", "Contraste trop faible.", "Icône trop loin."],
+                testSteps: ["Zoomez à 200%.", "Texte indicatif presque invisible.", "Icône trop loin."],
                 critiques: {
-                    bad: { title: "Problèmes", items: [{ f: "Contraste", c: "Texte trop clair." }] },
-                    good: { title: "Corrections", items: [{ f: "Accessibilité", c: "Contraste 4.5:1." }] }
+                    bad: { title: "Problèmes", items: [{ f: "Contraste", c: "Texte trop clair." }, { f: "Proximité", c: "Icône trop éloignée." }] },
+                    good: { title: "Corrections", items: [{ f: "Visibilité", c: "Contraste 4.5:1." }, { f: "Regroupement", c: "Icône proche du texte." }] }
                 },
                 userTitle: "Impacté ?", userList: ["**Malvoyants**"]
             },
@@ -183,8 +192,8 @@
                 tabTest: "Testen", tabUser: "Impact", tabIssues: "Problemen", tabRemediations: "Oplossingen",
                 testSteps: ["Zoom naar 200%.", "Slecht contrast.", "Icoon te ver."],
                 critiques: {
-                    bad: { title: "Problemen", items: [{ f: "Contrast", c: "Te licht." }] },
-                    good: { title: "Oplossingen", items: [{ f: "Voldoende contrast", c: "4.5:1 ratio." }] }
+                    bad: { title: "Problemen", items: [{ f: "Contrast", c: "Te licht." }, { f: "Afstand", c: "Icoon staat te ver." }] },
+                    good: { title: "Oplossingen", items: [{ f: "Duidelijkheid", c: "Min. 4.5:1 contrast." }] }
                 },
                 userTitle: "Wie?", userList: ["**Slechtzienden**"]
             },
@@ -195,7 +204,7 @@
                 tabTest: "Testen", tabIssues: "Probleme", tabRemediations: "Lösungen",
                 testSteps: ["Zoom 200%.", "Wenig Kontrast.", "Icon weit weg."],
                 critiques: {
-                    bad: { title: "Probleme", items: [{ f: "Kontrast", c: "Zu gering." }] },
+                    bad: { title: "Probleme", items: [{ f: "Kontrast", c: "Zu gering." }, { f: "Nähe", c: "Icon zu weit weg." }] },
                     good: { title: "Lösungen", items: [{ f: "Kontrast", c: "Min. 4.5:1." }] }
                 },
                 userTitle: "Wer?", userList: ["**Sehbehinderte**"]
