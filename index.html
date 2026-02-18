@@ -120,7 +120,7 @@
                         <div class="label-row proximity-box">
                             <label id="txt-label-passport" class="text-xs font-semibold uppercase tracking-wider low-contrast-label">Passport ID</label>
                             <div class="relative inline-block tooltip-container">
-                                <button type="button" id="info-btn" class="info-trigger cursor-help bg-blue-700 text-white rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-bold">i</button>
+                                <button type="button" id="info-btn" class="info-trigger cursor-help bg-blue-700 text-white rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-bold" aria-label="Information">i</button>
                                 <div class="tooltip-box shadow-xl text-xs" id="txt-tooltip">Tooltip text</div>
                             </div>
                         </div>
@@ -174,9 +174,10 @@
     <script>
         const translations = {
             en: {
-                inaccessible: "Inaccessible", accessible: "Accessible", labTitle: "Digital Accessibility Empathy Lab", title: "Low Vision Experience",
+                inaccessible: "Inaccessible", accessible: "Accessible",
+                labTitle: "Digital Accessibility Empathy Lab", title: "Low Vision Experience",
                 name: "Full Name", passport: "Passport ID", email: "Email Address", btn: "Update Profile",
-                feedbackLabel: "Help us improve", feedbackBtnText: "Feedback",
+                feedbackLabel: "Help us improve", feedbackBtnText: "Feedback", infoAria: "Information",
                 tooltip: "Enter your 6-digit passport number without spaces.", passportHint: "(e.g. AB1234)",
                 tabTest: "How to test", tabUser: "Impacted users", tabIssues: "Issues", tabRemediations: "Remediations", guideTitle: "Step-by-step guide",
                 testSteps: [
@@ -209,9 +210,10 @@
                 ]
             },
             fr: {
-                inaccessible: "Inaccessible", accessible: "Accessible", labTitle: "Laboratoire d'empathie sur l'accessibilité numérique", title: "Expérience Basse Vision",
+                inaccessible: "Inaccessible", accessible: "Accessible",
+                labTitle: "Laboratoire d'empathie sur l'accessibilité numérique", title: "Expérience Basse Vision",
                 name: "Nom complet", passport: "ID Passeport", email: "Adresse e-mail", btn: "Mettre à jour le profil",
-                feedbackLabel: "Aidez-nous à nous améliorer", feedbackBtnText: "Feedback",
+                feedbackLabel: "Aidez-nous à nous améliorer", feedbackBtnText: "Feedback", infoAria: "Informations",
                 tooltip: "Entrez votre numéro de passeport à 6 chiffres sans espaces.", passportHint: "(ex. AB1234)",
                 tabTest: "Comment tester", tabUser: "Utilisateurs impactés", tabIssues: "Problèmes", tabRemediations: "Corrections", guideTitle: "Guide étape par étape",
                 testSteps: [
@@ -244,9 +246,10 @@
                 ]
             },
             nl: {
-                inaccessible: "Niet Toegankelijk", accessible: "Toegankelijk", labTitle: "Digitaal Toegankelijkheid Empathie Lab", title: "Lage Visus Ervaring",
+                inaccessible: "Niet Toegankelijk", accessible: "Toegankelijk",
+                labTitle: "Digitaal Toegankelijkheid Empathie Lab", title: "Lage Visus Ervaring",
                 name: "Volledige Naam", passport: "Paspoort ID", email: "E-mailadres", btn: "Profiel Bijwerken",
-                feedbackLabel: "Help ons verbeteren", feedbackBtnText: "Feedback",
+                feedbackLabel: "Help ons verbeteren", feedbackBtnText: "Feedback", infoAria: "Informatie",
                 tooltip: "Voer uw 6-cijferige paspoortnummer in zonder spaties.", passportHint: "(bijv. AB1234)",
                 tabTest: "Hoe te testen", tabUser: "Impact op gebruikers", tabIssues: "Problemen", tabRemediations: "Oplossingen", guideTitle: "Stappenplan",
                 testSteps: [
@@ -279,9 +282,10 @@
                 ]
             },
             de: {
-                inaccessible: "Nicht Barrierefrei", accessible: "Barrierefrei", labTitle: "Digitales Barrierefreiheits-Empathie-Labor", title: "Sehbehinderung Erfahrung",
+                inaccessible: "Nicht Barrierefrei", accessible: "Barrierefrei",
+                labTitle: "Digitales Barrierefreiheits-Empathie-Labor", title: "Sehbehinderung Erfahrung",
                 name: "Vollständiger Name", passport: "Pass-ID", email: "E-Mail-Adresse", btn: "Profil aktualisieren",
-                feedbackLabel: "Helfen Sie uns zu verbessern", feedbackBtnText: "Feedback",
+                feedbackLabel: "Helfen Sie uns zu verbessern", feedbackBtnText: "Feedback", infoAria: "Informationen",
                 tooltip: "Geben Sie Ihre 6-stellige Passnummer ohne Leerzeichen ein.", passportHint: "(z.B. AB1234)",
                 tabTest: "Wie man testet", tabUser: "Betroffene Nutzer", tabIssues: "Probleme", tabRemediations: "Lösungen", guideTitle: "Schritt-für-Schritt-Anleitung",
                 testSteps: [
@@ -336,6 +340,8 @@
             const t = translations[lang] || translations['en'];
             const isAcc = document.getElementById('modeToggle').checked;
             
+            document.documentElement.lang = lang;
+
             document.getElementById('txt-inaccessible').innerText = t.inaccessible;
             document.getElementById('txt-accessible').innerText = t.accessible;
             document.getElementById('txt-lab-title').innerText = t.labTitle;
@@ -349,6 +355,9 @@
             document.getElementById('txt-guide-title').innerText = t.guideTitle;
             document.getElementById('txt-test-steps').innerHTML = t.testSteps.map(s => `<li>${s}</li>`).join('');
             
+            const infoBtn = document.getElementById('info-btn');
+            infoBtn.setAttribute('aria-label', t.infoAria);
+
             const pInput = document.getElementById('passport-input');
             const pLabel = document.getElementById('txt-label-passport');
             if (isAcc) {
