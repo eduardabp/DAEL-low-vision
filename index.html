@@ -3,67 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reading Experience - Digital Accessibility Empathy Lab</title>
+    <title>Low Vision Experience - Digital Accessibility Empathy Lab</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* --- CONSTANT LAB UI STYLES --- */
-        .lab-ui-font { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif !important; }
-        .info-panel-container { min-height: 550px !important; display: flex; flex-direction: column; }
+        :root { --reverse-zoom: 1; }
+        .transition-all { transition: all 0.3s ease; }
+
+        /* --- INACCESSIBLE MODE STYLES --- */
+        .inaccessible-mode .low-contrast-label { color: #94a3b8 !important; }
+        .inaccessible-mode .low-contrast-border { border-color: #f1f5f9 !important; }
+        .inaccessible-mode input::placeholder { color: #cbd5e1 !important; opacity: 1; }
+        .inaccessible-mode *:focus { outline: none !important; box-shadow: none !important; }
+        .inaccessible-mode .proximity-box { display: flex; justify-content: space-between; width: 100%; align-items: center; }
+        
+        .inaccessible-mode .no-scale { 
+            display: inline-block; 
+            transform: scale(var(--reverse-zoom, 1)); 
+            transform-origin: left; 
+        }
+
+        .inaccessible-mode #bad-feedback-img { 
+            display: block !important; 
+            width: 120px !important; 
+            height: 38px !important;
+            cursor: pointer;
+            border-radius: 4px !important;
+        }
+        .inaccessible-mode #good-feedback-btn { display: none !important; }
+
+        .tooltip-box {
+            display: none; position: absolute; background: #1f2937; color: white;
+            padding: 12px; width: 220px; z-index: 50; left: 20px; top: 10px; border-radius: 8px;
+        }
+        .inaccessible-mode .info-trigger:hover + .tooltip-box { display: block; }
+
+        /* --- ACCESSIBLE MODE STYLES --- */
+        .accessible-mode *:focus-visible { outline: 3px solid #2563eb !important; outline-offset: 2px !important; }
+        .accessible-mode .proximity-box { display: flex; gap: 8px; align-items: center; width: 100%; }
+
+        .accessible-mode #bad-feedback-img { display: none !important; }
+        .accessible-mode #good-feedback-btn { 
+            display: flex !important; 
+            align-items: center; justify-content: center;
+            background-color: #dc2626; color: white; 
+            font-weight: 500; 
+            width: 120px; height: 38px;
+            border-radius: 4px; font-size: 13px;
+            text-transform: uppercase; font-family: sans-serif;
+            letter-spacing: 0.045em;
+        }
+        .accessible-mode #good-feedback-btn:hover { background-color: #991b1b; }
+
+        .accessible-mode .tooltip-container:hover .tooltip-box,
+        .accessible-mode .info-trigger:focus + .tooltip-box { display: block; }
+
+        .accessible-mode .tooltip-box::before {
+            content: "";
+            position: absolute;
+            top: -20px; left: -20px; right: 0; bottom: 0;
+            z-index: -1;
+        }
+
+        /* --- LAYOUT --- */
+        .label-row { height: 1.5rem !important; display: flex; align-items: center; margin-bottom: 0.25rem; }
+        .info-panel-container { min-height: 450px !important; display: flex; flex-direction: column; }
         .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ef4444; transition: .4s; border-radius: 28px; }
         .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: #15803d; }
         input:checked + .slider:before { transform: translateX(22px); }
-        .tab-btn { font-family: ui-sans-serif, system-ui, sans-serif !important; }
         .tab-btn[aria-selected="true"] { background-color: #111827; color: #60a5fa; border-bottom: 2px solid #60a5fa; }
-
-        /* --- READING BARRIERS --- */
-        .inaccessible-mode .reading-content { font-family: "Times New Roman", Times, serif !important; }
-        .promo-banner {
-            width: 100%; height: 60px;
-            background-color: #ef4444; color: white;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 900; overflow: hidden; position: relative;
-            border-radius: 8px;
-        }
-        .promo-text { white-space: nowrap; animation: slide 4s linear infinite; }
-        @keyframes slide { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-        .inaccessible-mode .promo-banner { animation: flash 1s step-end infinite; margin-bottom: 24px; }
-        @keyframes flash { 50% { background-color: #facc15; color: black; } }
-
-        .inaccessible-mode #txt-instructions { text-align: justify; line-height: 0.95 !important; letter-spacing: -0.04em !important; font-size: 14px; }
-        .inaccessible-mode #txt-instr-title { font-size: 14px !important; margin-bottom: 2px !important; text-transform: none !important; }
-        .inaccessible-mode .cog-label { font-size: 12px !important; text-transform: uppercase !important; font-weight: 900 !important; }
-
-        /* --- ACCESSIBLE MODE --- */
-        .accessible-mode .reading-content { font-family: ui-sans-serif, system-ui, sans-serif !important; }
-        .accessible-mode .promo-banner { background-color: #1e40af; animation: none; margin-bottom: 0; }
-        .accessible-mode .promo-text { animation-play-state: paused; }
-        .accessible-mode.playing .promo-text { animation-play-state: running; }
-        .accessible-mode #txt-instructions { text-align: left; line-height: 1.8; font-size: 14px; }
-        .accessible-mode .cog-label { font-size: 14px !important; text-transform: none !important; font-weight: 600; letter-spacing: 0.01em; }
-        .accessible-mode .form-gap { gap: 1.5rem !important; }
-
-        /* FIXED 4PX GAP */
-        .control-btn {
-            display: flex; align-items: center; justify-content: center;
-            width: 36px; height: 36px; border: 2px solid #1e40af;
-            border-radius: 8px; background: white; color: #1e40af;
-            margin-top: 4px; margin-bottom: 24px; transition: all 0.2s;
-            cursor: pointer; font-size: 1.1rem;
-        }
-        .control-btn:hover { background: #f3f4f6; }
-
-        .instr-list br { content: ""; display: block; margin: 0.75rem 0; }
-        .input-error { border: 2px solid #ef4444 !important; }
-        .error-msg { color: #ef4444; font-size: 12px; font-weight: bold; margin-top: 4px; display: block; }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen p-4 md:p-8 transition-colors duration-500 lab-ui-font" id="bodyTag">
+<body class="bg-gray-100 min-h-screen p-4 md:p-8 font-sans transition-colors duration-500" id="bodyTag">
 
-    <div class="max-w-7xl mx-auto bg-white shadow-2xl rounded-3xl overflow-hidden">
-        <header class="bg-white border-b border-gray-100 lab-ui-font">
+    <div class="max-w-6xl mx-auto bg-white shadow-2xl rounded-3xl overflow-hidden">
+        <header class="bg-white border-b border-gray-100">
             <div class="p-6 flex flex-col md:flex-row justify-between items-center gap-6 border-b border-gray-50">
                 <div id="txt-lab-title" class="text-xl md:text-2xl font-black tracking-tight uppercase" style="color: #008B63;">Digital Accessibility Empathy Lab</div>
                 <img src="https://regine-lambrecht.github.io/color-contrast-checker-size-weight/images/banner.png" alt="Logo" class="h-12">
@@ -74,7 +90,7 @@
                     <div class="flex items-center gap-4">
                         <span id="txt-inaccessible" class="text-xs font-black uppercase tracking-widest text-red-600">Inaccessible</span>
                         <label class="switch">
-                            <input type="checkbox" id="modeToggle" onchange="handleModeToggle()" role="switch">
+                            <input type="checkbox" id="modeToggle" onchange="toggleMode()" role="switch">
                             <span class="slider"></span>
                         </label>
                         <span id="txt-accessible" class="text-xs font-black uppercase tracking-widest text-green-700">Accessible</span>
@@ -86,43 +102,53 @@
                         <button onclick="setLanguage('de')" class="lang-btn px-2 py-1 rounded" id="btn-de">DE</button>
                     </div>
                 </div>
-                <h1 id="txt-title" class="text-xl font-black text-gray-900 px-2 uppercase tracking-tighter">Reading Experience</h1>
+                <h1 id="txt-title" class="text-xl font-black text-gray-900 px-2 uppercase tracking-tighter">Low Vision Experience</h1>
             </nav>
         </header>
 
         <main class="p-6 md:p-10">
-            <div class="grid grid-cols-1 lg:grid-cols-5 gap-16">
-                <div class="lg:col-span-2 reading-content flex flex-col form-gap" id="exercise-column">
-                    <div id="form-container" class="contents">
-                        <div class="flex flex-col">
-                            <div class="promo-banner" id="banner">
-                                <span class="promo-text" id="txt-promo">APPLY NOW! 50% OFF PROMO CODE: REDUCE2026</span>
-                            </div>
-                            <div id="controls-container" class="flex justify-end"></div>
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-16">
+                <div class="lg:col-span-1 space-y-6">
+                    <div>
+                        <div class="label-row">
+                            <label id="txt-label-name" class="text-xs font-semibold uppercase tracking-wider low-contrast-label">Full Name</label>
                         </div>
-                        <div id="vague-error" class="hidden bg-red-100 text-red-700 p-3 rounded-lg text-sm font-bold mb-4" role="alert">Fail to submit form</div>
-                        <div class="bg-blue-50 p-5 rounded-xl border border-blue-100 mt-4">
-                            <h2 id="txt-instr-title" class="font-bold mb-3 uppercase text-lg text-blue-900 lab-ui-font">Instructions</h2>
-                            <p id="txt-instructions" class="instr-list"></p>
-                        </div>
-                        <div class="space-y-4 mt-6">
-                            <div>
-                                <label id="txt-label-name" class="cog-label block mb-1">Name</label>
-                                <input type="text" id="inp-name" class="w-full border border-gray-300 p-2 rounded-lg bg-gray-50 text-sm lab-ui-font">
-                                <span id="err-name" class="error-msg hidden" role="alert"></span>
-                            </div>
-                            <div>
-                                <label id="txt-label-code" class="cog-label block mb-1">CODE</label>
-                                <input type="text" id="inp-code" class="w-full border border-gray-300 p-2 rounded-lg bg-gray-50 text-sm lab-ui-font">
-                                <span id="err-code" class="error-msg hidden" role="alert"></span>
+                        <input type="text" class="w-full border border-gray-300 p-2 rounded-lg bg-gray-50 text-sm low-contrast-border">
+                    </div>
+
+                    <div class="relative">
+                        <div class="label-row proximity-box">
+                            <label id="txt-label-passport" class="text-xs font-semibold uppercase tracking-wider low-contrast-label">Passport ID</label>
+                            <div class="relative inline-block tooltip-container">
+                                <button type="button" id="info-btn" class="info-trigger cursor-help bg-blue-700 text-white rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-bold">i</button>
+                                <div class="tooltip-box shadow-xl text-xs" id="txt-tooltip">Tooltip text</div>
                             </div>
                         </div>
-                        <button id="txt-btn" onclick="validateForm()" class="w-full bg-blue-600 hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-lg text-sm tracking-wide transition-colors lab-ui-font mt-6">OK</button>
+                        <input type="text" id="passport-input" class="w-full border border-gray-300 p-2 rounded-lg bg-gray-50 text-sm low-contrast-border">
+                    </div>
+
+                    <div>
+                        <div class="label-row">
+                            <div class="no-scale">
+                                <label id="txt-label-email" class="text-xs font-semibold uppercase tracking-wider low-contrast-label">Email Address</label>
+                            </div>
+                        </div>
+                        <input type="email" class="w-full border border-gray-300 p-2 rounded-lg bg-gray-50 text-sm low-contrast-border">
+                    </div>
+
+                    <button id="txt-btn" class="w-full bg-blue-600 hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-lg uppercase text-sm tracking-wide transition-colors">
+                        Update Profile
+                    </button>
+
+                    <div class="pt-6 border-t border-gray-200 flex flex-col items-start gap-3">
+                        <h2 id="txt-feedback-label" class="text-xs font-bold uppercase text-gray-800">Help us improve</h2>
+                        <img id="bad-feedback-img" src="https://placehold.co/120x38/dc2626/ffffff/png?text=FEEDBACK" alt="Feedback">
+                        <button id="good-feedback-btn">Feedback</button>
                     </div>
                 </div>
 
                 <div class="lg:col-span-3">
-                    <div class="info-panel-container bg-gray-900 text-white rounded-2xl shadow-xl overflow-hidden h-full flex flex-col lab-ui-font">
+                    <div class="info-panel-container bg-gray-900 text-white rounded-2xl shadow-xl overflow-hidden h-full flex flex-col">
                         <div class="flex bg-gray-800 border-b border-gray-700">
                             <button id="tab-test" onclick="switchTab('test')" class="tab-btn px-6 py-4 text-xs font-black uppercase tracking-widest" aria-selected="true">How to test</button>
                             <button id="tab-feedback" onclick="switchTab('feedback')" class="tab-btn px-6 py-4 text-xs font-black uppercase tracking-widest border-l border-gray-700" aria-selected="false">Issues</button>
@@ -137,7 +163,7 @@
                             <div id="critiqueContent" class="space-y-6"></div>
                         </div>
                         <div id="panel-user" class="p-8 hidden text-sm flex-grow overflow-y-auto">
-                            <div id="txt-user-content"></div>
+                            <div id="txt-user-content" class="opacity-95 leading-relaxed text-xs"></div>
                         </div>
                     </div>
                 </div>
@@ -148,188 +174,161 @@
     <script>
         const translations = {
             en: {
-                inaccessible: "Inaccessible", accessible: "Accessible", labTitle: "Digital Accessibility Empathy Lab", title: "Reading Experience",
-                name: { bad: "Name", good: "Full Name (required)" }, code: { bad: "CODE", good: "Promotional Code (required)" }, 
-                btn: { bad: "OK", good: "Submit Application" }, promo: "APPLY NOW! 50% OFF PROMO CODE: REDUCE2026",
-                instrTitle: "Instructions", guideTitle: "Step-by-step guide", pauseAria: "Pause animation", playAria: "Play animation",
-                tabTest: "How to test", tabUser: "Impacted users", tabIssues: "Issues", tabRemediations: "Remediations",
-                successMsg: "Your request was successfully submitted", failMsg: "Fail to submit form",
-                errReqName: "Full Name is required", errReqCode: "Promotional code is required", errInvalidCode: "Invalid promotional code",
-                instr: {
-                    bad: "The application process requires that users successfully identify and input the correct alphanumeric string found within the promotional messaging prior to confirmation. Please ensure the identity field contains the legal nomenclature matching your documentation. Applications missing the database-synced promotional code will be processed without the benefit of a secondary discount application.",
-                    good: "To apply for your 50% discount:<br>1. In the 'Full Name' field, enter your name as it appears on your ID.<br>2. Enter the discount code (REDUCE2026) at the 'Promotional Code field' and activate the 'Submit Application' button."
-                },
+                inaccessible: "Inaccessible", accessible: "Accessible", labTitle: "Digital Accessibility Empathy Lab", title: "Low Vision Experience",
+                name: "Full Name", passport: "Passport ID", email: "Email Address", btn: "Update Profile",
+                feedbackLabel: "Help us improve", feedbackBtnText: "Feedback",
+                tooltip: "Enter your 6-digit passport number without spaces.", passportHint: "(e.g. AB1234)",
+                tabTest: "How to test", tabUser: "Impacted users", tabIssues: "Issues", tabRemediations: "Remediations", guideTitle: "Step-by-step guide",
                 testSteps: [
-                    "Read the 'Instructions' block and identify the required pieces of information.",
-                    "Look for the promotional code.",
-                    "Try to complete the form without entering any data to see how the system handles errors.",
-                    "Complete the form using the found information.",
-                    "Switch to the accessible version and compare clarity."
+                    "Try to read the form and identify all instructions provided.",
+                    "Zoom to 200%.",
+                    "Attempt to trigger the tooltip using only the mouse, then using only the keyboard (Keys: Tab, Space, Enter).",
+                    "Observe the Email Address label as you zoom.",
+                    "Check the red 'Feedback' button and the tooltip content at this zoom level.",
+                    "Switch to the accessible version and repeat these steps."
                 ],
                 critiques: {
                     bad: { title: "What is wrong?", items: [
-                        { f: "1. Distracting Movement", c: "Constant flashing and scrolling content without a stop mechanism creates a 'sensory hijack' for users with ADHD or Autism, making it difficult to focus on the form." },
-                        { f: "2. Passive & Dense Language", c: "Using complex prose and jargon ('nomenclature') increases cognitive load unnecessarily, especially for users with learning disabilities." },
-                        { f: "3. Vague Labels & Buttons", c: "Labels like 'Name', 'CODE' and the button 'OK' are not descriptive enough and lack context." },
-                        { f: "4. Poor Error Handling", c: "Vague error messages like 'Fail to submit form' do not identify which specific field needs attention and do not allow for user error." },
-                        { f: "5. Lack of Success Feedback", c: "In the inaccessible version, the form just resets, leaving users confused about the status of their request." }
+                        { f: "1. Contrast Failure", c: "Labels and placeholder instructions fail minimum contrast requirements, making them difficult to identify." },
+                        { f: "2. Tooltip Displacement & Inaccessibility", c: "The tooltip content moves out of sight or disappears when zooming. It is also unreachable for keyboard-only users." },
+                        { f: "3. Fixed Scaling", c: "The Email label is locked. As a user zooms in, the text stays tiny, 'blocking' the browser's zoom feature." },
+                        { f: "4. Image of Text", c: "The 'Feedback' button is an image. It blurs and pixelates when zoomed, becoming unreadable." }
                     ]},
                     good: { title: "Remediations", items: [
-                        { f: "1. Control Mechanisms", c: "Always provide a mechanism to stop or pause movement (WCAG 2.2.2) to allow users to eliminate distractions." },
-                        { f: "2. Plain Language", c: "Write in short, active sentences and vertical breaks between steps to ensure understanding." },
-                        { f: "3. Descriptive Labels", c: "Use clear, specific labels and explicitly mark required fields (e.g., 'Full Name (required)')." },
-                        { f: "4. Clear Error Identification", c: "Mark errors specifically at the field level with visible indicators and helpful guidance (WCAG 3.3.1)." },
-                        { f: "5. Persistent Success Messages", c: "Provide clear, permanent confirmation that a task has been completed successfully (role='status')." }
+                        { f: "Color Contrast (WCAG 2.1 AA)", c: "Ensure a ratio of at least 4.5:1. Use visible labels, not placeholders, as they disappear when typing." },
+                        { f: "Persistent & Accessible Tooltips", c: "Tooltips must respond to both mouse and keyboard. They should be 'Dismissable' (ESC key), 'Hoverable', and 'Persistent'." },
+                        { f: "Responsive & Fluid Scaling", c: "Avoid locking text scales. Use relative units (rem) so layouts adapt to zoom levels up to 400%." },
+                        { f: "Live Text over Images", c: "Build UI with CSS and HTML text. This ensures components stay sharp at any zoom level." }
                     ]}
                 },
                 userTitle: "Who is impacted?", userList: [
-                    "**ADHD / Autism:** Moving and flashing content acts as a major distraction, often causing users to lose their place or abandon the task entirely.",
-                    "**Dyslexia:** Tight line spacing, serif fonts, and all-caps labels make word shapes harder to distinguish, leading to rapid reading fatigue.",
-                    "**Cognitive Impairment:** Vague error messages and complex jargon create significant confusion and frustration for users who struggle with processing dense information."
+                    "**Low Vision Users:** Depend on zoom to read. Locked scales or blurry images make content inaccessible.",
+                    "**Magnifier Users:** See only a small part of the screen. Displaced or fast-vanishing tooltips are missed.",
+                    "**Colorblind Users:** Struggle with low contrast. Faded text can blend into the background completely.",
+                    "**Mobile Users:** On touch devices, tooltips requiring a mouse hover are inaccessible."
                 ]
             },
             fr: {
-                inaccessible: "Inaccessible", accessible: "Accessible", labTitle: "Laboratoire d'empathie sur l'accessibilité numérique", title: "Expérience de lecture",
-                name: { bad: "Nom", good: "Nom complet (requis)" }, code: { bad: "CODE", good: "Code promotionnel (requis)" }, 
-                btn: { bad: "OK", good: "Soumettre ma demande" }, promo: "POSTULEZ ! -50% CODE : REDUCE2026",
-                instrTitle: "Instructions", guideTitle: "Guide étape par étape", pauseAria: "Pause", playAria: "Lecture",
-                tabTest: "Comment tester", tabUser: "Utilisateurs impactés", tabIssues: "Problèmes", tabRemediations: "Corrections",
-                successMsg: "Votre demande a été soumise avec succès", failMsg: "Échec de l'envoi du formulaire",
-                errReqName: "Le nom complet est requis", errReqCode: "Le code promotionnel est requis", errInvalidCode: "Code promotionnel invalide",
-                instr: {
-                    bad: "Le processus de candidature exige que les utilisateurs identifient et saisissent avec succès la chaîne alphanumérique correcte trouvée dans le message promotionnel avant confirmation. Veuillez vous assurer que le champ d'identité contient la nomenclature légale correspondant à votre documentation. Les candidatures sans le code promotionnel synchronisé seront traitées sans le bénéfice d'une remise secondaire.",
-                    good: "Pour obtenir votre remise de 50 % :<br>1. Dans le champ 'Nom complet', saisissez votre nom tel qu'il figure sur votre pièce d'identité.<br>2. Saisissez le code promo (REDUCE2026) dans le champ 'Code promotionnel' et activez le bouton 'Soumettre ma demande'."
-                },
+                inaccessible: "Inaccessible", accessible: "Accessible", labTitle: "Labo d'Empathie Accessibilité", title: "Expérience Basse Vision",
+                name: "Nom complet", passport: "ID Passeport", email: "Adresse e-mail", btn: "Mettre à jour",
+                feedbackLabel: "Aidez-nous à nous améliorer", feedbackBtnText: "Feedback",
+                tooltip: "Entrez votre numéro de passeport à 6 chiffres sans espaces.", passportHint: "(ex. AB1234)",
+                tabTest: "Comment tester", tabUser: "Utilisateurs impactés", tabIssues: "Problèmes", tabRemediations: "Corrections", guideTitle: "Guide étape par étape",
                 testSteps: [
-                    "Lisez le bloc 'Instructions' et identifiez les informations requises.",
-                    "Cherchez le code promotionnel.",
-                    "Essayez de remplir le formulaire sans saisir de données pour voir comment le système gère les erreurs.",
-                    "Remplissez le formulaire en utilisant les informations trouvées.",
-                    "Passez à la version accessible et comparez la clarté."
+                    "Essayez de lire le formulaire et d'identifier toutes les instructions fournies.",
+                    "Zoomez à 200%.",
+                    "Tentez de déclencher l'infobulle à la souris, puis au clavier (Touches : Tab, Espace, Entrée).",
+                    "Observez le libellé Email pendant le zoom.",
+                    "Vérifiez le bouton rouge 'Feedback' et l'infobulle à ce zoom.",
+                    "Passez à la version accessible et répétez."
                 ],
                 critiques: {
                     bad: { title: "Quel est le problème ?", items: [
-                        { f: "1. Mouvement distrayant", c: "Le clignotement constant et le défilement sans mécanisme d'arrêt créent un 'détournement sensoriel' pour les utilisateurs souffrant de TDAH ou d'autisme." },
-                        { f: "2. Langage passif et dense", c: "L'utilisation d'une prose et d'un jargon complexes augmente inutilement la charge cognitive, en particulier pour les utilisateurs ayant des troubles de l'apprentissage." },
-                        { f: "3. Libellés et boutons vagues", c: "Les libellés comme 'Nom', 'CODE' et le bouton 'OK' ne sont pas assez descriptifs et manquent de contexte." },
-                        { f: "4. Mauvaise gestion des erreurs", c: "Les messages d'erreur vagues comme 'Échec de l'envoi du formulaire' n'identifient pas le champ spécifique et ne permettent pas l'erreur humaine." },
-                        { f: "5. Absence de retour de succès", c: "Dans la version inaccessible, le formulaire se réinitialise simplement, laissant les utilisateurs incertains du statut de leur demande." }
+                        { f: "1. Échec du contraste", c: "Les étiquettes et instructions ne respectent pas le contraste minimum, ce qui les rend difficiles à identifier." },
+                        { f: "2. Déplacement et inaccessibilité de l'infobulle", c: "Le contenu de l'infobulle sort de la vue au zoom et est inaccessible au clavier." },
+                        { f: "3. Échelle fixe", c: "Le libellé Email est bloqué. Au zoom, le texte reste minuscule, bloquant la fonction de zoom." },
+                        { f: "4. Image de texte", c: "Le bouton 'Feedback' est une image. Il devient flou et pixélisé au zoom." }
                     ]},
                     good: { title: "Corrections", items: [
-                        { f: "1. Mécanismes de contrôle", c: "Fournissez toujours un mécanisme pour arrêter ou mettre en pause le mouvement (WCAG 2.2.2) pour éliminer les distractions." },
-                        { f: "2. Langage clair", c: "Écrivez des phrases courtes et actives avec des sauts verticaux entre les étapes pour faciliter la compréhension." },
-                        { f: "3. Libellés descriptifs", c: "Utilisez des libellés clairs et spécifiques et marquez explicitement les champs requis (ex : 'Nom complet (requis)')." },
-                        { f: "4. Identification claire des erreurs", c: "Marquez les erreurs spécifiquement au niveau du champ avec des indicateurs visibles et des conseils utiles (WCAG 3.3.1)." },
-                        { f: "5. Messages de succès persistants", c: "Fournissez une confirmation claire et permanente qu'une tâche a été accomplie avec succès (role='status')." }
+                        { f: "Contraste des couleurs (WCAG 2.1 AA)", c: "Assurez un ratio de 4.5:1. Utilisez des étiquettes visibles plutôt que des placeholders." },
+                        { f: "Infobulles persistantes et accessibles", c: "Les infobulles doivent répondre à la souris et au clavier. Elles doivent être 'Dismissable', 'Hoverable' et 'Persistent'." },
+                        { f: "Mise à l'échelle responsive", c: "Évitez de bloquer l'échelle du texte. Utilisez des unités relatives (rem)." },
+                        { f: "Texte réel plutôt qu'images", c: "Construisez l'interface en CSS/HTML pour que les composants restent nets au zoom." }
                     ]}
                 },
                 userTitle: "Qui est impacté ?", userList: [
-                    "**TDAH / Autisme :** Le contenu en mouvement et clignotant agit comme une distraction majeure, provoquant souvent la perte de repères ou l'abandon de la tâche.",
-                    "**Dyslexie :** L'espacement serré des lignes, les polices avec empattement et les libellés en majuscules rendent les formes des mots plus difficiles à distinguer.",
-                    "**Troubles cognitifs :** Les messages d'erreur vagues et le jargon complexe créent une confusion et une frustration importantes pour les utilisateurs."
+                    "**Malvoyants :** Dépendent du zoom. Les échelles fixes ou images floues rendent le contenu inaccessible.",
+                    "**Utilisateurs de loupe :** Ne voient qu'une partie de l'écran. Les infobulles déplacées sont manquées.",
+                    "**Daltoniens :** Difficultés avec le faible contraste. Le texte délavé peut disparaître.",
+                    "**Utilisateurs mobiles :** Sur tactile, les infobulles nécessitant un survol sont inaccessibles."
                 ]
             },
             nl: {
-                inaccessible: "Niet Toegankelijk", accessible: "Toegankelijk", labTitle: "Digitaal Toegankelijkheid Empathie Lab", title: "Leeservaring",
-                name: { bad: "Naam", good: "Volledige Naam (verplicht)" }, code: { bad: "CODE", good: "Promotiecode (verplicht)" }, 
-                btn: { bad: "OK", good: "Aanvraag Verzenden" }, promo: "NU AANMELDEN! 50% KORTING: REDUCE2026",
-                instrTitle: "Instructies", guideTitle: "Stappenplan", pauseAria: "Pauze", playAria: "Start",
-                tabTest: "Hoe te testen", tabUser: "Impact op gebruikers", tabIssues: "Problemen", tabRemediations: "Oplossingen",
-                successMsg: "Uw aanvraag is succesvol verzonden", failMsg: "Formulier verzenden mislukt",
-                errReqName: "Volledige naam is verplicht", errReqCode: "Promotiecode is verplicht", errInvalidCode: "Ongeldige promotiecode",
-                instr: {
-                    bad: "Het aanvraagproces vereist dat gebruikers de juiste alfanumerieke reeks die in de promotionele berichtgeving wordt gevonden, identificeren en invoeren voorafgaand aan bevestiging. Zorg ervoor dat het identiteitsveld de wettelijke nomenclatuur bevat die overeenkomt met uw documentatie. Aanvragen zonder de code worden verwerkt zonder korting.",
-                    good: "Om uw 50% korting aan te vragen:<br>1. Voer in het veld 'Volledige Naam' uw naam in zoals deze op uw ID staat.<br>2. Voer de kortingscode (REDUCE2026) in bij het veld 'Promotiecode' en activeer de knop 'Aanvraag Verzenden'."
-                },
+                inaccessible: "Niet Toegankelijk", accessible: "Toegankelijk", labTitle: "Toegankelijkheid Lab", title: "Lage Visus Ervaring",
+                name: "Volledige Naam", passport: "Paspoort ID", email: "E-mailadres", btn: "Profiel Bijwerken",
+                feedbackLabel: "Help ons verbeteren", feedbackBtnText: "Feedback",
+                tooltip: "Voer uw 6-cijferige paspoortnummer in zonder spaties.", passportHint: "(bijv. AB1234)",
+                tabTest: "Hoe te testen", tabUser: "Impact op gebruikers", tabIssues: "Problemen", tabRemediations: "Oplossingen", guideTitle: "Stappenplan",
                 testSteps: [
-                    "Lees het blok 'Instructies' en identificeer de vereiste informatie.",
-                    "Zoek naar de promotiecode.",
-                    "Probeer het formulier in te dienen zonder gegevens om te zien hoe het systeem omgaat met fouten.",
-                    "Vul het formulier in met de gevonden informatie.",
-                    "Schakel over naar de toegankelijke versie en vergelijk de duidelijkheid."
+                    "Probeer het formulier te lezen en identificeer alle verstrekte instructies.",
+                    "Zoom naar 200%.",
+                    "Trigger de tooltip met de muis en vervolgens met het toetsenbord (Tab, Spatie, Enter).",
+                    "Bekijk het Email label terwijl u zoomt.",
+                    "Controleer de rode 'Feedback' knop en de tooltip inhoud op dit zoomniveau.",
+                    "Switch naar de toegankelijke versie en herhaal deze stappen."
                 ],
                 critiques: {
                     bad: { title: "Wat is er mis?", items: [
-                        { f: "1. Storende beweging", c: "Constant knipperende en scrollende inhoud zonder stopmechanisme zorgt voor een sensorische afleiding voor gebruikers met ADHD of Autisme." },
-                        { f: "2. Passief en dicht taalgebruik", c: "Het gebruik van complex jargon verhoogt de cognitieve belasting onnodig, vooral voor gebruikers met leerproblemen." },
-                        { f: "3. Vage labels en knoppen", c: "Labels zoals 'Naam', 'CODE' en de knop 'OK' zijn niet beschrijvend genoeg en bieden onvoldoende context." },
-                        { f: "4. Slechte foutafhandeling", c: "Vage foutmeldingen zoals 'Formulier verzenden mislukt' identificeren niet welk veld aandacht nodig heeft." },
-                        { f: "5. Geen succesfeedback", c: "In de ontoegankelijke versie reset het formulier stilzwijgend, wat onzekerheid veroorzaakt bij de gebruiker." }
+                        { f: "1. Contrastfout", c: "Labels en instructies voldoen niet aan de contrasteisen, wat identificatie moeilijk maakt." },
+                        { f: "2. Tooltip verplaatsing & ontoegankelijkheid", c: "De tooltip verdwijnt uit het zicht bij zoomen en is onbereikbaar voor toetsenbordgebruikers." },
+                        { f: "3. Vaste schaling", c: "Het Email label is vergrendeld. Bij zoomen blijft de tekst klein, wat de zoomfunctie blokkeert." },
+                        { f: "4. Afbeelding van tekst", c: "De 'Feedback' knop is een afbeelding. Deze wordt wazig en onleesbaar bij zoomen." }
                     ]},
                     good: { title: "Oplossingen", items: [
-                        { f: "1. Controlemechanismen", c: "Zorg altijd voor een mechanisme om beweging te stoppen (WCAG 2.2.2) om afleidingen te elimineren." },
-                        { f: "2. Helder taalgebruik", c: "Gebruik korte, actieve zinnen en verticale witruimte tussen stappen voor betere verwerking." },
-                        { f: "3. Beschrijvende labels", c: "Gebruik duidelijke labels en markeer verplichte velden expliciet (bijv. 'Volledige Naam (verplicht)')." },
-                        { f: "4. Duidelijke foutidentificatie", c: "Markeer fouten specifiek op veldniveau met zichtbare indicatoren en hulp (WCAG 3.3.1)." },
-                        { f: "5. Blijvende succesmeldingen", c: "Zorg voor een duidelijke, permanente bevestiging dat een taak succesvol is afgerond (role='status')." }
+                        { f: "Kleurcontrast (WCAG 2.1 AA)", c: "Zorg voor een ratio van 4.5:1. Gebruik zichtbare labels in plaats van placeholders." },
+                        { f: "Blijvende & toegankelijke tooltips", c: "Tooltips moeten reageren op muis en toetsenbord. Ze moeten 'Dismissable', 'Hoverable' en 'Persistent' zijn." },
+                        { f: "Responsieve schaling", c: "Vermijd vaste tekstschalen. Gebruik relatieve eenheden (rem) voor zoomniveaus tot 400%." },
+                        { f: "Live tekst over afbeeldingen", c: "Bouw UI met CSS en HTML tekst zodat componenten scherp blijven bij zoomen." }
                     ]}
                 },
                 userTitle: "Wie wordt beïnvloed?", userList: [
-                    "**ADHD / Autisme:** Bewegende inhoud leidt sterk af en zorgt er vaak voor dat gebruikers hun plek verliezen of de taak staken.",
-                    "**Dyslexia:** Krappe regelafstand, serif-lettertypes en labels in hoofdletters maken woordvormen moeilijker te onderscheiden.",
-                    "**Cognitieve beperking:** Vage foutmeldingen en complex jargon vormen een grote drempel voor gebruikers die moeite hebben met informatieverwerking."
+                    "**Slechtzienden:** Afhankelijk van zoom. Vaste schalen of wazige afbeeldingen maken inhoud ontoegankelijk.",
+                    "**Schermloepgebruikers:** Zien slechts een deel van het scherm. Tooltips worden gemist.",
+                    "**Kleurenblinden:** Moeite met laag contrast. Vervaagde tekst kan volledig wegvallen.",
+                    "**Mobiele gebruikers:** Op touch-apparaten zijn tooltips die hover vereisen ontoegankelijk."
                 ]
             },
             de: {
-                inaccessible: "Nicht Barrierefrei", accessible: "Barrierefrei", labTitle: "Digitales Barrierefreiheits-Empathie-Labor", title: "Leseerfahrung",
-                name: { bad: "Name", good: "Vollständiger Name (erforderlich)" }, code: { bad: "CODE", good: "Aktionscode (erforderlich)" }, 
-                btn: { bad: "OK", good: "Antrag Absenden" }, promo: "JETZT BEWERBEN! 50% RABATT: REDUCE2026",
-                instrTitle: "Anleitung", guideTitle: "Schritt-für-Schritt-Anleitung", pauseAria: "Pause", playAria: "Start",
-                tabTest: "Wie man testet", tabUser: "Betroffene Nutzer", tabIssues: "Probleme", tabRemediations: "Lösungen",
-                successMsg: "Ihr Antrag wurde erfolgreich übermittelt", failMsg: "Senden des Formulars fehlgeschlagen",
-                errReqName: "Vollständiger Name ist erforderlich", errReqCode: "Aktionscode ist erforderlich", errInvalidCode: "Ungültiger Aktionscode",
-                instr: {
-                    bad: "Der Bewerbungsprozess setzt voraus, dass Nutzer die korrekte alphanumerische Zeichenfolge, die in der Werbebotschaft enthalten ist, vor der Bestätigung erfolgreich identifizieren und eingeben. Bitte stellen Sie sicher, dass das Identitätsfeld die rechtliche Nomenklatur enthält, die mit Ihrer Dokumentation übereinstimmt. Anträge ohne den Aktionscode werden ohne Rabatt bearbeitet.",
-                    good: "So beantragen Sie Ihren 50 % Rabatt:<br>1. Geben Sie im Feld 'Vollständiger Name' Ihren Namen so ein, wie er auf Ihrem Ausweis steht.<br>2. Geben Sie den Aktionscode (REDUCE2026) im Feld 'Aktionscode' ein und aktivieren Sie die Schaltfläche 'Antrag Absenden'."
-                },
+                inaccessible: "Nicht Barrierefrei", accessible: "Barrierefrei", labTitle: "Empathie-Labor", title: "Sehbehinderung Erfahrung",
+                name: "Name", passport: "Pass-ID", email: "E-Mail", btn: "Profil Aktualisieren",
+                feedbackLabel: "Helfen Sie uns zu verbessern", feedbackBtnText: "Feedback",
+                tooltip: "6-stellige Passnummer ohne Leerzeichen eingeben.", passportHint: "(z.B. AB1234)",
+                tabTest: "Wie man testet", tabUser: "Betroffene Nutzer", tabIssues: "Probleme", tabRemediations: "Lösungen", guideTitle: "Schritt-für-Schritt",
                 testSteps: [
-                    "Lesen Sie den Block 'Anleitung' und identifizieren Sie die erforderlichen Informationen.",
-                    "Suchen Sie den Aktionscode.",
-                    "Versuchen Sie, das Formular ohne Daten abzusenden, um die Fehlerbehandlung zu sehen.",
-                    "Füllen Sie das Formular mit den gefundenen Informationen aus.",
-                    "Wechseln Sie zur barrierefreien Version und vergleichen Sie die Klarheit."
+                    "Versuchen Sie, das Formular zu lesen und alle Anweisungen zu identifizieren.",
+                    "Zoom auf 200%.",
+                    "Tooltip mit der Maus und dann mit der Tastatur prüfen (Tab, Leertaste, Enter).",
+                    "Beobachten Sie das E-Mail-Label beim Zoomen.",
+                    "Prüfen Sie den 'Feedback'-Button und den Tooltip-Inhalt bei diesem Zoom.",
+                    "Wechseln Sie zur barrierefreien Version und wiederholen Sie die Schritte."
                 ],
                 critiques: {
                     bad: { title: "Was ist falsch?", items: [
-                        { f: "1. Ablenkende Bewegung", c: "Ständiges Blinken ohne Stopp-Mechanismus stört die Konzentration von Nutzern mit ADHS oder Autismus massiv." },
-                        { f: "2. Passives Fachchinesisch", c: "Komplexe Formulierungen und Jargon erhöhen die kognitive Last unnötig, besonders bei Lernbehinderungen." },
-                        { f: "3. Vage Beschriftungen", c: "Beschriftungen wie 'Name' oder 'OK' sind nicht aussagekräftig genug und bieten keinen klaren Kontext." },
-                        { f: "4. Mangelhafte Fehlerbehandlung", c: "Vage Fehlermeldungen wie 'Senden fehlgeschlagen' nennen das fehlerhafte Feld nicht und erlauben keine Benutzerfehler." },
-                        { f: "5. Fehlendes Feedback", c: "In der nicht barrierefreien Version wird das Formular einfach zurückgesetzt, was den Nutzer verunsichert." }
+                        { f: "1. Kontrastfehler", c: "Labels und Platzhalter erfüllen nicht die Kontrastanforderungen und sind schwer zu erkennen." },
+                        { f: "2. Tooltip-Verschiebung & Barrieren", c: "Der Tooltip verschwindet beim Zoomen aus dem Sichtfeld und ist per Tastatur nicht erreichbar." },
+                        { f: "3. Feste Skalierung", c: "Das E-Mail-Label ist fixiert. Beim Zoomen bleibt der Text winzig und blockiert die Zoom-Funktion." },
+                        { f: "4. Bild von Text", c: "Der 'Feedback'-Button ist ein Bild. Er wird beim Zoomen unscharf und unlesbar." }
                     ]},
                     good: { title: "Lösungen", items: [
-                        { f: "1. Kontrollmechanismen", c: "Stellen Sie immer eine Funktion zum Stoppen oder Pausieren von Bewegungen bereit (WCAG 2.2.2), um Ablenkungen zu vermeiden." },
-                        { f: "2. Einfache Sprache", c: "Verwenden Sie kurze, aktive Sätze und vertikale Abstände zwischen den Schritten zur besseren Übersicht." },
-                        { f: "3. Klare Beschriftungen", c: "Nutzen Sie spezifische Labels und kennzeichnen Sie Pflichtfelder explizit (z.B. 'Vollständiger Name (erforderlich)')." },
-                        { f: "4. Fehleridentifizierung", c: "Fehler sollten direkt am Feld mit Hinweisen und Korrekturhilfen markiert werden (WCAG 3.3.1)." },
-                        { f: "5. Dauerhafte Bestätigung", c: "Geben Sie eine klare, dauerhafte Rückmeldung über den Erfolg der Übermittlung (role='status')." }
+                        { f: "Farbkontrast (WCAG 2.1 AA)", c: "Ratio von 4.5:1 sicherstellen. Sichtbare Labels statt Platzhalter verwenden." },
+                        { f: "Beständige & barrierefreie Tooltips", c: "Tooltips müssen auf Maus und Tastatur reagieren: 'Dismissable', 'Hoverable' und 'Persistent'." },
+                        { f: "Responsive Skalierung", c: "Relative Einheiten (rem) nutzen, damit Layouts bis 400% Zoom adaptieren." },
+                        { f: "Echter Text statt Bilder", c: "UI mit CSS/HTML bauen, damit Komponenten bei jedem Zoom scharf bleiben." }
                     ]}
                 },
                 userTitle: "Wer ist betroffen?", userList: [
-                    "**ADHD / Autismus:** Bewegte und blinkende Inhalte lenken extrem ab und führen oft zum Abbruch der Aufgabe.",
-                    "**Legasthenie:** Enge Zeilenabstände, Serifenschriften und Labels in Großbuchstaben erschweren das Erkennen von Wortformen.",
-                    "**Kognitive Einschränkung:** Vage Fehlermeldungen und Fachsprache sind große Barrieren für Nutzer, die dichte Informationen schwer verarbeiten."
+                    "**Sehbehinderte:** Auf Zoom angewiesen. Fixe Skalen oder unscharfe Bilder machen Inhalte unzugänglich.",
+                    "**Lupen-Nutzer:** Sehen nur einen Teil des Bildschirms. Tooltips werden oft übersehen.",
+                    "**Farbenblinde:** Probleme mit geringem Kontrast. Verblasster Text kann im Hintergrund verschwinden.",
+                    "**Mobil-Nutzer:** Auf Touch-Geräten sind Tooltips, die 'Hover' erfordern, nicht nutzbar."
                 ]
             }
         };
 
         let currentLang = 'en';
-        let isPlaying = true;
 
-        function toggleAnimation() {
-            isPlaying = !isPlaying;
-            const body = document.getElementById('bodyTag');
-            const btn = document.getElementById('pauseBtn');
-            const t = translations[currentLang] || translations['en'];
-            if (isPlaying) {
-                body.classList.add('playing');
-                btn.innerHTML = "⏸";
-                btn.setAttribute('aria-label', t.pauseAria);
-            } else {
-                body.classList.remove('playing');
-                btn.innerHTML = "▶";
-                btn.setAttribute('aria-label', t.playAria);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const tooltip = document.getElementById('txt-tooltip');
+                tooltip.style.display = 'none';
+                setTimeout(() => tooltip.style.display = '', 500);
             }
+        });
+
+        function updateZoomVariable() {
+            const isAcc = document.getElementById('modeToggle').checked;
+            const zoom = window.devicePixelRatio || 1;
+            document.documentElement.style.setProperty('--reverse-zoom', isAcc ? 1 : 1 / zoom);
         }
 
         function setLanguage(lang) {
@@ -337,31 +336,36 @@
             const t = translations[lang] || translations['en'];
             const isAcc = document.getElementById('modeToggle').checked;
             
-            document.getElementById('txt-lab-title').innerText = t.labTitle;
-            document.getElementById('txt-title').innerText = t.title;
             document.getElementById('txt-inaccessible').innerText = t.inaccessible;
             document.getElementById('txt-accessible').innerText = t.accessible;
-            
-            document.getElementById('txt-label-name').innerText = isAcc ? t.name.good : t.name.bad;
-            document.getElementById('txt-label-code').innerText = isAcc ? t.code.good : t.code.bad;
-            document.getElementById('txt-btn').innerText = isAcc ? t.btn.good : t.btn.bad;
-            
-            document.getElementById('vague-error').innerText = t.failMsg;
-            document.getElementById('txt-promo').innerText = t.promo;
-            document.getElementById('txt-instr-title').innerText = t.instrTitle;
-            document.getElementById('txt-instructions').innerHTML = isAcc ? t.instr.good : t.instr.bad;
+            document.getElementById('txt-lab-title').innerText = t.labTitle;
+            document.getElementById('txt-title').innerText = t.title;
+            document.getElementById('txt-label-name').innerText = t.name;
+            document.getElementById('txt-label-email').innerText = t.email;
+            document.getElementById('txt-btn').innerText = t.btn;
+            document.getElementById('txt-feedback-label').innerText = t.feedbackLabel;
+            document.getElementById('good-feedback-btn').innerText = t.feedbackBtnText;
+            document.getElementById('txt-tooltip').innerText = t.tooltip;
             document.getElementById('txt-guide-title').innerText = t.guideTitle;
-            document.getElementById('txt-test-steps').innerHTML = (t.testSteps || []).map(s => `<li>${s}</li>`).join('');
-
-            document.getElementById('tab-test').innerText = t.tabTest;
-            document.getElementById('tab-user').innerText = t.tabUser;
-            document.getElementById('tab-feedback').innerText = isAcc ? t.tabRemediations : t.tabIssues;
+            document.getElementById('txt-test-steps').innerHTML = t.testSteps.map(s => `<li>${s}</li>`).join('');
+            
+            const pInput = document.getElementById('passport-input');
+            const pLabel = document.getElementById('txt-label-passport');
+            if (isAcc) {
+                pLabel.innerText = `${t.passport} ${t.passportHint}`;
+                pInput.placeholder = "";
+            } else {
+                pLabel.innerText = t.passport;
+                pInput.placeholder = "e.g. AB1234";
+            }
 
             document.getElementById('txt-user-content').innerHTML = `
                 <h3 class="text-blue-400 font-bold uppercase mb-4 text-xs">${t.userTitle}</h3>
                 <ul class="list-disc pl-5 space-y-3">${(t.userList||[]).map(li => `<li>${li.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')}</li>`).join('')}</ul>
             `;
 
+            document.getElementById('tab-test').innerText = t.tabTest;
+            document.getElementById('tab-user').innerText = t.tabUser;
             updateMode();
             
             document.querySelectorAll('.lang-btn').forEach(b => {
@@ -371,85 +375,32 @@
             });
         }
 
-        function validateForm() {
-            const isAcc = document.getElementById('modeToggle').checked;
-            const nameVal = document.getElementById('inp-name').value.trim();
-            const codeVal = document.getElementById('inp-code').value.trim();
-            const t = translations[currentLang];
-
-            document.getElementById('vague-error').classList.add('hidden');
-            ['name', 'code'].forEach(id => {
-                const input = document.getElementById('inp-' + id);
-                const error = document.getElementById('err-' + id);
-                if (input) input.classList.remove('input-error');
-                if (error) error.classList.add('hidden');
-            });
-
-            let isValid = true;
-            if (isAcc) {
-                if (!nameVal) {
-                    document.getElementById('inp-name').classList.add('input-error');
-                    document.getElementById('err-name').innerText = t.errReqName;
-                    document.getElementById('err-name').classList.remove('hidden');
-                    isValid = false;
-                }
-                if (!codeVal) {
-                    document.getElementById('inp-code').classList.add('input-error');
-                    document.getElementById('err-code').innerText = t.errReqCode;
-                    document.getElementById('err-code').classList.remove('hidden');
-                    isValid = false;
-                } else if (codeVal !== 'REDUCE2026') {
-                    document.getElementById('inp-code').classList.add('input-error');
-                    document.getElementById('err-code').innerText = t.errInvalidCode;
-                    document.getElementById('err-code').classList.remove('hidden');
-                    isValid = false;
-                }
-                if (isValid) {
-                    document.getElementById('form-container').innerHTML = `<div class="bg-green-100 text-green-800 p-8 rounded-2xl border-2 border-green-200 text-center font-bold text-lg" role="status">${t.successMsg}</div>`;
-                }
-            } else {
-                if (!nameVal || !codeVal || codeVal !== 'REDUCE2026') {
-                    document.getElementById('vague-error').classList.remove('hidden');
-                } else {
-                    document.getElementById('inp-name').value = '';
-                    document.getElementById('inp-code').value = '';
-                }
-            }
-        }
-
-        function handleModeToggle() {
-            if (!document.getElementById('form-container')) location.reload();
+        function toggleMode() {
+            updateZoomVariable();
             setLanguage(currentLang);
         }
 
         function updateMode() {
             const isAcc = document.getElementById('modeToggle').checked;
-            const container = document.getElementById('controls-container');
             const t = translations[currentLang] || translations['en'];
             const crit = isAcc ? t.critiques.good : t.critiques.bad;
             
-            if (isAcc) {
-                if (!document.getElementById('pauseBtn')) {
-                    container.innerHTML = `<button id="pauseBtn" onclick="toggleAnimation()" class="control-btn" aria-label="${isPlaying ? t.pauseAria : t.playAria}">${isPlaying ? '⏸' : '▶'}</button>`;
-                }
-            } else {
-                container.innerHTML = '';
-            }
-
-            document.getElementById('bodyTag').className = isAcc ? "bg-gray-100 min-h-screen p-4 md:p-8 transition-colors duration-500 lab-ui-font accessible-mode" : "bg-gray-100 min-h-screen p-4 md:p-8 transition-colors duration-500 lab-ui-font inaccessible-mode";
-            if (isAcc && isPlaying) document.getElementById('bodyTag').classList.add('playing');
-            
+            document.getElementById('bodyTag').className = isAcc ? "bg-gray-100 min-h-screen p-4 md:p-8 font-sans accessible-mode" : "bg-gray-100 min-h-screen p-4 md:p-8 font-sans inaccessible-mode";
+            document.getElementById('tab-feedback').innerText = isAcc ? t.tabRemediations : t.tabIssues;
             document.getElementById('txt-feedback-title').innerText = crit.title;
             document.getElementById('critiqueContent').innerHTML = (crit.items || []).map(i => `<div><span class="text-blue-400 font-bold block mb-1 uppercase text-[11px]">${i.f}</span><p class="text-white opacity-90">${i.c}</p></div>`).join('');
         }
 
         function switchTab(tabId) {
             ['test', 'feedback', 'user'].forEach(id => {
-                document.getElementById('panel-' + id).classList.toggle('hidden', id !== tabId);
-                document.getElementById('tab-' + id).setAttribute('aria-selected', id === tabId);
+                const panel = document.getElementById('panel-' + id);
+                const tab = document.getElementById('tab-' + id);
+                if (panel) panel.classList.toggle('hidden', id !== tabId);
+                if (tab) tab.setAttribute('aria-selected', id === tabId);
             });
         }
 
+        window.addEventListener('resize', updateZoomVariable);
         setLanguage('en');
         switchTab('test');
     </script>
