@@ -22,11 +22,10 @@
             transform-origin: left; 
         }
 
-        /* BAD CONTRAST ON HOVER/FOCUS FOR INACCESSIBLE BUTTON */
         .inaccessible-mode #txt-btn:hover, 
         .inaccessible-mode #txt-btn:focus {
-            background-color: #fb923c !important; /* Orange */
-            color: #ffffff !important; /* White - Resulting in poor ratio */
+            background-color: #fb923c !important; 
+            color: #ffffff !important; 
         }
 
         .inaccessible-mode #bad-feedback-img { 
@@ -38,12 +37,11 @@
         }
         .inaccessible-mode #good-feedback-btn { display: none !important; }
 
-        /* TOOLTIP LOGIC (NOW APPLIED TO BOTH VERSIONS) */
+        /* TOOLTIP LOGIC (APPLIED TO BOTH VERSIONS) */
         .tooltip-box {
             display: none; position: absolute; background: #1f2937; color: white;
             padding: 12px; width: 220px; z-index: 50; left: 20px; top: 10px; border-radius: 8px;
         }
-        /* Bridge to prevent closing on move to tooltip */
         .tooltip-box::before {
             content: ""; position: absolute; top: -20px; left: -20px; right: 0; bottom: 0; z-index: -1;
         }
@@ -199,10 +197,10 @@
                     ]}
                 },
                 userTitle: "Who is impacted?", userList: [
-                    "**Low Vision Users:** Depend on zoom to read. Locked scales or blurry images make content inaccessible.",
-                    "**Magnifier Users:** See only a small part of the screen. Displaced or fast-vanishing tooltips are missed.",
-                    "**Colorblind Users:** Struggle with low contrast. Faded text can blend into the background completely.",
-                    "**Senior Users:** Often experience declining visual acuity and benefit from higher contrast and stable layouts."
+                    "**Low Vision Users:** These users often need to enlarge text to read it comfortably. If the design uses fixed sizes or blurry images, they cannot access the information. This makes it impossible for them to use the website correctly.",
+                    "**Magnifier Users:** People using screen magnifiers only see a very small portion of the screen at one time. If tooltips or buttons move to unexpected places when zooming, these users will miss them entirely. This creates a confusing and broken experience.",
+                    "**Colorblind Users:** Many people have difficulty seeing the difference between certain colors or reading faint text. If the contrast is too low, labels and instructions simply disappear into the background. They need sharp, clear colors to navigate the page.",
+                    "**Senior Users:** As people get older, their eyesight often becomes less sharp and they need larger, clearer text. Stable layouts that do not move around when zoomed are very helpful for them. Clear instructions and high contrast make the web much easier for elderly people to use."
                 ]
             },
             fr: {
@@ -222,23 +220,23 @@
                 ],
                 critiques: {
                     bad: { title: "Quel est le problème ?", items: [
-                        { f: "1. Échec de contraste", c: "Les étiquettes et les instructions ne respectent pas les exigences de contraste minimal." },
+                        { f: "1. Échec de contraste", c: "Les étiquettes et les instructions ne respectent pas les exigences de contraste minimal, ce qui les rend difficiles à identifier." },
                         { f: "2. Déplacement de l'infobulle", c: "Le contenu de l'infobulle sort de la vue ou disparaît lors du zoom." },
-                        { f: "3. Échelle fixe", c: "L'étiquette Email est verrouillée. Au zoom, le texte reste minuscule." },
-                        { f: "4. Image de texte", c: "Le bouton 'Feedback' est une image. Il devient flou au zoom." }
+                        { f: "3. Échelle fixe", c: "L'étiquette Email est verrouillée. Au zoom, le texte reste minuscule, 'bloquant' la fonction de zoom du navigateur." },
+                        { f: "4. Image de texte", c: "Le bouton 'Feedback' est une image. Il devient flou et se pixélise lors du zoom, devenant illisible." }
                     ]},
                     good: { title: "Corrections", items: [
-                        { f: "Contraste des couleurs (WCAG 2.1 AA)", c: "Assurez un ratio d'au moins 4.5:1. Utilisez des étiquettes visibles." },
-                        { f: "Proximité et visibilité de l'infobulle", c: "Les infobulles doivent rester visibles et correctement positionnées dans la fenêtre d'affichage." },
-                        { f: "Mise à l'échelle fluide", c: "Évitez de verrouiller les échelles de texte. Utilisez des unités relatives (rem)." },
-                        { f: "Texte réel sur les images", c: "Créez l'interface avec du texte CSS et HTML." }
+                        { f: "Contraste des couleurs (WCAG 2.1 AA)", c: "Assurez un ratio d'au moins 4.5:1. Utilisez des étiquettes visibles, pas des espaces réservés, car ils disparaissent lors de la saisie." },
+                        { f: "Proximité et visibilité de l'infobulle", c: "Les infobulles doivent rester visibles et correctement positionnées dans la fenêtre d'affichage même à des niveaux de zoom élevés." },
+                        { f: "Mise à l'échelle responsive et fluide", c: "Évitez de verrouiller les échelles de texte. Utilisez des unités relatives (rem) pour que les mises en page s'adaptent à des niveaux de zoom allant jusqu'à 400 %." },
+                        { f: "Texte en direct sur les images", c: "Créez l'interface utilisateur avec du texte CSS et HTML. Cela garantit que les composants restent nets quel que soit le niveau de zoom." }
                     ]}
                 },
                 userTitle: "Qui est impacté ?", userList: [
-                    "**Malvoyants :** Dépendent du zoom pour lire.",
-                    "**Utilisateurs de loupe :** Ne voient qu'une petite partie de l'écran.",
-                    "**Daltoniens :** Luttent contre le faible contraste.",
-                    "**Séniors :** Bénéficient d'un contraste plus élevé et de mises en page stables."
+                    "**Utilisateurs malvoyants :** Ces utilisateurs doivent souvent agrandir le texte pour le lire confortablement. Si la conception utilise des tailles fixes ou des images floues, ils ne peuvent pas accéder à l'information. Cela leur rend impossible l'utilisation correcte du site web.",
+                    "**Utilisateurs de loupe :** Les personnes utilisant des loupes d'écran ne voient qu'une très petite partie de l'écran à la fois. Si les infobulles ou les boutons se déplacent vers des endroits inattendus lors du zoom, ces utilisateurs les manqueront entièrement. Cela crée une expérience confuse et interrompue.",
+                    "**Utilisateurs daltoniens :** De nombreuses personnes ont des difficultés à voir la différence entre certaines couleurs ou à lire des textes pâles. Si le contraste est trop faible, les étiquettes et les instructions disparaissent simplement dans l'arrière-plan. Ils ont besoin de couleurs nettes et claires pour naviguer sur la page.",
+                    "**Utilisateurs seniors :** Avec l'âge, la vue devient souvent moins précise et les seniors ont besoin de textes plus grands et plus clairs. Des mises en page stables qui ne bougent pas lors du zoom leur sont très utiles. Des instructions claires et un contraste élevé rendent le web beaucoup plus facile à utiliser pour les personnes âgées."
                 ]
             },
             nl: {
@@ -249,32 +247,32 @@
                 tooltip: "Voer uw 6-cijferige paspoortnummer in zonder spaties.", passportHint: "(bijv. AB1234)",
                 tabTest: "Hoe te testen", tabUser: "Impact op gebruikers", tabIssues: "Problemen", tabRemediations: "Oplossingen", guideTitle: "Stappenplan",
                 testSteps: [
-                    "Probeer het formulier te lezen en alle instructies te identificeren.",
+                    "Probeer het formulier te lezen en identificeer alle verstrekte instructies.",
                     "Zoom naar 200%.",
                     "Probeer de informatie in de tooltip voor het veld Paspoort-ID te lezen.",
                     "Bekijk het E-mailadres label terwijl u zoomt.",
-                    "Controleer de rode 'Feedback' knop en de tooltip.",
-                    "Schakel over naar de toegankelijke versie en herhaal."
+                    "Controleer de rode 'Feedback' knop en de tooltip inhoud op dit zoomniveau.",
+                    "Schakel over naar de toegankelijke versie en herhaal deze stappen."
                 ],
                 critiques: {
                     bad: { title: "Wat is er mis?", items: [
-                        { f: "1. Contrastfout", c: "Labels en instructies voldoen niet aan de minimale contrasteisen." },
-                        { f: "2. Tooltip Verplaatsing", c: "De tooltip-inhoud verplaatst zich buiten het zicht bij het zoomen." },
-                        { f: "3. Vaste schaling", c: "Het e-mail label is vergrendeld en blijft klein bij inzoomen." },
-                        { f: "4. Afbeelding van tekst", c: "De 'Feedback' knop is een afbeelding en wordt wazig." }
+                        { f: "1. Contrastfout", c: "Labels en instructies in placeholders voldoen niet aan de minimale contrasteisen, waardoor ze moeilijk te herkennen zijn." },
+                        { f: "2. Tooltip Verplaatsing", c: "De tooltip-inhoud verplaatst zich buiten het zicht of verdwijnt bij het zoomen." },
+                        { f: "3. Vaste schaling", c: "Het e-mail label is vergrendeld. Als een gebruiker inzoomt, blijft de tekst klein, wat de zoomfunctie van de browser 'blokkeert'." },
+                        { f: "4. Afbeelding van tekst", c: "De 'Feedback' knop is een afbeelding. Deze wordt wazig en korrelig bij het zoomen, waardoor hij onleesbaar wordt." }
                     ]},
                     good: { title: "Oplossingen", items: [
-                        { f: "Kleurcontrast (WCAG 2.1 AA)", c: "Zorg voor een ratio van minimaal 4.5:1." },
-                        { f: "Tooltip nabijheid & zichtbaarheid", c: "Tooltips moeten zichtbaar en correct gepositioneerd blijven binnen het venster." },
-                        { f: "Responsieve schaling", c: "Gebruik relatieve eenheden (rem)." },
-                        { f: "Live tekst over afbeeldingen", c: "Bouw de UI met CSS en HTML-tekst." }
+                        { f: "Kleurcontrast (WCAG 2.1 AA)", c: "Zorg voor een ratio van minimaal 4.5:1. Gebruik zichtbare labels, geen placeholders, omdat deze verdwijnen tijdens het typen." },
+                        { f: "Tooltip nabijheid & zichtbaarheid", c: "Tooltips moeten zichtbaar en correct gepositioneerd blijven binnen het weergavegebied, zelfs bij hoge zoomniveaus." },
+                        { f: "Responsieve & vloeiende schaling", c: "Vermijd het vastzetten van tekstschalen. Gebruik relatieve eenheden (rem) zodat lay-outs zich aanpassen aan zoomniveaus tot 400%." },
+                        { f: "Live tekst over afbeeldingen", c: "Bouw de UI met CSS en HTML-tekst. Dit zorgt ervoor dat componenten scherp blijven op elk zoomniveau." }
                     ]}
                 },
                 userTitle: "Wie wordt beïnvloed?", userList: [
-                    "**Slechtzienden:** Afhankelijk van zoom.",
-                    "**Schermloepgebruikers:** Zien slechts een deel van het scherm.",
-                    "**Kleurenblinden:** Moeite met laag contrast.",
-                    "**Ouderen:** Hebben baat bij hoger contrast en stabiele lay-outs."
+                    "**Slechtziende gebruikers:** Deze gebruikers moeten tekst vaak vergroten om deze comfortabel te kunnen lezen. Als het ontwerp vaste formaten of wazige afbeeldingen gebruikt, hebben zij geen toegang tot de informatie. Dit maakt het voor hen onmogelijk om de website correct te gebruiken.",
+                    "**Schermloepgebruikers:** Mensen die schermloepen gebruiken, zien slechts een heel klein deel van het scherm tegelijk. Als tooltips of knoppen naar onverwachte plaatsen verschuiven bij het zoomen, zullen deze gebruikers ze volledig missen. Dit zorgt voor een verwarrende en gebrekkige ervaring.",
+                    "**Kleurenblinde gebruikers:** Veel mensen hebben moeite om het verschil tussen bepaalde kleuren te zien of vage tekst te lezen. Als het contrast te laag is, verdwijnen labels en instructies simpelweg in de achtergrond. Zij hebben scherpe, heldere kleuren nodig om op de pagina te navigeren.",
+                    "**Oudere gebruikers:** Naarmate mensen ouder worden, wordt hun gezichtsvermogen vaak minder scherp en hebben ze grotere, duidelijkere tekst nodig. Stabiele lay-outs die niet verschuiven bij het zoomen zijn erg nuttig voor hen. Duidelijke instructies en een hoog contrast maken het web veel gemakkelijker te gebruiken voor oudere mensen."
                 ]
             },
             de: {
@@ -285,39 +283,38 @@
                 tooltip: "Geben Sie Ihre 6-stellige Passnummer ohne Leerzeichen ein.", passportHint: "(z.B. AB1234)",
                 tabTest: "Wie man testet", tabUser: "Betroffene Nutzer", tabIssues: "Probleme", tabRemediations: "Lösungen", guideTitle: "Schritt-für-Schritt-Anleitung",
                 testSteps: [
-                    "Versuchen Sie, das Formular zu lesen und alle Anweisungen zu finden.",
+                    "Versuchen Sie, das Formular zu lesen und alle bereitgestellten Anweisungen zu identifizieren.",
                     "Zoom auf 200%.",
                     "Versuchen Sie, die Informationen im Tooltip für das Feld Pass-ID zu lesen.",
                     "Beobachten Sie das E-Mail-Adress-Label beim Zoomen.",
-                    "Prüfen Sie den 'Feedback'-Button und den Tooltip-Inhalt.",
-                    "Wechseln Sie zur barrierefreien Version und wiederholen Sie."
+                    "Überprüfen Sie die rote Schaltfläche 'Feedback' und den Tooltip-Inhalt bei dieser Zoomstufe.",
+                    "Wechseln Sie zur barrierefreien Version und wiederholen Sie diese Schritte."
                 ],
                 critiques: {
                     bad: { title: "Was ist falsch?", items: [
-                        { f: "1. Kontrastfehler", c: "Beschriftungen erfüllen nicht die Mindestkontrastanforderungen." },
-                        { f: "2. Tooltip-Verschiebung", c: "Der Tooltip-Inhalt verschiebt sich beim Zoomen aus dem Sichtfeld." },
-                        { f: "3. Feste Skalierung", c: "Das E-Mail-Label ist fixiert und bleibt beim Zoomen winzig." },
-                        { f: "4. Bild von Text", c: "Die Schaltfläche 'Feedback' ist ein Bild und wird unscharf." }
+                        { f: "1. Kontrastfehler", c: "Beschriftungen und Platzhalteranweisungen erfüllen nicht die Mindestkontrastanforderungen, was ihre Identifizierung erschwert." },
+                        { f: "2. Tooltip-Verschiebung", c: "Der Tooltip-Inhalt verschiebt sich beim Zoomen aus dem Sichtfeld oder verschwindet." },
+                        { f: "3. Feste Skalierung", c: "Das E-Mail-Label ist fixiert. Wenn ein Benutzer heranzoomt, bleibt der Text winzig und 'blockiert' die Zoomfunktion des Browsers." },
+                        { f: "4. Bild von Text", c: "Die Schaltfläche 'Feedback' ist ein Bild. Sie verschwimmt und verpixelt beim Zoomen und wird unlesbar." }
                     ]},
                     good: { title: "Lösungen", items: [
-                        { f: "Farbkontrast (WCAG 2.1 AA)", c: "Stellen Sie ein Verhältnis von mindestens 4,5:1 sicher." },
-                        { f: "Tooltip-Nähe & Sichtbarkeit", c: "Tooltips müssen innerhalb des Ansichtsbereichs sichtbar und korrekt positioniert bleiben." },
-                        { f: "Responsive Skalierung", c: "Verwenden Sie relative Einheiten (rem)." },
-                        { f: "Echter Text statt Bilder", c: "Erstellen Sie die UI mit CSS- und HTML-Text." }
+                        { f: "Farbkontrast (WCAG 2.1 AA)", c: "Stellen Sie ein Verhältnis von mindestens 4,5:1 sicher. Verwenden Sie sichtbare Beschriftungen, keine Platzhalter, da diese beim Tippen verschwinden." },
+                        { f: "Tooltip-Nähe & Sichtbarkeit", c: "Tooltips müssen innerhalb des Ansichtsbereichs sichtbar und auch bei hohen Zoomstufen korrekt positioniert bleiben." },
+                        { f: "Responsive & flüssige Skalierung", c: "Vermeiden Sie das Fixieren von Textskalen. Verwenden Sie relative Einheiten (rem), damit sich Layouts an Zoomstufen bis zu 400 % anpassen." },
+                        { f: "Echter Text statt Bilder", c: "Erstellen Sie die Benutzeroberfläche mit CSS- und HTML-Text. Dies stellt sicher, dass Komponenten bei jeder Zoomstufe scharf bleiben." }
                     ]}
                 },
                 userTitle: "Wer ist betroffen?", userList: [
-                    "**Sehbehinderte Nutzer:** Auf Zoom angewiesen.",
-                    "**Lupennutzer:** Sehen nur einen Teil des Bildschirms.",
-                    "**Farbenblinde Nutzer:** Probleme mit geringem Kontrast.",
-                    "**Senioren:** Profitieren von höherem Kontrast und stabilen Layouts."
+                    "**Sehbehinderte Nutzer:** Diese Nutzer müssen Text oft vergrößern, um ihn bequem lesen zu können. Wenn das Design feste Größen oder unscharfe Bilder verwendet, können sie nicht auf die Informationen zugreifen. Dies macht es für sie unmöglich, die Website korrekt zu nutzen.",
+                    "**Lupennutzer:** Personen, die Bildschirmlupen verwenden, sehen jeweils nur einen sehr kleinen Teil des Bildschirms. Wenn sich Tooltips oder Schaltflächen beim Zoomen an unerwartete Stellen verschieben, werden diese Nutzer sie ganz übersehen. Dies führt zu einer verwirrenden und fehlerhaften Erfahrung.",
+                    "**Farbenblinde Nutzer:** Viele Menschen haben Schwierigkeiten, den Unterschied zwischen bestimmten Farben zu erkennen oder blassen Text zu lesen. Wenn der Kontrast zu gering ist, verschwinden Beschriftungen und Anweisungen einfach im Hintergrund. Sie benötigen scharfe, klare Farben, um auf der Seite zu navigieren.",
+                    "**Senioren:** Mit zunehmendem Alter wird die Sehkraft oft weniger scharf und Senioren benötigen größere, klarere Texte. Stabile Layouts, die sich beim Zoomen nicht verschieben, sind für sie sehr hilfreich. Klare Anweisungen und ein hoher Kontrast machen das Internet für ältere Menschen viel einfacher nutzbar."
                 ]
             }
         };
 
         let currentLang = 'en';
 
-        // Keyboard Logic for Tooltip (ESC to close)
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 const tooltip = document.getElementById('txt-tooltip');
