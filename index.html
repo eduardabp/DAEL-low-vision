@@ -22,6 +22,13 @@
             transform-origin: left; 
         }
 
+        /* BAD CONTRAST ON HOVER/FOCUS FOR INACCESSIBLE BUTTON */
+        .inaccessible-mode #txt-btn:hover, 
+        .inaccessible-mode #txt-btn:focus {
+            background-color: #fb923c !important; /* Orange */
+            color: #ffffff !important; /* White - Resulting in poor ratio */
+        }
+
         .inaccessible-mode #bad-feedback-img { 
             display: block !important; 
             width: 120px !important; 
@@ -31,11 +38,17 @@
         }
         .inaccessible-mode #good-feedback-btn { display: none !important; }
 
+        /* TOOLTIP LOGIC (NOW APPLIED TO BOTH VERSIONS) */
         .tooltip-box {
             display: none; position: absolute; background: #1f2937; color: white;
             padding: 12px; width: 220px; z-index: 50; left: 20px; top: 10px; border-radius: 8px;
         }
-        .inaccessible-mode .info-trigger:hover + .tooltip-box { display: block; }
+        /* Bridge to prevent closing on move to tooltip */
+        .tooltip-box::before {
+            content: ""; position: absolute; top: -20px; left: -20px; right: 0; bottom: 0; z-index: -1;
+        }
+        .tooltip-container:hover .tooltip-box,
+        .info-trigger:focus + .tooltip-box { display: block; }
 
         /* --- ACCESSIBLE MODE STYLES --- */
         .accessible-mode *:focus-visible { outline: 3px solid #2563eb !important; outline-offset: 2px !important; }
@@ -53,16 +66,6 @@
             letter-spacing: 0.045em;
         }
         .accessible-mode #good-feedback-btn:hover { background-color: #991b1b; }
-
-        .accessible-mode .tooltip-container:hover .tooltip-box,
-        .accessible-mode .info-trigger:focus + .tooltip-box { display: block; }
-
-        .accessible-mode .tooltip-box::before {
-            content: "";
-            position: absolute;
-            top: -20px; left: -20px; right: 0; bottom: 0;
-            z-index: -1;
-        }
 
         /* --- LAYOUT --- */
         .label-row { height: 1.5rem !important; display: flex; align-items: center; margin-bottom: 0.25rem; }
@@ -109,13 +112,6 @@
         <main class="p-6 md:p-10">
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-16">
                 <div class="lg:col-span-1 space-y-6">
-                    <div>
-                        <div class="label-row">
-                            <label id="txt-label-name" class="text-xs font-semibold uppercase tracking-wider low-contrast-label">Full Name</label>
-                        </div>
-                        <input type="text" class="w-full border border-gray-300 p-2 rounded-lg bg-gray-50 text-sm low-contrast-border">
-                    </div>
-
                     <div class="relative">
                         <div class="label-row proximity-box">
                             <label id="txt-label-passport" class="text-xs font-semibold uppercase tracking-wider low-contrast-label">Passport ID</label>
@@ -176,14 +172,14 @@
             en: {
                 inaccessible: "Inaccessible", accessible: "Accessible",
                 labTitle: "Digital Accessibility Empathy Lab", title: "Low Vision Experience",
-                name: "Full Name", passport: "Passport ID", email: "Email Address", btn: "Update Profile",
+                passport: "Passport ID", email: "Email Address", btn: "Update Profile",
                 feedbackLabel: "Help us improve", feedbackBtnText: "Feedback", infoAria: "Information",
                 tooltip: "Enter your 6-digit passport number without spaces.", passportHint: "(e.g. AB1234)",
                 tabTest: "How to test", tabUser: "Impacted users", tabIssues: "Issues", tabRemediations: "Remediations", guideTitle: "Step-by-step guide",
                 testSteps: [
                     "Try to read the form and identify all instructions provided.",
                     "Zoom to 200%.",
-                    "Attempt to trigger the tooltip using only the mouse, then using only the keyboard (Keys: Tab, Space, Enter).",
+                    "Try to read the information in the tooltip for the Passport ID field.",
                     "Observe the Email Address label as you zoom.",
                     "Check the red 'Feedback' button and the tooltip content at this zoom level.",
                     "Switch to the accessible version and repeat these steps."
@@ -191,13 +187,13 @@
                 critiques: {
                     bad: { title: "What is wrong?", items: [
                         { f: "1. Contrast Failure", c: "Labels and placeholder instructions fail minimum contrast requirements, making them difficult to identify." },
-                        { f: "2. Tooltip Displacement & Inaccessibility", c: "The tooltip content moves out of sight or disappears when zooming. It is also unreachable for keyboard-only users." },
+                        { f: "2. Tooltip Displacement", c: "The tooltip content moves out of sight or disappears when zooming." },
                         { f: "3. Fixed Scaling", c: "The Email label is locked. As a user zooms in, the text stays tiny, 'blocking' the browser's zoom feature." },
                         { f: "4. Image of Text", c: "The 'Feedback' button is an image. It blurs and pixelates when zoomed, becoming unreadable." }
                     ]},
                     good: { title: "Remediations", items: [
                         { f: "Color Contrast (WCAG 2.1 AA)", c: "Ensure a ratio of at least 4.5:1. Use visible labels, not placeholders, as they disappear when typing." },
-                        { f: "Persistent & Accessible Tooltips", c: "Tooltips must respond to both mouse and keyboard. They should be 'Dismissable' (ESC key), 'Hoverable', and 'Persistent'." },
+                        { f: "Tooltip Proximity & Visibility", c: "Tooltips must remain visible and positioned correctly within the viewport even at high zoom levels." },
                         { f: "Responsive & Fluid Scaling", c: "Avoid locking text scales. Use relative units (rem) so layouts adapt to zoom levels up to 400%." },
                         { f: "Live Text over Images", c: "Build UI with CSS and HTML text. This ensures components stay sharp at any zoom level." }
                     ]}
@@ -206,121 +202,122 @@
                     "**Low Vision Users:** Depend on zoom to read. Locked scales or blurry images make content inaccessible.",
                     "**Magnifier Users:** See only a small part of the screen. Displaced or fast-vanishing tooltips are missed.",
                     "**Colorblind Users:** Struggle with low contrast. Faded text can blend into the background completely.",
-                    "**Mobile Users:** On touch devices, tooltips requiring a mouse hover are inaccessible."
+                    "**Senior Users:** Often experience declining visual acuity and benefit from higher contrast and stable layouts."
                 ]
             },
             fr: {
                 inaccessible: "Inaccessible", accessible: "Accessible",
                 labTitle: "Laboratoire d'empathie sur l'accessibilité numérique", title: "Expérience Basse Vision",
-                name: "Nom complet", passport: "ID Passeport", email: "Adresse e-mail", btn: "Mettre à jour le profil",
+                passport: "ID Passeport", email: "Adresse e-mail", btn: "Mettre à jour le profil",
                 feedbackLabel: "Aidez-nous à nous améliorer", feedbackBtnText: "Feedback", infoAria: "Informations",
                 tooltip: "Entrez votre numéro de passeport à 6 chiffres sans espaces.", passportHint: "(ex. AB1234)",
                 tabTest: "Comment tester", tabUser: "Utilisateurs impactés", tabIssues: "Problèmes", tabRemediations: "Corrections", guideTitle: "Guide étape par étape",
                 testSteps: [
                     "Essayez de lire le formulaire et d'identifier toutes les instructions fournies.",
                     "Zoomez à 200%.",
-                    "Tentez de déclencher l'infobulle à la souris, puis au clavier (Touches : Tab, Espace, Entrée).",
+                    "Essayez de lire les informations contenues dans l'infobulle pour le champ ID Passeport.",
                     "Observez l'étiquette Adresse e-mail pendant le zoom.",
                     "Vérifiez le bouton rouge 'Feedback' et le contenu de l'infobulle à ce niveau de zoom.",
                     "Passez à la version accessible et répétez ces étapes."
                 ],
                 critiques: {
                     bad: { title: "Quel est le problème ?", items: [
-                        { f: "1. Échec de contraste", c: "Les étiquettes et les instructions de l'espace réservé ne respectent pas les exigences de contraste minimal, ce qui les rend difficiles à identifier." },
-                        { f: "2. Déplacement et inaccessibilité de l'infobulle", c: "Le contenu de l'infobulle sort de la vue ou disparaît lors du zoom. Il est également inaccessible pour les utilisateurs utilisant uniquement le clavier." },
-                        { f: "3. Échelle fixe", c: "L'étiquette Email est verrouillée. Lorsqu'un utilisateur zoom, le texte reste minuscule, 'bloquant' la fonction de zoom du navigateur." },
-                        { f: "4. Image de texte", c: "Le bouton 'Feedback' est une image. Il devient flou et se pixélise lors du zoom, devenant illisible." }
+                        { f: "1. Échec de contraste", c: "Les étiquettes et les instructions ne respectent pas les exigences de contraste minimal." },
+                        { f: "2. Déplacement de l'infobulle", c: "Le contenu de l'infobulle sort de la vue ou disparaît lors du zoom." },
+                        { f: "3. Échelle fixe", c: "L'étiquette Email est verrouillée. Au zoom, le texte reste minuscule." },
+                        { f: "4. Image de texte", c: "Le bouton 'Feedback' est une image. Il devient flou au zoom." }
                     ]},
                     good: { title: "Corrections", items: [
-                        { f: "Contraste des couleurs (WCAG 2.1 AA)", c: "Assurez un ratio d'au moins 4.5:1. Utilisez des étiquettes visibles, pas des espaces réservés, car ils disparaissent lors de la saisie." },
-                        { f: "Infobulles persistantes et accessibles", c: "Les infobulles doivent répondre à la fois à la souris et au clavier. Elles doivent être 'Supprimables' (touche ESC), 'Survolables' et 'Persistantes'." },
-                        { f: "Mise à l'échelle responsive et fluide", c: "Évitez de verrouiller les échelles de texte. Utilisez des unités relatives (rem) pour que les mises en page s'adaptent à des niveaux de zoom allant jusqu'à 400 %." },
-                        { f: "Texte en direct sur les images", c: "Créez l'interface utilisateur avec du texte CSS et HTML. Cela garantit que les composants restent nets quel que soit le niveau de zoom." }
+                        { f: "Contraste des couleurs (WCAG 2.1 AA)", c: "Assurez un ratio d'au moins 4.5:1. Utilisez des étiquettes visibles." },
+                        { f: "Proximité et visibilité de l'infobulle", c: "Les infobulles doivent rester visibles et correctement positionnées dans la fenêtre d'affichage." },
+                        { f: "Mise à l'échelle fluide", c: "Évitez de verrouiller les échelles de texte. Utilisez des unités relatives (rem)." },
+                        { f: "Texte réel sur les images", c: "Créez l'interface avec du texte CSS et HTML." }
                     ]}
                 },
                 userTitle: "Qui est impacté ?", userList: [
-                    "**Utilisateurs malvoyants :** Dépendent du zoom pour lire. Les échelles verrouillées ou les images floues rendent le contenu inaccessible.",
-                    "**Utilisateurs de loupe :** Ne voient qu'une petite partie de l'écran. Les infobulles déplacées ou qui disparaissent rapidement sont manquées.",
-                    "**Utilisateurs daltoniens :** Luttent contre le faible contraste. Le texte délavé peut se fondre complètement dans l'arrière-plan.",
-                    "**Utilisateurs mobiles :** Sur les appareils tactiles, les infobulles nécessitant un survol de la souris sont inaccessibles."
+                    "**Malvoyants :** Dépendent du zoom pour lire.",
+                    "**Utilisateurs de loupe :** Ne voient qu'une petite partie de l'écran.",
+                    "**Daltoniens :** Luttent contre le faible contraste.",
+                    "**Séniors :** Bénéficient d'un contraste plus élevé et de mises en page stables."
                 ]
             },
             nl: {
                 inaccessible: "Niet Toegankelijk", accessible: "Toegankelijk",
                 labTitle: "Digitaal Toegankelijkheid Empathie Lab", title: "Lage Visus Ervaring",
-                name: "Volledige Naam", passport: "Paspoort ID", email: "E-mailadres", btn: "Profiel Bijwerken",
+                passport: "Paspoort ID", email: "E-mailadres", btn: "Profiel Bijwerken",
                 feedbackLabel: "Help ons verbeteren", feedbackBtnText: "Feedback", infoAria: "Informatie",
                 tooltip: "Voer uw 6-cijferige paspoortnummer in zonder spaties.", passportHint: "(bijv. AB1234)",
                 tabTest: "Hoe te testen", tabUser: "Impact op gebruikers", tabIssues: "Problemen", tabRemediations: "Oplossingen", guideTitle: "Stappenplan",
                 testSteps: [
-                    "Probeer het formulier te lezen en identificeer alle verstrekte instructies.",
+                    "Probeer het formulier te lezen en alle instructies te identificeren.",
                     "Zoom naar 200%.",
-                    "Probeer de tooltip te activeren met alleen de muis, en dan met alleen het toetsenbord (Toetsen: Tab, Spatie, Enter).",
+                    "Probeer de informatie in de tooltip voor het veld Paspoort-ID te lezen.",
                     "Bekijk het E-mailadres label terwijl u zoomt.",
-                    "Controleer de rode 'Feedback' knop en de tooltip inhoud op dit zoomniveau.",
-                    "Schakel over naar de toegankelijke versie en herhaal deze stappen."
+                    "Controleer de rode 'Feedback' knop en de tooltip.",
+                    "Schakel over naar de toegankelijke versie en herhaal."
                 ],
                 critiques: {
                     bad: { title: "Wat is er mis?", items: [
-                        { f: "1. Contrastfout", c: "Labels en instructies in placeholders voldoen niet aan de minimale contrasteisen, waardoor ze moeilijk te herkennen zijn." },
-                        { f: "2. Tooltip verplaatsing & ontoegankelijkheid", c: "De tooltip-inhoud verplaatst zich buiten het zicht of verdwijnt bij het zoomen. Het is ook onbereikbaar voor toetsenbordgebruikers." },
-                        { f: "3. Vaste schaling", c: "Het e-mail label is vergrendeld. Als een gebruiker inzoomt, blijft de tekst klein, wat de zoomfunctie van de browser 'blokkeert'." },
-                        { f: "4. Afbeelding van tekst", c: "De 'Feedback' knop is een afbeelding. Deze wordt wazig en korrelig bij het zoomen, waardoor hij onleesbaar wordt." }
+                        { f: "1. Contrastfout", c: "Labels en instructies voldoen niet aan de minimale contrasteisen." },
+                        { f: "2. Tooltip Verplaatsing", c: "De tooltip-inhoud verplaatst zich buiten het zicht bij het zoomen." },
+                        { f: "3. Vaste schaling", c: "Het e-mail label is vergrendeld en blijft klein bij inzoomen." },
+                        { f: "4. Afbeelding van tekst", c: "De 'Feedback' knop is een afbeelding en wordt wazig." }
                     ]},
                     good: { title: "Oplossingen", items: [
-                        { f: "Kleurcontrast (WCAG 2.1 AA)", c: "Zorg voor een ratio van minimaal 4.5:1. Gebruik zichtbare labels, geen placeholders, omdat deze verdwijnen tijdens het typen." },
-                        { f: "Blijvende & toegankelijke tooltips", c: "Tooltips moeten reageren op zowel muis als toetsenbord. Ze moeten 'Verwijderbaar' (ESC-toets), 'Hoverbaar' en 'Blijvend' zijn." },
-                        { f: "Responsieve & vloeiende schaling", c: "Vermijd het vastzetten van tekstschalen. Gebruik relatieve eenheden (rem) zodat lay-outs zich aanpassen aan zoomniveaus tot 400%." },
-                        { f: "Live tekst over afbeeldingen", c: "Bouw de UI met CSS en HTML-tekst. Dit zorgt ervoor dat componenten scherp blijven op elk zoomniveau." }
+                        { f: "Kleurcontrast (WCAG 2.1 AA)", c: "Zorg voor een ratio van minimaal 4.5:1." },
+                        { f: "Tooltip nabijheid & zichtbaarheid", c: "Tooltips moeten zichtbaar en correct gepositioneerd blijven binnen het venster." },
+                        { f: "Responsieve schaling", c: "Gebruik relatieve eenheden (rem)." },
+                        { f: "Live tekst over afbeeldingen", c: "Bouw de UI met CSS en HTML-tekst." }
                     ]}
                 },
                 userTitle: "Wie wordt beïnvloed?", userList: [
-                    "**Slechtziende gebruikers:** Zijn afhankelijk van zoom om te lezen. Vergrendelde schalen of wazige afbeeldingen maken inhoud ontoegankelijk.",
-                    "**Schermloepgebruikers:** Zien slechts een klein deel van het scherm. Verplaatste of snel verdwijnende tooltips worden gemist.",
-                    "**Kleurenblinde gebruikers:** Hebben moeite met laag contrast. Vervaagde tekst kan volledig in de achtergrond opgaan.",
-                    "**Mobiele gebruikers:** Op touch-apparaten zijn tooltips die een muis-hover vereisen ontoegankelijk."
+                    "**Slechtzienden:** Afhankelijk van zoom.",
+                    "**Schermloepgebruikers:** Zien slechts een deel van het scherm.",
+                    "**Kleurenblinden:** Moeite met laag contrast.",
+                    "**Ouderen:** Hebben baat bij hoger contrast en stabiele lay-outs."
                 ]
             },
             de: {
                 inaccessible: "Nicht Barrierefrei", accessible: "Barrierefrei",
                 labTitle: "Digitales Barrierefreiheits-Empathie-Labor", title: "Sehbehinderung Erfahrung",
-                name: "Vollständiger Name", passport: "Pass-ID", email: "E-Mail-Adresse", btn: "Profil aktualisieren",
+                passport: "Pass-ID", email: "E-Mail-Adresse", btn: "Profil aktualisieren",
                 feedbackLabel: "Helfen Sie uns zu verbessern", feedbackBtnText: "Feedback", infoAria: "Informationen",
                 tooltip: "Geben Sie Ihre 6-stellige Passnummer ohne Leerzeichen ein.", passportHint: "(z.B. AB1234)",
                 tabTest: "Wie man testet", tabUser: "Betroffene Nutzer", tabIssues: "Probleme", tabRemediations: "Lösungen", guideTitle: "Schritt-für-Schritt-Anleitung",
                 testSteps: [
-                    "Versuchen Sie, das Formular zu lesen und alle bereitgestellten Anweisungen zu identifizieren.",
+                    "Versuchen Sie, das Formular zu lesen und alle Anweisungen zu finden.",
                     "Zoom auf 200%.",
-                    "Versuchen Sie, den Tooltip nur mit der Maus und dann nur mit der Tastatur auszulösen (Tasten: Tab, Leertaste, Eingabe).",
+                    "Versuchen Sie, die Informationen im Tooltip für das Feld Pass-ID zu lesen.",
                     "Beobachten Sie das E-Mail-Adress-Label beim Zoomen.",
-                    "Überprüfen Sie die rote Schaltfläche 'Feedback' und den Tooltip-Inhalt bei dieser Zoomstufe.",
-                    "Wechseln Sie zur barrierefreien Version und wiederholen Sie diese Schritte."
+                    "Prüfen Sie den 'Feedback'-Button und den Tooltip-Inhalt.",
+                    "Wechseln Sie zur barrierefreien Version und wiederholen Sie."
                 ],
                 critiques: {
                     bad: { title: "Was ist falsch?", items: [
-                        { f: "1. Kontrastfehler", c: "Beschriftungen und Platzhalteranweisungen erfüllen nicht die Mindestkontrastanforderungen, was ihre Identifizierung erschwert." },
-                        { f: "2. Tooltip-Verschiebung & Barrieren", c: "Der Tooltip-Inhalt verschiebt sich beim Zoomen aus dem Sichtfeld oder verschwindet. Er ist auch für reine Tastaturnutzer nicht erreichbar." },
-                        { f: "3. Feste Skalierung", c: "Das E-Mail-Label ist fixiert. Wenn ein Benutzer heranzoomt, bleibt der Text winzig und 'blockiert' die Zoomfunktion des Browsers." },
-                        { f: "4. Bild von Text", c: "Die Schaltfläche 'Feedback' ist ein Bild. Sie verschwimmt und verpixelt beim Zoomen und wird unlesbar." }
+                        { f: "1. Kontrastfehler", c: "Beschriftungen erfüllen nicht die Mindestkontrastanforderungen." },
+                        { f: "2. Tooltip-Verschiebung", c: "Der Tooltip-Inhalt verschiebt sich beim Zoomen aus dem Sichtfeld." },
+                        { f: "3. Feste Skalierung", c: "Das E-Mail-Label ist fixiert und bleibt beim Zoomen winzig." },
+                        { f: "4. Bild von Text", c: "Die Schaltfläche 'Feedback' ist ein Bild und wird unscharf." }
                     ]},
                     good: { title: "Lösungen", items: [
-                        { f: "Farbkontrast (WCAG 2.1 AA)", c: "Stellen Sie ein Verhältnis von mindestens 4,5:1 sicher. Verwenden Sie sichtbare Beschriftungen, keine Platzhalter, da diese beim Tippen verschwinden." },
-                        { f: "Beständige & barrierefreie Tooltips", c: "Tooltips müssen sowohl auf die Maus als auch auf die Tastatur reagieren. Sie sollten 'Abbrechbar' (ESC-Taste), 'Überfahrbar' und 'Beständig' sein." },
-                        { f: "Responsive & flüssige Skalierung", c: "Vermeiden Sie das Fixieren von Textskalen. Verwenden Sie relative Einheiten (rem), damit sich Layouts an Zoomstufen bis zu 400 % anpassen." },
-                        { f: "Echter Text statt Bilder", c: "Erstellen Sie die Benutzeroberfläche mit CSS- und HTML-Text. Dies stellt sicher, dass Komponenten bei jeder Zoomstufe scharf bleiben." }
+                        { f: "Farbkontrast (WCAG 2.1 AA)", c: "Stellen Sie ein Verhältnis von mindestens 4,5:1 sicher." },
+                        { f: "Tooltip-Nähe & Sichtbarkeit", c: "Tooltips müssen innerhalb des Ansichtsbereichs sichtbar und korrekt positioniert bleiben." },
+                        { f: "Responsive Skalierung", c: "Verwenden Sie relative Einheiten (rem)." },
+                        { f: "Echter Text statt Bilder", c: "Erstellen Sie die UI mit CSS- und HTML-Text." }
                     ]}
                 },
                 userTitle: "Wer ist betroffen?", userList: [
-                    "**Sehbehinderte Nutzer:** Sind zum Lesen auf den Zoom angewiesen. Fixierte Skalen oder unscharfe Bilder machen Inhalte unzugänglich.",
-                    "**Lupennutzer:** Sehen nur einen kleinen Teil des Bildschirms. Verschobene oder schnell verschwindende Tooltips werden übersehen.",
-                    "**Farbenblinde Nutzer:** Haben Probleme mit geringem Kontrast. Verblasster Text kann vollständig mit dem Hintergrund verschmelzen.",
-                    "**Mobile Nutzer:** Auf Touch-Geräten sind Tooltips, die ein Mouseover erfordern, nicht zugänglich."
+                    "**Sehbehinderte Nutzer:** Auf Zoom angewiesen.",
+                    "**Lupennutzer:** Sehen nur einen Teil des Bildschirms.",
+                    "**Farbenblinde Nutzer:** Probleme mit geringem Kontrast.",
+                    "**Senioren:** Profitieren von höherem Kontrast und stabilen Layouts."
                 ]
             }
         };
 
         let currentLang = 'en';
 
+        // Keyboard Logic for Tooltip (ESC to close)
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 const tooltip = document.getElementById('txt-tooltip');
@@ -346,7 +343,6 @@
             document.getElementById('txt-accessible').innerText = t.accessible;
             document.getElementById('txt-lab-title').innerText = t.labTitle;
             document.getElementById('txt-title').innerText = t.title;
-            document.getElementById('txt-label-name').innerText = t.name;
             document.getElementById('txt-label-email').innerText = t.email;
             document.getElementById('txt-btn').innerText = t.btn;
             document.getElementById('txt-feedback-label').innerText = t.feedbackLabel;
