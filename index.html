@@ -149,11 +149,11 @@
                             <button id="tab-user" onclick="switchTab('user')" class="tab-btn px-6 py-4 text-xs font-black uppercase tracking-widest border-l border-gray-700" aria-selected="false">Impacted users</button>
                         </div>
                         <div id="panel-test" class="p-8 space-y-6 text-sm flex-grow">
-                            <h3 id="txt-guide-title" class="text-blue-400 font-bold uppercase text-xs mb-2">Step-by-step guide</h3>
+                            <h3 id="txt-guide-title" class="text-blue-400 font-bold uppercase text-base mb-2">Step-by-step guide</h3>
                             <ol id="txt-test-steps" class="list-decimal pl-5 space-y-4 opacity-95"></ol>
                         </div>
                         <div id="panel-feedback" class="p-8 hidden text-sm flex-grow overflow-y-auto">
-                            <h3 id="txt-feedback-title" class="text-blue-400 font-bold uppercase mb-6"></h3>
+                            <h3 id="txt-feedback-title" class="text-blue-400 font-bold uppercase text-base mb-6"></h3>
                             <div id="critiqueContent" class="space-y-6"></div>
                         </div>
                         <div id="panel-user" class="p-8 hidden text-sm flex-grow overflow-y-auto">
@@ -173,7 +173,7 @@
                 passport: "Passport ID", email: "Email Address", btn: "Update Profile",
                 feedbackLabel: "Help us improve", feedbackBtnText: "Feedback", infoAria: "Information",
                 tooltip: "Enter your 6-digit passport number without spaces.", passportHint: "(e.g. AB1234)",
-                tabTest: "How to test", tabUser: "Impacted users", tabIssues: "Issues", tabRemediations: "Remediations", guideTitle: "Step-by-step guide",
+                tabTest: "How to test", tabUser: "Impacted users", tabIssues: "Issues", tabRemediations: "How to fix", guideTitle: "Step-by-step guide",
                 testSteps: [
                     "Try to read the form and identify all instructions provided.",
                     "Zoom to 200%.",
@@ -189,7 +189,7 @@
                         { f: "3. Fixed Scaling", c: "The Email label is locked. As a user zooms in, the text stays tiny, 'blocking' the browser's zoom feature." },
                         { f: "4. Image of Text", c: "The 'Feedback' button is an image. It blurs and pixelates when zoomed, becoming unreadable." }
                     ]},
-                    good: { title: "Remediations", items: [
+                    good: { title: "How to fix", items: [
                         { f: "Color Contrast (WCAG 2.1 AA)", c: "Ensure a ratio of at least 4.5:1. Use visible labels, not placeholders, as they disappear when typing." },
                         { f: "Tooltip Proximity & Visibility", c: "Tooltips must remain visible and positioned correctly within the viewport even at high zoom levels." },
                         { f: "Responsive & Fluid Scaling", c: "Avoid locking text scales. Use relative units (rem) so layouts adapt to zoom levels up to 400%." },
@@ -209,7 +209,7 @@
                 passport: "ID Passeport", email: "Adresse e-mail", btn: "Mettre à jour le profil",
                 feedbackLabel: "Aidez-nous à nous améliorer", feedbackBtnText: "Feedback", infoAria: "Informations",
                 tooltip: "Entrez votre numéro de passeport à 6 chiffres sans espaces.", passportHint: "(ex. AB1234)",
-                tabTest: "Comment tester", tabUser: "Utilisateurs impactés", tabIssues: "Problèmes", tabRemediations: "Corrections", guideTitle: "Guide étape par étape",
+                tabTest: "Comment tester", tabUser: "Utilisateurs impactés", tabIssues: "Problèmes", tabRemediations: "Comment corriger", guideTitle: "Guide étape par étape",
                 testSteps: [
                     "Essayez de lire le formulaire et d'identifier toutes les instructions fournies.",
                     "Zoomez à 200%.",
@@ -225,7 +225,7 @@
                         { f: "3. Échelle fixe", c: "L'étiquette Email est verrouillée. Au zoom, le texte reste minuscule, 'bloquant' la fonction de zoom du navigateur." },
                         { f: "4. Image de texte", c: "Le bouton 'Feedback' est une image. Il devient flou et se pixélise lors du zoom, devenant illisible." }
                     ]},
-                    good: { title: "Corrections", items: [
+                    good: { title: "Comment corriger", items: [
                         { f: "Contraste des couleurs (WCAG 2.1 AA)", c: "Assurez un ratio d'au moins 4.5:1. Utilisez des étiquettes visibles, pas des espaces réservés, car ils disparaissent lors de la saisie." },
                         { f: "Proximité et visibilité de l'infobulle", c: "Les infobulles doivent rester visibles et correctement positionnées dans la fenêtre d'affichage même à des niveaux de zoom élevés." },
                         { f: "Mise à l'échelle responsive et fluide", c: "Évitez de verrouiller les échelles de texte. Utilisez des unités relatives (rem) pour que les mises en page s'adaptent à des niveaux de zoom allant jusqu'à 400 %." },
@@ -245,7 +245,7 @@
                 passport: "Paspoort ID", email: "E-mailadres", btn: "Profiel Bijwerken",
                 feedbackLabel: "Help ons verbeteren", feedbackBtnText: "Feedback", infoAria: "Informatie",
                 tooltip: "Voer uw 6-cijferige paspoortnummer in zonder spaties.", passportHint: "(bijv. AB1234)",
-                tabTest: "Hoe te testen", tabUser: "Impact op gebruikers", tabIssues: "Problemen", tabRemediations: "Oplossingen", guideTitle: "Stappenplan",
+                tabTest: "Hoe te testen", tabUser: "Impact op gebruikers", tabIssues: "Problemen", tabRemediations: "Hoe op te lossen", guideTitle: "Stappenplan",
                 testSteps: [
                     "Probeer het formulier te lezen en identificeer alle verstrekte instructies.",
                     "Zoom naar 200%.",
@@ -261,7 +261,7 @@
                         { f: "3. Vaste schaling", c: "Het e-mail label is vergrendeld. Als een gebruiker inzoomt, blijft de tekst klein, wat de zoomfunctie van de browser 'blokkeert'." },
                         { f: "4. Afbeelding van tekst", c: "De 'Feedback' knop is een afbeelding. Deze wordt wazig en korrelig bij het zoomen, waardoor hij onleesbaar wordt." }
                     ]},
-                    good: { title: "Oplossingen", items: [
+                    good: { title: "Hoe op te lossen", items: [
                         { f: "Kleurcontrast (WCAG 2.1 AA)", c: "Zorg voor een ratio van minimaal 4.5:1. Gebruik zichtbare labels, geen placeholders, omdat deze verdwijnen tijdens het typen." },
                         { f: "Tooltip nabijheid & zichtbaarheid", c: "Tooltips moeten zichtbaar en correct gepositioneerd blijven binnen het weergavegebied, zelfs bij hoge zoomniveaus." },
                         { f: "Responsieve & vloeiende schaling", c: "Vermijd het vastzetten van tekstschalen. Gebruik relatieve eenheden (rem) zodat lay-outs zich aanpassen aan zoomniveaus tot 400%." },
@@ -272,7 +272,7 @@
                     "**Slechtziende gebruikers:** Deze gebruikers moeten tekst vaak vergroten om deze comfortabel te kunnen lezen. Als het ontwerp vaste formaten of wazige afbeeldingen gebruikt, hebben zij geen toegang tot de informatie. Dit maakt het voor hen onmogelijk om de website correct te gebruiken.",
                     "**Schermloepgebruikers:** Mensen die schermloepen gebruiken, zien slechts een heel klein deel van het scherm tegelijk. Als tooltips of knoppen naar onverwachte plaatsen verschuiven bij het zoomen, zullen deze gebruikers ze volledig missen. Dit zorgt voor een verwarrende en gebrekkige ervaring.",
                     "**Kleurenblinde gebruikers:** Veel mensen hebben moeite om het verschil tussen bepaalde kleuren te zien of vage tekst te lezen. Als het contrast te laag is, verdwijnen labels en instructies simpelweg in de achtergrond. Zij hebben scherpe, heldere kleuren nodig om op de pagina te navigeren.",
-                    "**Oudere gebruikers:** Naarmate mensen ouder worden, wordt hun gezichtsvermogen vaak minder scherp en hebben ze grotere, duidelijkere tekst nodig. Stabiele lay-outs die niet verschuiven bij het zoomen zijn erg nuttig voor hen. Duidelijke instructies en een hoog contrast maken het web veel gemakkelijker te gebruiken voor oudere mensen."
+                    "**Oudere gebruikers:** Naarmate mensen ouder worden, wordt hun gezichtsvermogen vaak minder scherp en hebben ze grotere, duidelijkere tekst nodig. Stabiele lay-outs die niet verschuiven bij het zoomen zijn erg nuttig for hen. Duidelijke instructies en een hoog contrast maken het web veel gemakkelijker te gebruiken voor oudere mensen."
                 ]
             },
             de: {
@@ -281,7 +281,7 @@
                 passport: "Pass-ID", email: "E-Mail-Adresse", btn: "Profil aktualisieren",
                 feedbackLabel: "Helfen Sie uns zu verbessern", feedbackBtnText: "Feedback", infoAria: "Informationen",
                 tooltip: "Geben Sie Ihre 6-stellige Passnummer ohne Leerzeichen ein.", passportHint: "(z.B. AB1234)",
-                tabTest: "Wie man testet", tabUser: "Betroffene Nutzer", tabIssues: "Probleme", tabRemediations: "Lösungen", guideTitle: "Schritt-für-Schritt-Anleitung",
+                tabTest: "Wie man testet", tabUser: "Betroffene Nutzer", tabIssues: "Probleme", tabRemediations: "Wie man fixiert", guideTitle: "Schritt-für-Schritt-Anleitung",
                 testSteps: [
                     "Versuchen Sie, das Formular zu lesen und alle bereitgestellten Anweisungen zu identifizieren.",
                     "Zoom auf 200%.",
@@ -297,7 +297,7 @@
                         { f: "3. Feste Skalierung", c: "Das E-Mail-Label ist fixiert. Wenn ein Benutzer heranzoomt, bleibt der Text winzig und 'blockiert' die Zoomfunktion des Browsers." },
                         { f: "4. Bild von Text", c: "Die Schaltfläche 'Feedback' ist ein Bild. Sie verschwimmt und verpixelt beim Zoomen und wird unlesbar." }
                     ]},
-                    good: { title: "Lösungen", items: [
+                    good: { title: "Wie man fixiert", items: [
                         { f: "Farbkontrast (WCAG 2.1 AA)", c: "Stellen Sie ein Verhältnis von mindestens 4,5:1 sicher. Verwenden Sie sichtbare Beschriftungen, keine Platzhalter, da diese beim Tippen verschwinden." },
                         { f: "Tooltip-Nähe & Sichtbarkeit", c: "Tooltips müssen innerhalb des Ansichtsbereichs sichtbar und auch bei hohen Zoomstufen korrekt positioniert bleiben." },
                         { f: "Responsive & flüssige Skalierung", c: "Vermeiden Sie das Fixieren von Textskalen. Verwenden Sie relative Einheiten (rem), damit sich Layouts an Zoomstufen bis zu 400 % anpassen." },
@@ -362,7 +362,7 @@
             }
 
             document.getElementById('txt-user-content').innerHTML = `
-                <h3 class="text-blue-400 font-bold uppercase mb-4 text-xs">${t.userTitle}</h3>
+                <h3 class="text-blue-400 font-bold uppercase mb-4 text-base">${t.userTitle}</h3>
                 <ul class="list-disc pl-5 space-y-3">${(t.userList||[]).map(li => `<li>${li.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')}</li>`).join('')}</ul>
             `;
 
